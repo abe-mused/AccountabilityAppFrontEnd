@@ -1,22 +1,21 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
-import 'package:linear/signIn.dart';
+import 'package:linear/main.dart';
 
-main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: LoginPage(),
-  )); // MaterialApp
-}
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   bool hide = true;
+
+  TextEditingController password = TextEditingController();
+  TextEditingController confirmPassword = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 40, left: 40),
-            child: Text("Welcome to linear!",
+            child: Text("Create Your Account",
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 50,
@@ -46,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Sign In",
+                  "Sign Up",
                   style: TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
                 ),
                 SizedBox(
@@ -61,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 15,
                 ),
                 TextField(
+                  controller: password,
                   obscureText: hide,
                   decoration: InputDecoration(
                       hintText: "Password",
@@ -75,12 +75,27 @@ class _LoginPageState extends State<LoginPage> {
                             : Icon(Icons.visibility),
                       )),
                 ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text("Forget?"),
-                  ),
+                SizedBox(
+                  height: 15,
+                ),
+                TextField(
+                  controller: confirmPassword,
+                  obscureText: hide,
+                  decoration: InputDecoration(
+                      hintText: "Confirm Password",
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            hide = !hide;
+                          });
+                        },
+                        icon: hide
+                            ? Icon(Icons.visibility_off)
+                            : Icon(Icons.visibility),
+                      )),
+                ),
+                SizedBox(
+                  height: 15,
                 ),
                 Center(
                   child: ElevatedButton(
@@ -88,21 +103,32 @@ class _LoginPageState extends State<LoginPage> {
                           backgroundColor: Colors.green,
                           padding: EdgeInsets.symmetric(
                               vertical: 5, horizontal: 60)),
-                      onPressed: () {},
-                      child: Text("Sign In")),
+                      onPressed: () {
+                        if (password.text != confirmPassword.text) {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text("ERROR"),
+                                  content: Text("Passwords do not match!"),
+                                );
+                              });
+                        }
+                      },
+                      child: Text("Sign Up")),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Dont't have an account?"),
+                    Text("Already have an account?"),
                     TextButton(
                         onPressed: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SignUpPage()));
+                                  builder: (context) => LoginPage()));
                         },
-                        child: Text("Sign Up?"))
+                        child: Text("Sign In?"))
                   ],
                 )
               ],
