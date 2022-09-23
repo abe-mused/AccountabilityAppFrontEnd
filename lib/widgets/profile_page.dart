@@ -3,6 +3,7 @@ import 'package:linear/main.dart';
 import 'package:linear/widgets/community_page.dart';
 import 'package:linear/widgets/search_page.dart'; 
 import 'package:linear/widgets/home_page.dart'; 
+import 'package:linear/widgets/post.dart'; 
 
 class  ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -13,24 +14,24 @@ class  ProfilePage extends StatefulWidget {
 
 
 class ProfilePageState extends State<ProfilePage>{
-  int selected_icon = 0; //variable for nav bar
+  int selected_icon = 2; //variable for nav bar
 
   void iconSelector(int index) {
-   /*******
-    setState(() {
-    selected_icon = index;
-    });
-    *******/
-    selected_icon = index;
-    if(selected_icon == 0){
-      Navigator.pushNamed(context, '/');  
+    if(index == 0){
+      Navigator.pushNamed(context, '/'); 
+      
     }
-     if(selected_icon == 1){
+     if(index == 1){
       Navigator.pushNamed(context, '/second');  
+      
     }
-    if(selected_icon == 2){
+    if(index == 2){
       Navigator.pushNamed(context, '/third');  
+      
     }
+      setState(() {
+      selected_icon = index;
+    });
   }
 
   @override 
@@ -58,7 +59,7 @@ class ProfilePageState extends State<ProfilePage>{
         title: const Text("Profile"),
         ), 
         body: Center(
-            child: pages.elementAt(selected_icon),
+            child: const Text("Profile"),
           ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[

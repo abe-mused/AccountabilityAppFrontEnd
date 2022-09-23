@@ -3,6 +3,7 @@ import 'package:linear/main.dart';
 import 'package:linear/widgets/home_page.dart';
 import 'package:linear/widgets/search_page.dart'; 
 import 'package:linear/widgets/profile_page.dart'; 
+import 'package:linear/widgets/post.dart'; 
 
 class  CommunityPage extends StatefulWidget {
   const CommunityPage({Key? key}) : super(key: key);
@@ -16,20 +17,20 @@ class CommunityPageState extends State<CommunityPage>{
   int selected_icon = 0; //variable for nav bar
 
   void iconSelector(int index) {
-   /*******
     setState(() {
     selected_icon = index;
     });
-    *******/
-    selected_icon = index;
     if(selected_icon == 0){
-      Navigator.pushNamed(context, '/');  
+      Navigator.pushNamed(context, '/');
+      selected_icon = index;
     }
      if(selected_icon == 1){
       Navigator.pushNamed(context, '/second');  
+      selected_icon = index;
     }
     if(selected_icon == 2){
-      Navigator.pushNamed(context, '/third');  
+      Navigator.pushNamed(context, '/third'); 
+      selected_icon = index;
     }
   }
 
@@ -58,7 +59,7 @@ class CommunityPageState extends State<CommunityPage>{
         title: const Text("Community"),
         ), 
         body: Center(
-            child: pages.elementAt(selected_icon),
+            child: const Text("Community"),
           ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[

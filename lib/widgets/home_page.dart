@@ -3,6 +3,7 @@ import 'package:linear/main.dart';
 import 'package:linear/widgets/community_page.dart';
 import 'package:linear/widgets/search_page.dart'; 
 import 'package:linear/widgets/profile_page.dart'; 
+import 'package:linear/widgets/post.dart'; 
 
 class  HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,21 +17,21 @@ class HomePageState extends State<HomePage>{
   int selected_icon = 0; //variable for nav bar
 
   void iconSelector(int index) {
-    /******
-    setState(() {
+    if(index == 0){
+      Navigator.pushNamed(context, '/'); 
+      
+    }
+     if(index == 1){
+      Navigator.pushNamed(context, '/second');  
+      
+    }
+    if(index == 2){
+      Navigator.pushNamed(context, '/third');  
+      
+    }
+      setState(() {
     selected_icon = index;
     });
-    ******/
-    selected_icon = index;
-    if(selected_icon == 0){
-      Navigator.pushNamed(context, '/');  
-    }
-     if(selected_icon == 1){
-      Navigator.pushNamed(context, '/second');  
-    }
-    if(selected_icon == 2){
-      Navigator.pushNamed(context, '/third');  
-    }
   }
 
   @override 
@@ -57,10 +58,15 @@ class HomePageState extends State<HomePage>{
       appBar: AppBar(
         title: const Text("Home"),
         ), 
-      
+        //remove center and child notation to revert to last save
         body: Center(
-            child: pages.elementAt(selected_icon),
-          ),
+          child: ListView.builder(
+          itemCount:3,
+          itemBuilder: (BuildContext context, int index){
+            return Post();
+          }
+        ),
+        ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem( 

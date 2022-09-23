@@ -3,6 +3,7 @@ import 'package:linear/main.dart';
 import 'package:linear/widgets/community_page.dart';
 import 'package:linear/widgets/home_page.dart'; 
 import 'package:linear/widgets/profile_page.dart'; 
+import 'package:linear/widgets/post.dart'; 
 
 class  SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -13,24 +14,24 @@ class  SearchPage extends StatefulWidget {
 
 
 class SearchPageState extends State<SearchPage>{
-  int selected_icon = 0; //variable for nav bar
+  int selected_icon = 1; //variable for nav bar
 
   void iconSelector(int index) {
-    /*******
-    setState(() {
+    if(index == 0){
+      Navigator.pushNamed(context, '/'); 
+      
+    }
+     if(index == 1){
+      Navigator.pushNamed(context, '/second');  
+      
+    }
+    if(index == 2){
+      Navigator.pushNamed(context, '/third');  
+      
+    }
+      setState(() {
     selected_icon = index;
     });
-    *****/
-    selected_icon = index;
-    if(selected_icon == 0){
-      Navigator.pushNamed(context, '/');  
-    }
-     if(selected_icon == 1){
-      Navigator.pushNamed(context, '/second');  
-    }
-    if(selected_icon == 2){
-      Navigator.pushNamed(context, '/third');  
-    }
   }
 
   @override 
@@ -69,7 +70,7 @@ class SearchPageState extends State<SearchPage>{
         ],
         ), 
         body: Center(
-            child: pages.elementAt(selected_icon),
+            child: const Text("Search"),
           ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[

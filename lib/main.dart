@@ -3,8 +3,9 @@ import 'package:linear/widgets/community_page.dart';
 import 'package:linear/widgets/search_page.dart'; 
 import 'package:linear/widgets/profile_page.dart'; 
 import 'package:linear/widgets/home_page.dart'; 
+import 'package:linear/widgets/post.dart'; 
 
-//testing commit on macbook
+
 void main() {
   //runApp(const MyApp());
   runApp(MaterialApp( 
