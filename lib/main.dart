@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:linear/auth_pages/sign_in.dart';
+import 'package:linear/auth_pages/sign_up.dart';
 import 'package:linear/auth_pages/reset_password.dart';
 import 'package:linear/pages/home_page.dart';
 import 'util/auth_util.dart' as auth_util;
@@ -91,14 +91,19 @@ class _LoginPageState extends State<LoginPage> {
                             hidePassword = !hidePassword;
                           });
                         },
-                        icon: hidePassword ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
+                        icon: hidePassword
+                            ? const Icon(Icons.visibility_off)
+                            : const Icon(Icons.visibility),
                       )),
                 ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ResetPasswordPage()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ResetPasswordPage()));
                     },
                     child: const Text("Forgot password?"),
                   ),
@@ -107,12 +112,18 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 60),
                       ),
                       onPressed: () {
-                        auth_util.logIn(username: emailOrUsername.text, password: password.text);
+                        auth_util.logIn(
+                            username: emailOrUsername.text,
+                            password: password.text);
                         //TODO: this should not be a push, it should be a replace
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()));
                       },
                       child: const Text("Sign In")),
                 ),
@@ -122,7 +133,10 @@ class _LoginPageState extends State<LoginPage> {
                     const Text("Dont't have an account?"),
                     TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SignUpPage()));
                         },
                         child: const Text("Sign Up"))
                   ],
