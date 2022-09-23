@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:linear/main.dart';
+import '../util/auth_util.dart' as auth_util;
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -13,6 +14,9 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   bool hide = true;
 
+  TextEditingController email = TextEditingController();
+  TextEditingController username = TextEditingController();
+  TextEditingController name = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
 
@@ -22,41 +26,48 @@ class _SignUpPageState extends State<SignUpPage> {
       backgroundColor: Colors.greenAccent,
       body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 40, left: 40),
-            child: Text("Create Your Account",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 50,
-                    fontWeight: FontWeight.w300)),
+          const Padding(
+            padding: EdgeInsets.only(top: 40, left: 40),
+            child: Text("Create Your Account", style: TextStyle(color: Colors.white, fontSize: 50, fontWeight: FontWeight.w300)),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-            margin:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.45),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
             width: double.infinity,
-            height: 450,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(50),
-                    topLeft: Radius.circular(50))),
+            height: MediaQuery.of(context).size.height * 0.7,
+            decoration: const BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Sign Up",
-                  style: TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
-                ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 TextField(
-                  decoration: InputDecoration(
+                  controller: email,
+                  decoration: const InputDecoration(
                     hintText: "E-mail",
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
+                  height: 15,
+                ),
+                TextField(
+                  controller: username,
+                  decoration: const InputDecoration(
+                    hintText: "username",
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                TextField(
+                  controller: name,
+                  decoration: const InputDecoration(
+                    hintText: "Full name",
+                  ),
+                ),
+                const SizedBox(
                   height: 15,
                 ),
                 TextField(
@@ -70,12 +81,10 @@ class _SignUpPageState extends State<SignUpPage> {
                             hide = !hide;
                           });
                         },
-                        icon: hide
-                            ? Icon(Icons.visibility_off)
-                            : Icon(Icons.visibility),
+                        icon: hide ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
                       )),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 TextField(
@@ -89,46 +98,49 @@ class _SignUpPageState extends State<SignUpPage> {
                             hide = !hide;
                           });
                         },
-                        icon: hide
-                            ? Icon(Icons.visibility_off)
-                            : Icon(Icons.visibility),
+                        icon: hide ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
                       )),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Center(
                   child: ElevatedButton(
                       style: TextButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 60)),
+                          backgroundColor: Colors.green, padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
                       onPressed: () {
                         if (password.text != confirmPassword.text) {
                           showDialog(
                               context: context,
                               builder: (context) {
-                                return AlertDialog(
+                                return const AlertDialog(
                                   title: Text("ERROR"),
                                   content: Text("Passwords do not match!"),
                                 );
                               });
+                        } else {
+                          auth_util.signUp(
+                            email: email.text,
+                            password: password.text,
+                            fullName: name.text,
+                            username: username.text,
+                          );
                         }
                       },
-                      child: Text("Sign Up")),
+                      child: const Text("Sign Up")),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Already have an account?"),
+                    const Text("Already have an account?"),
                     TextButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginPage()));
+                            context,
+                            MaterialPageRoute(builder: (context) => const LoginPage()),
+                          );
                         },
-                        child: Text("Sign In?"))
+                        child: const Text("Sign In?"))
                   ],
                 )
               ],

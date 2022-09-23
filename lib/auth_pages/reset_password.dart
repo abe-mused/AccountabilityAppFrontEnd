@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
-import 'resetPasswordCode.dart';
+import '../main.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({Key? key}) : super(key: key);
@@ -24,23 +23,16 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               padding: EdgeInsets.only(top: 40, left: 40),
               child: Text(
                 "Reset Your \nPassword",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 50,
-                    fontWeight: FontWeight.w300),
+                style: TextStyle(color: Colors.white, fontSize: 50, fontWeight: FontWeight.w300),
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-              margin: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.45),
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.45),
               width: double.infinity,
               height: 450,
               decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      topLeft: Radius.circular(50))),
+                  color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -62,27 +54,20 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   Center(
                     child: ElevatedButton(
                         style: TextButton.styleFrom(
-                            backgroundColor: Colors.deepOrangeAccent,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 60)),
+                            backgroundColor: Colors.deepOrangeAccent, padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
                         onPressed: () {
                           //add some sort of validation for email so unnecessary calls won't go through
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => const ResetPasswordCodePage()));
                         },
-                        child: Text("Submit")),
+                        child: const Text("Submit")),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginPage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
                           },
-                          child: const Text("Login"))
+                          child: const Text("Login instead?"))
                     ],
                   )
                 ],
