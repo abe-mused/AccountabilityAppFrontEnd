@@ -82,23 +82,38 @@ class _ResetPasswordNewPasswordPageState extends State<ResetPasswordNewPasswordP
                         style: TextButton.styleFrom(
                             backgroundColor: Colors.deepOrangeAccent, padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
                         onPressed: () {
-                          if (password.text != confirmPassword.text) {
+                          RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+                          if(password.text.isEmpty || confirmPassword.text.isEmpty){
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const AlertDialog(
+                                    title: Text("ERROR"),
+                                    content: Text("Please fill out all fields!"),
+                                  );
+                                });
+                          }
+                          else if (!regex.hasMatch(password.text)) {
                             showDialog(
                                 context: context,
                                 builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text("Messages"),
-                                    content: const Text("Passwords do not match each other"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("Ok"))
-                                    ],
+                                  return const AlertDialog(
+                                    title: Text("ERROR"),
+                                    content: Text("Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
                                   );
                                 });
-                          } else {
+                          }
+                          else if (password.text != confirmPassword.text) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const AlertDialog(
+                                    title: Text("ERROR"),
+                                    content: Text("Passwords do not match!"),
+                                  );
+                                }); 
+                          }
+                          else {
                             showDialog(
                                 context: context,
                                 builder: (context) {
