@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:linear/main.dart'; 
-import 'package:linear/widgets/community_page.dart';
-import 'package:linear/widgets/search_page.dart'; 
-import 'package:linear/widgets/profile_page.dart'; 
+import 'package:linear/pages/community_page.dart';
+import 'package:linear/pages/search_page.dart'; 
+import 'package:linear/pages/home_page.dart'; 
 import 'package:linear/widgets/post.dart'; 
+import 'package:linear/widgets/ProfileBox.dart'; 
+import 'package:linear/nonwidget_files/dummy_data.dart';
 
-class  HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class  ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
  
   @override
-  State<HomePage> createState() => HomePageState();
+  State<ProfilePage> createState() => ProfilePageState();
 }
 
 
-class HomePageState extends State<HomePage>{
-  int selected_icon = 0; //variable for nav bar
+class ProfilePageState extends State<ProfilePage>{
+  int selected_icon = 2; //variable for nav bar
 
   void iconSelector(int index) {
     if(index == 0){
@@ -30,13 +32,13 @@ class HomePageState extends State<HomePage>{
       
     }
       setState(() {
-    selected_icon = index;
+      selected_icon = index;
     });
   }
 
   @override 
   Widget build(BuildContext context) {
-    /*static*/ const List<Widget> pages = <Widget>[
+    const List<Widget> pages = <Widget>[
       //index 0
       Icon(
       Icons.home,
@@ -56,16 +58,29 @@ class HomePageState extends State<HomePage>{
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home"),
+        title: const Text("Profile"),
         ), 
-        //remove center and child notation to revert to last save
         body: Center(
-          child: ListView.builder(
-          itemCount:7,
-          itemBuilder: (BuildContext context, int index){
-            return Post();
-          }
-        ),
+            child: Container( 
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.all(5),
+              child: Column(
+                children: [
+                  Container(
+                    height: 200,
+                     child: ProfileBox(),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                    itemCount:2,
+                    itemBuilder: (BuildContext context, int index){
+                    return Post();
+                  }
+                   ),
+                  ),
+                ],
+              ),
+            ),
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[

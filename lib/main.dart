@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:linear/widgets/community_page.dart';
-import 'package:linear/widgets/search_page.dart'; 
-import 'package:linear/widgets/profile_page.dart'; 
-import 'package:linear/widgets/home_page.dart'; 
-import 'package:linear/widgets/post.dart'; 
+import 'package:linear/pages/community_page.dart';
+import 'package:linear/pages/search_page.dart'; 
+import 'package:linear/pages/profile_page.dart'; 
+import 'package:linear/pages/home_page.dart'; 
 
 
 void main() {
@@ -18,6 +17,14 @@ void main() {
       // '/fourth': (context) => const ProfileRoute (),
       //'fifth': (context) => const SettingsRoute (),
     },
+    theme:  ThemeData(
+        scaffoldBackgroundColor: Colors.green,
+        primaryColor: Colors.green,
+        fontFamily: 'Calibri',
+        appBarTheme: AppBarTheme( 
+          color: Color.fromARGB(255, 39, 87, 41),
+        ),
+    ), 
     ));
 }
 
@@ -30,10 +37,13 @@ class MyApp extends StatelessWidget {
       //TODO: When we add more widgets to this app that show the colors, add theme based on the
       //color palette we picked in this issue: https://github.com/abe-mused/AccountabilityAppFrontEnd/issues/7
        title: 'Linear Accountability App',
-       theme: ThemeData( 
-        primarySwatch: Colors.green,
-       ),
-       home: HomePage(),
+       theme:  ThemeData(
+        scaffoldBackgroundColor: Colors.green,
+        primaryColor: Colors.green,
+        fontFamily: 'Calibri',
+
+        ),
+       home: const HomePage(),
       );
   }
 }

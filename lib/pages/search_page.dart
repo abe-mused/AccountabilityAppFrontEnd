@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:linear/main.dart'; 
-import 'package:linear/widgets/community_page.dart';
-import 'package:linear/widgets/home_page.dart'; 
-import 'package:linear/widgets/profile_page.dart'; 
+import 'package:linear/pages/community_page.dart';
+import 'package:linear/pages/home_page.dart'; 
+import 'package:linear/pages/profile_page.dart'; 
 import 'package:linear/widgets/post.dart'; 
 
 class  SearchPage extends StatefulWidget {
@@ -30,7 +30,7 @@ class SearchPageState extends State<SearchPage>{
       
     }
       setState(() {
-    selected_icon = index;
+      selected_icon = index;
     });
   }
 

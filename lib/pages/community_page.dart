@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:linear/main.dart'; 
-import 'package:linear/widgets/community_page.dart';
-import 'package:linear/widgets/search_page.dart'; 
-import 'package:linear/widgets/home_page.dart'; 
+import 'package:linear/pages/home_page.dart';
+import 'package:linear/pages/search_page.dart'; 
+import 'package:linear/pages/profile_page.dart'; 
 import 'package:linear/widgets/post.dart'; 
-import 'package:linear/widgets/ProfileBox.dart'; 
+import 'package:linear/widgets/InfoBox.dart'; 
 import 'package:linear/nonwidget_files/dummy_data.dart';
 
-class  ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+class  CommunityPage extends StatefulWidget {
+  const CommunityPage({Key? key}) : super(key: key);
  
   @override
-  State<ProfilePage> createState() => ProfilePageState();
+  State<CommunityPage> createState() => CommunityPageState();
 }
 
 
-class ProfilePageState extends State<ProfilePage>{
-  int selected_icon = 2; //variable for nav bar
+class CommunityPageState extends State<CommunityPage>{
+  int selected_icon = 0; //variable for nav bar
 
-  void iconSelector(int index) {
+void iconSelector(int index) {
     if(index == 0){
       Navigator.pushNamed(context, '/'); 
       
@@ -32,9 +32,10 @@ class ProfilePageState extends State<ProfilePage>{
       
     }
       setState(() {
-      selected_icon = index;
+    selected_icon = index;
     });
   }
+
 
   @override 
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class ProfilePageState extends State<ProfilePage>{
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile"),
+        title: const Text("Community"),
         ), 
         body: Center(
             child: Container( 
@@ -66,18 +67,13 @@ class ProfilePageState extends State<ProfilePage>{
               padding: EdgeInsets.all(5),
               child: Column(
                 children: [
-                  Container( 
-                    width: MediaQuery.of(context).size.width,
-                    height: 50,
-                    child: Text("username and profile picture here"),
-                  ),
                   Container(
-                    height: 200,
-                     child: ProfileBox(),
+                    height: 100,
+                     child: CommunityInfoBox(),
                   ),
                   Expanded(
                     child: ListView.builder(
-                    itemCount:2,
+                    itemCount:dummy_data.totalPosts,
                     itemBuilder: (BuildContext context, int index){
                     return Post();
                   }
@@ -87,7 +83,7 @@ class ProfilePageState extends State<ProfilePage>{
               ),
             ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
+           bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem( 
               icon: Icon(Icons.home),
@@ -105,6 +101,7 @@ class ProfilePageState extends State<ProfilePage>{
           currentIndex: selected_icon,
           onTap: iconSelector,
         ),
+       
     );
   }
 }
