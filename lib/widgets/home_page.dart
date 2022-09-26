@@ -61,7 +61,7 @@ class HomePageState extends State<HomePage>{
         //remove center and child notation to revert to last save
         body: Center(
           child: ListView.builder(
-          itemCount:3,
+          itemCount:7,
           itemBuilder: (BuildContext context, int index){
             return Post();
           }
