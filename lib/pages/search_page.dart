@@ -70,7 +70,12 @@ class SearchPageState extends State<SearchPage>{
         ],
         ), 
         body: Center(
-            child: const Text("Search"),
+            child: TextButton(
+            onPressed: () {
+               Navigator.pushNamed(context, '/fifth');
+            },
+            child: const Text("Can't find a community? Create a community here!"),
+          ),
           ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
@@ -95,6 +100,8 @@ class SearchPageState extends State<SearchPage>{
 }
 
 class DelegatingSearch extends SearchDelegate {
+  int found = 0;
+
   //dummy input to be replaced later:
   List<String> dummyInput = [
     "Spanish",
@@ -129,11 +136,21 @@ class DelegatingSearch extends SearchDelegate {
   //show search results
   @override 
   Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
+    List<String> matchQuery = []; 
     for (var example in dummyInput) {
       if (example.toLowerCase().contains(query.toLowerCase())) {
         matchQuery.add(example);
+        found = 1;
       }
+      
+      /****** 
+      else {
+        //close current search, then open community creation page
+        close(context, null);
+        Navigator.pushNamed(context, '/fifth');
+      }
+      ******/
+        
     }
     return ListView.builder(
       itemCount: matchQuery.length,

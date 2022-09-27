@@ -3,6 +3,7 @@ import 'package:linear/pages/community_page.dart';
 import 'package:linear/pages/search_page.dart'; 
 import 'package:linear/pages/profile_page.dart'; 
 import 'package:linear/pages/home_page.dart'; 
+import 'package:linear/pages/create_community.dart'; 
 
 
 void main() {
@@ -14,11 +15,11 @@ void main() {
       '/second': (context) => const SearchPage (),
       '/third': (context) => const ProfilePage (),
       '/fourth': (context) => const CommunityPage(),
-      // '/fourth': (context) => const ProfileRoute (),
-      //'fifth': (context) => const SettingsRoute (),
+      '/fifth': (context) => const CreateCommunityPage (),
+      //'sixth': (context) => const SettingsRoute (),
     },
     theme:  ThemeData(
-        scaffoldBackgroundColor: Colors.green,
+        scaffoldBackgroundColor: Color.fromARGB(255, 162, 235, 164),
         primaryColor: Colors.green,
         fontFamily: 'Calibri',
         appBarTheme: AppBarTheme( 
