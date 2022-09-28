@@ -31,6 +31,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:
@@ -43,3 +44,8 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
+
+#adding assets/images below:
+assets:
+  - assets/JohnDoePicture.jpg
+  - assets/TestPostPicture.jpg
