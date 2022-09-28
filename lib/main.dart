@@ -13,7 +13,7 @@ main() {
   ); // MaterialApp
 }
 
-//TODO: take this out into its own file and import it
+//TO DO: take this out into its own file and import it
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: Color.fromARGB(255, 39, 78, 59),
       body: Stack(
         children: [
           const Padding(
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                 TextField(
                   controller: emailOrUsername,
                   decoration: const InputDecoration(
-                    hintText: "E-mail or username",
+                    hintText: "E-mail or Username",
                   ),
                 ),
                 const SizedBox(
