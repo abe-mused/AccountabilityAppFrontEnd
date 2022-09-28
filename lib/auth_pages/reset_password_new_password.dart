@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../main.dart';
+import '../login.dart';
 
 class ResetPasswordNewPasswordPage extends StatefulWidget {
   const ResetPasswordNewPasswordPage({Key? key}) : super(key: key);

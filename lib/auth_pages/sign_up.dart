@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:linear/main.dart';
+import 'package:linear/login.dart';
 import '../util/auth_util.dart' as auth_util;
 
 class SignUpPage extends StatefulWidget {
