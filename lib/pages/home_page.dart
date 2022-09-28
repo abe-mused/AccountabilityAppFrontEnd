@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
         title: const Text("Home Page"),
       ),
       body: const Center(
-        child: Text("Yo you're in the Home Page"),
+        child: Text("Welcome to the Home Page"),
       ),
     );
   }
