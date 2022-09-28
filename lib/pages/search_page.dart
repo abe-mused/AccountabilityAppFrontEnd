@@ -4,6 +4,8 @@ import 'package:linear/pages/community_page.dart';
 import 'package:linear/pages/home_page.dart'; 
 import 'package:linear/pages/profile_page.dart'; 
 import 'package:linear/widgets/post.dart'; 
+import 'package:linear/nonwidget_files/dummy_data.dart';
+import 'package:linear/constants/apis.dart';
 
 class  SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -101,13 +103,16 @@ class SearchPageState extends State<SearchPage>{
 
 class DelegatingSearch extends SearchDelegate {
   int found = 0;
+  String foundCommunity = "";
 
   //dummy input to be replaced later:
+  /**** 
   List<String> dummyInput = [
     "Spanish",
     "Leetcode",
     "Fitness"
   ];
+  ****/
 
   //delete text in search bar
   @override 
@@ -137,25 +142,33 @@ class DelegatingSearch extends SearchDelegate {
   @override 
   Widget buildResults(BuildContext context) {
     List<String> matchQuery = []; 
+    
+    foundCommunity = getCommunity(query).toString();
+    print(foundCommunity);
+      if (foundCommunity.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(foundCommunity);
+        print(foundCommunity);
+      }
+    
+    /**** 
+    if (foundCommunity == query) {
+      matchQuery.add(foundCommunity);
+    }
+    ***/
+   
+    /*****
     for (var example in dummyInput) {
       if (example.toLowerCase().contains(query.toLowerCase())) {
         matchQuery.add(example);
         found = 1;
       }
-      
-      /****** 
-      else {
-        //close current search, then open community creation page
-        close(context, null);
-        Navigator.pushNamed(context, '/fifth');
-      }
-      ******/
-        
-    }
+    ******/
+    
     return ListView.builder(
       itemCount: matchQuery.length,
       itemBuilder: (context, index) {
-        var result = matchQuery[index];
+        //var result = matchQuery[index];
+        var result = foundCommunity;
         return ListTile( 
           title: Text(result),
         );
@@ -167,15 +180,29 @@ class DelegatingSearch extends SearchDelegate {
   @override 
   Widget buildSuggestions(BuildContext context) {
     List<String> matchQuery = [];
+     if (foundCommunity.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(foundCommunity);
+        found = 1;
+      }
+    /****** 
+    if (foundCommunity == query) {
+      matchQuery.add(foundCommunity);
+    }
+    *******/
+
+    /****** 
     for (var example in dummyInput) {
       if (example.toLowerCase().contains(query.toLowerCase())) {
         matchQuery.add(example);
       }
     }
+    ******/
+
     return ListView.builder(
       itemCount: matchQuery.length,
       itemBuilder: (context, index) {
-        var result = matchQuery[index];
+        //var result = matchQuery[index];
+        var result = foundCommunity;
         return ListTile( 
           title: Text(result),
         );

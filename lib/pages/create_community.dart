@@ -6,6 +6,7 @@ import 'package:linear/pages/search_page.dart';
 import 'package:linear/pages/profile_page.dart'; 
 import 'package:linear/widgets/post.dart'; 
 import 'package:linear/nonwidget_files/dummy_data.dart';
+import 'package:linear/constants/apis.dart';
 
 class  CreateCommunityPage extends StatefulWidget {
   const CreateCommunityPage({Key? key}) : super(key: key);
