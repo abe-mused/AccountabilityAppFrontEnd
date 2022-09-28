@@ -106,6 +106,7 @@ class CreateCommunityPageState extends State<CreateCommunityPage>{
                new_community_name = userInput.toString();
                //print(new_community_name);
                //add name to db using the new_community_name variable
+               postCommunity(new_community_name);
             },
             child: Text("Submit"),
             ),
