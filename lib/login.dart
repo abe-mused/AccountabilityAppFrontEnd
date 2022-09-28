@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_up.dart';
 import 'package:linear/auth_pages/reset_password.dart';
-import 'package:linear/pages/home_page.dart';
+//import 'package:linear/pages/home_page.dart';
 import 'util/auth_util.dart' as auth_util;
 
 main() {
@@ -110,25 +110,25 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Text("Forgot password?"),
                     ),
                   ),
-                  Center(
-                    child: ElevatedButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 60),
-                        ),
-                        onPressed: () {
-                          auth_util.logIn(
-                              username: emailOrUsername.text,
-                              password: password.text);
-                          //TODO: this should not be a push, it should be a replace
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomePage()));
-                        },
-                        child: const Text("Sign In")),
-                  ),
+                  // Center(
+                  //   child: ElevatedButton(
+                  //       style: TextButton.styleFrom(
+                  //         backgroundColor: Colors.green,
+                  //         padding: const EdgeInsets.symmetric(
+                  //             vertical: 5, horizontal: 60),
+                  //       ),
+                  //       onPressed: () {
+                  //         auth_util.logIn(
+                  //             username: emailOrUsername.text,
+                  //             password: password.text);
+                  //         //TODO: this should not be a push, it should be a replace
+                  //         Navigator.push(
+                  //             context,
+                  //             MaterialPageRoute(
+                  //                 builder: (context) => const HomePage()));
+                  //       },
+                  //       child: const Text("Sign In")),
+                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
