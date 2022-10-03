@@ -30,8 +30,11 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   amazon_cognito_identity_dart_2: ^3.0.0
+  provider: ^6.0.0
   flutter:
     sdk: flutter
+  http: ^0.13.5
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:
