@@ -62,3 +62,5 @@ class LinearApp extends StatelessWidget {
             '/signup': (context) => const SignUpPage(),
           }),
     );
+  }
+}
