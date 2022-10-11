@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:developer' as developer;
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+
+import 'package:linear/constants/apis.dart';
 
 // ignore: must_be_immutable
 class CreateCommunityWidget extends StatefulWidget {
@@ -69,33 +68,5 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                 : "Create Community"),
       ),
     ]);
-  }
-
-  Future<bool> postCommunity(String text, String token) async {
-    developer.log("posting community with name $text and token '$token'");
-
-    return await http.post(
-      Uri.parse('https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community'),
-      body: jsonEncode({
-        "communityName": text,
-      }),
-      headers: {
-        "Authorization": token,
-        "Content-Type": "application/json",
-      },
-    ).then(
-      (response) {
-        developer.log("Response status: ${response.statusCode}");
-        print("Response body: ${response.body}");
-        if (response.statusCode == 200) {
-          print("Success!");
-          return true;
-        } else {
-          return false;
-        }
-      },
-    );
-
-    // return false;
   }
 }
