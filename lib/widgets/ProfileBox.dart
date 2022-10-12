@@ -36,13 +36,13 @@ class ProfileBox extends StatelessWidget {
                         //to the profile page with links to the
                         TextButton(
                           onPressed: () { 
-                             Navigator.pushNamed(context, '/fourth'); 
+                             Navigator.pushNamed(context, '/community'); 
                           },
                             child: Text(community1),                      
                         ),
                          TextButton(
                           onPressed: () { 
-                             Navigator.pushNamed(context, '/fourth'); 
+                             Navigator.pushNamed(context, '/community'); 
                           },
                             child: Text(community2),                      
                         ),

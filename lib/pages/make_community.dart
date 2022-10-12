@@ -1,29 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:linear/main.dart'; 
+import 'package:linear/pages/home_page.dart';
+import 'package:linear/pages/community_page.dart';
+import 'package:linear/pages/search_page.dart'; 
+import 'package:linear/pages/profile_page.dart'; 
+import 'package:linear/widgets/post.dart'; 
+import 'package:linear/nonwidget_files/dummy_data.dart';
 import 'package:linear/pages/create_community.dart';
 import 'package:linear/pages/get_community.dart';
-import 'package:linear/main.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_preferences.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:linear/nonwidget_files/dummy_data.dart';
-import 'package:linear/widgets/post.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
+class  CreateCommunityPage extends StatefulWidget {
+  const CreateCommunityPage({Key? key}) : super(key: key);
+ 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<CreateCommunityPage> createState() => CreateCommunityPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    User? user = Provider.of<UserProvider>(context).user;
 
-    int selected_icon = 0; //variable for nav bar
+class CreateCommunityPageState extends State<CreateCommunityPage>{
+  int selected_icon = 1; //variable for nav bar
+  TextEditingController userInput = TextEditingController();
+  String text = "";
+  String new_community_name = "";
 
-    void iconSelector(int index) {
+  /****** 
+  void disposeController() {
+    userInput.dispose ();
+    super.dispose();
+  }
+  *******/
+
+  void iconSelector(int index) {
     if(index == 0){
       Navigator.pushNamed(context, '/home'); 
       
@@ -41,14 +52,9 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
-    if (user == null || user.username == null) {
-      print("User is null in the homePage, redirecting to sign in");
-      Navigator.pushReplacementNamed(context, '/login');
-    } else {
-      print("User is not null in the homePage");
-      print("name is ${user.username} email is ${user.email} name is ${user.name} token is ${user.idToken}");
-    }
+  @override 
+  Widget build(BuildContext context) {
+     User? user = Provider.of<UserProvider>(context).user;
     /*static*/ const List<Widget> pages = <Widget>[
       //index 0
       Icon(
@@ -67,18 +73,27 @@ class _HomePageState extends State<HomePage> {
       ),
     ];
 
-    return Scaffold(
+   return Scaffold(
       appBar: AppBar(
-        title: Text("Hello ${user?.name}"),
+        title: const Text("Linear Home Page!"),
         elevation: 0.1,
       ),
-      body: Center(
-            child: ListView.builder(
-          itemCount: dummy_data.totalPosts,
-          itemBuilder: (BuildContext context, int index){
-            return Post();
-          }
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 30,
           ),
+          Center(
+            child: Text(
+              "Hello ${user?.name}",
+              style: const TextStyle(fontSize: 30),
+            ),
+          ),
+          const SizedBox(height: 20),
+          CreateCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),
+          const SizedBox(height: 20),
+          GetCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),
+        ],
       ),
        bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[

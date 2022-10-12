@@ -11,7 +11,7 @@ class TextButtonList extends StatelessWidget {
     return 
       TextButton(
         onPressed: () { 
-          Navigator.pushNamed(context, '/fourth'); 
+          Navigator.pushNamed(context, '/community'); 
         },
         child: Text(community),                      
       );

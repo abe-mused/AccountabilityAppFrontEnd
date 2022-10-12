@@ -20,15 +20,15 @@ class SearchPageState extends State<SearchPage>{
 
   void iconSelector(int index) {
     if(index == 0){
-      Navigator.pushNamed(context, '/'); 
+      Navigator.pushNamed(context, '/home'); 
       
     }
      if(index == 1){
-      Navigator.pushNamed(context, '/second');  
+      Navigator.pushNamed(context, '/search');  
       
     }
     if(index == 2){
-      Navigator.pushNamed(context, '/third');  
+      Navigator.pushNamed(context, '/profile');  
       
     }
       setState(() {
@@ -74,7 +74,7 @@ class SearchPageState extends State<SearchPage>{
         body: Center(
             child: TextButton(
             onPressed: () {
-               Navigator.pushNamed(context, '/fifth');
+               Navigator.pushNamed(context, '/createCommunity');
             },
             child: const Text("Can't find a community? Create a community here!"),
           ),

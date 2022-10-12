@@ -6,6 +6,14 @@ import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_preferences.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:linear/pages/search_page.dart';
+import 'package:linear/pages/create_community.dart';
+import 'package:linear/pages/get_community.dart';
+import 'package:linear/pages/profile_page.dart';
+import 'package:linear/pages/community_page.dart';
+import 'package:linear/pages/make_community.dart';
+import 'package:linear/pages/viewPost.dart';
+import 'package:linear/pages/createPost.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,11 +64,23 @@ class LinearApp extends StatelessWidget {
                     return const HomePage();
                 }
               }),
-          routes: {
-            '/home': (context) => const HomePage(),
-            '/login': (context) => const LoginPage(),
-            '/signup': (context) => const SignUpPage(),
-          }),
+              routes: {
+                '/home': (context) => const HomePage (),
+                '/login': (context) => const LoginPage(),
+                '/signup': (context) => const SignUpPage(),
+                '/search': (context) => const SearchPage (),
+                '/profile': (context) => const ProfilePage (),
+                '/community': (context) => const CommunityPage(),
+                '/createCommunity': (context) => const CreateCommunityPage(),
+                '/viewPost': (context) => const ViewPostPage(),
+                '/createPost': (context) => const CreatePostPage(),
+                //'sixth': (context) => const SettingsRoute (),
+              },),
     );
+  }
+
+
+bool isUserDataLoaded(AsyncSnapshot<User?> snapshot) {
+    return snapshot.data?.email == null && snapshot.data?.username == null && snapshot.data?.name == null && snapshot.data?.idToken == null;
   }
 }

@@ -20,15 +20,15 @@ class CommunityPageState extends State<CommunityPage>{
 
 void iconSelector(int index) {
     if(index == 0){
-      Navigator.pushNamed(context, '/'); 
+      Navigator.pushNamed(context, '/home'); 
       
     }
      if(index == 1){
-      Navigator.pushNamed(context, '/second');  
+      Navigator.pushNamed(context, '/search');  
       
     }
     if(index == 2){
-      Navigator.pushNamed(context, '/third');  
+      Navigator.pushNamed(context, '/profile');  
       
     }
       setState(() {
