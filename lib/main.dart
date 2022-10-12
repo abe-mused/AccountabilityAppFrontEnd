@@ -10,6 +10,7 @@ import 'package:linear/pages/search_page.dart';
 import 'package:linear/pages/create_community.dart';
 import 'package:linear/pages/get_community.dart';
 import 'package:linear/pages/profile_page.dart';
+import 'package:linear/pages/search_community_page.dart';
 import 'package:linear/pages/community_page.dart';
 import 'package:linear/pages/make_community.dart';
 import 'package:linear/pages/viewPost.dart';
@@ -72,6 +73,7 @@ class LinearApp extends StatelessWidget {
                 '/profile': (context) => const ProfilePage (),
                 '/community': (context) => const CommunityPage(),
                 '/createCommunity': (context) => const CreateCommunityPage(),
+                '/searchCommunity': (context) => const SearchCommunityPage(),
                 '/viewPost': (context) => const ViewPostPage(),
                 '/createPost': (context) => const CreatePostPage(),
                 //'sixth': (context) => const SettingsRoute (),

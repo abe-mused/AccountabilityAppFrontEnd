@@ -13,21 +13,19 @@ import 'package:linear/util/cognito/user_preferences.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
 
-class  CreateCommunityPage extends StatefulWidget {
-  const CreateCommunityPage({Key? key}) : super(key: key);
+class  SearchCommunityPage extends StatefulWidget {
+  const SearchCommunityPage({Key? key}) : super(key: key);
  
   @override
-  State<CreateCommunityPage> createState() => CreateCommunityPageState();
+  State<SearchCommunityPage> createState() => SearchCommunityPageState();
 }
 
 
-class CreateCommunityPageState extends State<CreateCommunityPage>{
+class SearchCommunityPageState extends State<SearchCommunityPage>{
   int selected_icon = 1; //variable for nav bar
   TextEditingController userInput = TextEditingController();
   String text = "";
   String new_community_name = "";
-
-
 
   void iconSelector(int index) {
     if(index == 0){
@@ -70,7 +68,7 @@ class CreateCommunityPageState extends State<CreateCommunityPage>{
 
    return Scaffold(
       appBar: AppBar(
-        title: const Text("Create Community"),
+        title: const Text("Search Community"),
         elevation: 0.1,
       ),
       body: Column(
@@ -80,12 +78,12 @@ class CreateCommunityPageState extends State<CreateCommunityPage>{
           ),
           Center(
             child: Text(
-              "Hello ${user?.name}",
+              "Search Community",
               style: const TextStyle(fontSize: 30),
             ),
           ),
           const SizedBox(height: 20),
-          CreateCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),
+          GetCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),
         ],
       ),
        bottomNavigationBar: BottomNavigationBar(
