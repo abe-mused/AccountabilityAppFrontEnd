@@ -27,12 +27,6 @@ class CreatePostPageState extends State<CreatePostPage>{
   String text = "";
   String new_community_name = "";
 
-  /****** 
-  void disposeController() {
-    userInput.dispose ();
-    super.dispose();
-  }
-  *******/
 
   void iconSelector(int index) {
     if(index == 0){
