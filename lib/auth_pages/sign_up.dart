@@ -151,12 +151,11 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void handleSignUpPress(BuildContext context) {
-    RegExp usernameValidation =
-        RegExp(r"^[A-Za-z][A-Za-z0-9_]{5,10}$"); // RegExp for username
+    RegExp usernameValidation = RegExp(r"^[A-Za-z][A-Za-z0-9_]{5,10}$");
     RegExp emailValidation = RegExp(
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-    RegExp regex =
-        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+    RegExp passwordValidation = RegExp(
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,20}$');
     if (password.text.isEmpty ||
         confirmPassword.text.isEmpty ||
         email.text.isEmpty ||
@@ -168,9 +167,9 @@ class _SignUpPageState extends State<SignUpPage> {
     } else if (!usernameValidation.hasMatch(username.text)) {
       showErrorDialog(context,
           "Invalid username! Username has to be a minimum of 5 characters and must contain alphanumeric characters and optionally an underscore");
-    } else if (!regex.hasMatch(password.text)) {
+    } else if (!passwordValidation.hasMatch(password.text)) {
       showErrorDialog(context,
-          "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !");
+          "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character");
     } else if (password.text != confirmPassword.text) {
       showErrorDialog(context, "Passwords do not match!");
     } else {
