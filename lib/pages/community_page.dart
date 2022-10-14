@@ -61,33 +61,7 @@ void iconSelector(int index) {
       appBar: AppBar(
         title: const Text("Community"),
         ), 
-        body: Center(
-            child: Container( 
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.all(5),
-              child: Column(
-                children: [
-                  Container(
-                    height: 100,
-                     child: CommunityInfoBox(communityName: com, dateCreated: day),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                    itemCount:5,
-                    itemBuilder: (BuildContext context, int index){
-                    return ScrollingPostView(
-                      communityName: 'communityName', 
-                      dateCreated: 'dateCreated', 
-                      postText: 'postBody', 
-                      titleOfPost: 'postTitle', 
-                      username: 'username',
-                      );
-                  }
-                   ),
-                  ),
-                ],
-              ),
-            ),
+        body: Center( 
         ),
            bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[

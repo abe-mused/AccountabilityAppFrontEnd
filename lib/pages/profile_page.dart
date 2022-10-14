@@ -57,32 +57,6 @@ int selected_icon = 2;
         title: const Text("Profile"),
         ), 
         body: Center(
-            child: Container( 
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.all(5),
-              child: Column(
-                children: [
-                  Container(
-                    height: 200,
-                     child: ProfileInfoBox(dateJoined: 'dateJoined', username: 'username'),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                    itemCount:2,
-                    itemBuilder: (BuildContext context, int index){
-                    return ScrollingPostView(
-                      communityName: 'communityName', 
-                      dateCreated: 'dateCreated', 
-                      postText: 'postBody', 
-                      titleOfPost: 'postTitle', 
-                      username: 'username',
-                      );
-                  }
-                   ),
-                  ),
-                ],
-              ),
-            ),
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
