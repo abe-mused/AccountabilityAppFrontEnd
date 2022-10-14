@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
 class ProfileInfoBox extends StatelessWidget {
-  const ProfileInfoBox({Key? key}) : super(key: key);
+    ProfileInfoBox({
+    super.key,
+    required this.username,
+    required this.dateJoined,
+    });
+
+    String username = "CommunityName";
+    String dateJoined = "10/01/22";
 
   @override 
   Widget build(BuildContext context) {
-    final String username = "username";
     final String community1 = "Community1";
     final String community2 = "Community2";
-    final String dateJoined = "10/01/22";
     int totalCommunities = 2;
     return 
          Column(children: <Widget>[

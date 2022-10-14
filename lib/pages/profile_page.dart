@@ -64,13 +64,19 @@ int selected_icon = 2;
                 children: [
                   Container(
                     height: 200,
-                     child: ProfileInfoBox(),
+                     child: ProfileInfoBox(dateJoined: 'dateJoined', username: 'username'),
                   ),
                   Expanded(
                     child: ListView.builder(
                     itemCount:2,
                     itemBuilder: (BuildContext context, int index){
-                    return ScrollingPostView();
+                    return ScrollingPostView(
+                      communityName: 'communityName', 
+                      dateCreated: 'dateCreated', 
+                      postText: 'postBody', 
+                      titleOfPost: 'postTitle', 
+                      username: 'username',
+                      );
                   }
                    ),
                   ),

@@ -75,7 +75,13 @@ void iconSelector(int index) {
                     child: ListView.builder(
                     itemCount:5,
                     itemBuilder: (BuildContext context, int index){
-                    return ScrollingPostView();
+                    return ScrollingPostView(
+                      communityName: 'communityName', 
+                      dateCreated: 'dateCreated', 
+                      postText: 'postBody', 
+                      titleOfPost: 'postTitle', 
+                      username: 'username',
+                      );
                   }
                    ),
                   ),

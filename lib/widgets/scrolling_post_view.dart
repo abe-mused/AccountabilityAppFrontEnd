@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 
 class ScrollingPostView extends StatelessWidget {
-  const ScrollingPostView({Key? key}) : super(key: key);
+  ScrollingPostView({
+    super.key,
+    required this.username,
+    required this.titleOfPost,
+    required this.postText,
+    required this.communityName,
+    required this.dateCreated,
+    });
+
+    String username = "CommunityName";
+    String titleOfPost = "Post Title";
+    String postText = "Post Body";
+    String communityName = "communityName";
+    String dateCreated = "dateCreated";
 
   @override 
   Widget build(BuildContext context) {
-    final String title_of_post = "Post Title";
-    final String post_text = "Post Body";
-    final String username = "username";
-     final String community = "community";
     return AspectRatio( 
       aspectRatio: 3/2,
       child: Card( 
@@ -24,8 +33,8 @@ class ScrollingPostView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(title_of_post),
-                        Text(post_text),
+                        Text(titleOfPost),
+                        Text(postText),
                       ],
                     ),
                   )
@@ -51,7 +60,7 @@ class ScrollingPostView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(username),
-                    Text(community),
+                    Text(communityName),
                   ],
                 ),
               )
