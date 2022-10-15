@@ -27,7 +27,8 @@ class _LoginPageState extends State<LoginPage> {
     AuthUtility auth = AuthUtility();
 
     doLogIn() {
-      final Future<Map<String, dynamic>> successfulMessage = auth.login(emailOrUsername.text, password.text);
+      final Future<Map<String, dynamic>> successfulMessage =
+          auth.login(emailOrUsername.text, password.text);
 
       successfulMessage.then((response) {
         if (response['status']) {
@@ -46,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: Color.fromARGB(255, 39, 78, 59),
       body: Stack(
         children: [
           const Padding(
@@ -107,14 +108,19 @@ class _LoginPageState extends State<LoginPage> {
                             hidePassword = !hidePassword;
                           });
                         },
-                        icon: hidePassword ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
+                        icon: hidePassword
+                            ? const Icon(Icons.visibility_off)
+                            : const Icon(Icons.visibility),
                       )),
                 ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ResetPasswordPage()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ResetPasswordPage()));
                     },
                     child: const Text("Forgot password?"),
                   ),
@@ -123,7 +129,8 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 60),
                       ),
                       onPressed: doLogIn,
                       child: const Text("Sign In")),
@@ -134,7 +141,10 @@ class _LoginPageState extends State<LoginPage> {
                     const Text("Dont't have an account?"),
                     TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SignUpPage()));
                         },
                         child: const Text("Sign Up"))
                   ],

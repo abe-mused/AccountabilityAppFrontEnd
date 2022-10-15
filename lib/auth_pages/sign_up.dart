@@ -71,7 +71,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: Color.fromARGB(255, 39, 78, 59),
       body: Stack(
         children: [
           const Padding(
