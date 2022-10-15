@@ -199,7 +199,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void handleSignUpPress(BuildContext context) {
-    RegExp usernameValidation = RegExp(r"^[A-Za-z][A-Za-z0-9_]{5,10}$");
+    RegExp usernameValidation = RegExp(r"^[A-Za-z][A-Za-z0-9_]{5,30}$");
     RegExp emailValidation = RegExp(
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
     RegExp passwordValidation = RegExp(
@@ -221,12 +221,7 @@ class _SignUpPageState extends State<SignUpPage> {
     } else if (password.text != confirmPassword.text) {
       showErrorDialog(context, "Passwords do not match!");
     } else {
-      /* auth_util.signUp(
-        email: email.text,
-        password: password.text,
-        fullName: name.text,
-        username: username.text, 
-      ); */
+      doSignUp(); // calls cognito authentication
     }
   }
 
