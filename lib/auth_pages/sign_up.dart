@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_in.dart';
-import '../util/auth_util.dart' as auth_util;
+import 'package:linear/util/cognito/auth_util.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -19,6 +19,54 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController name = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
+  AuthUtility auth = AuthUtility();
+
+  // check for sign up through cognito
+  doSignUp() {
+    final Future<Map<String, dynamic>> successfulMessage = auth.signUp(
+        email: email.text,
+        password: password.text,
+        username: username.text,
+        fullName: name.text);
+
+    successfulMessage.then((response) {
+      if (response['status']) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Success!"),
+                content:
+                    const Text("You have successfully created an account!"),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Error!"),
+                content: const Text(
+                    "An error occured while creating your account. Please try again later."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,12 +221,12 @@ class _SignUpPageState extends State<SignUpPage> {
     } else if (password.text != confirmPassword.text) {
       showErrorDialog(context, "Passwords do not match!");
     } else {
-      auth_util.signUp(
+      /* auth_util.signUp(
         email: email.text,
         password: password.text,
         fullName: name.text,
-        username: username.text,
-      );
+        username: username.text, 
+      ); */
     }
   }
 
