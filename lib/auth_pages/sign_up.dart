@@ -30,7 +30,7 @@ class _SignUpPageState extends State<SignUpPage> {
         fullName: name.text);
 
     successfulMessage.then((response) {
-      if (response['status']) {
+      if (response['status'] == true) {
         showDialog(
             context: context,
             builder: (context) {
