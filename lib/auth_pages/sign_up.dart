@@ -93,104 +93,108 @@ class _SignUpPageState extends State<SignUpPage> {
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(50),
                     topLeft: Radius.circular(50))),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  controller: email,
-                  decoration: const InputDecoration(
-                    hintText: "E-mail",
+            child: SingleChildScrollView(
+              // removes bottom overflow pixel error
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 15,
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  controller: username,
-                  decoration: const InputDecoration(
-                    hintText: "username",
+                  TextField(
+                    controller: email,
+                    decoration: const InputDecoration(
+                      hintText: "E-mail",
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  controller: name,
-                  decoration: const InputDecoration(
-                    hintText: "Full name",
+                  const SizedBox(
+                    height: 15,
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  controller: password,
-                  obscureText: hide,
-                  decoration: InputDecoration(
-                      hintText: "Password",
-                      suffixIcon: IconButton(
+                  TextField(
+                    controller: username,
+                    decoration: const InputDecoration(
+                      hintText: "username",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  TextField(
+                    controller: name,
+                    decoration: const InputDecoration(
+                      hintText: "Full name",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  TextField(
+                    controller: password,
+                    obscureText: hide,
+                    decoration: InputDecoration(
+                        hintText: "Password",
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              hide = !hide;
+                            });
+                          },
+                          icon: hide
+                              ? const Icon(Icons.visibility_off)
+                              : const Icon(Icons.visibility),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  TextField(
+                    controller: confirmPassword,
+                    obscureText: hide,
+                    decoration: InputDecoration(
+                        hintText: "Confirm Password",
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              hide = !hide;
+                            });
+                          },
+                          icon: hide
+                              ? const Icon(Icons.visibility_off)
+                              : const Icon(Icons.visibility),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Center(
+                    child: ElevatedButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 60)),
                         onPressed: () {
-                          setState(() {
-                            hide = !hide;
-                          });
+                          handleSignUpPress(context);
                         },
-                        icon: hide
-                            ? const Icon(Icons.visibility_off)
-                            : const Icon(Icons.visibility),
-                      )),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  controller: confirmPassword,
-                  obscureText: hide,
-                  decoration: InputDecoration(
-                      hintText: "Confirm Password",
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            hide = !hide;
-                          });
-                        },
-                        icon: hide
-                            ? const Icon(Icons.visibility_off)
-                            : const Icon(Icons.visibility),
-                      )),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Center(
-                  child: ElevatedButton(
-                      style: TextButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 60)),
-                      onPressed: () {
-                        handleSignUpPress(context);
-                      },
-                      child: const Text("Sign Up")),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Already have an account?"),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()),
-                          );
-                        },
-                        child: const Text("Sign In?"))
-                  ],
-                )
-              ],
+                        child: const Text("Sign Up")),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Already have an account?"),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginPage()),
+                            );
+                          },
+                          child: const Text("Sign In?"))
+                    ],
+                  )
+                ],
+              ),
             ),
           )
         ],
