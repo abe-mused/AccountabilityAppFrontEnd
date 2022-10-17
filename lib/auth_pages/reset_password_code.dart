@@ -15,7 +15,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepOrangeAccent,
+      backgroundColor: Color.fromARGB(255, 39, 78, 59),
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -23,16 +23,23 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
               padding: EdgeInsets.only(top: 40, left: 40),
               child: Text(
                 "Enter Verification \nCode Sent To \nYour Email",
-                style: TextStyle(color: Colors.white, fontSize: 50, fontWeight: FontWeight.w300),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 50,
+                    fontWeight: FontWeight.w300),
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.45),
+              margin: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.45),
               width: double.infinity,
               height: 450,
               decoration: const BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(50),
+                      topLeft: Radius.circular(50))),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -54,10 +61,16 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                   Center(
                     child: ElevatedButton(
                         style: TextButton.styleFrom(
-                            backgroundColor: Colors.deepOrangeAccent, padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
+                            backgroundColor: Colors.deepOrangeAccent,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 60)),
                         onPressed: () {
                           //add some sort of validation for code
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ResetPasswordNewPasswordPage()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ResetPasswordNewPasswordPage()));
                         },
                         child: const Text("Submit")),
                   ),
