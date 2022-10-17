@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/reset_password_new_password.dart';
+import 'package:linear/auth_pages/sign_up.dart';
+import 'package:linear/util/cognito/auth_util.dart';
 
 class ResetPasswordCodePage extends StatefulWidget {
-  const ResetPasswordCodePage({Key? key}) : super(key: key);
-
+  const ResetPasswordCodePage({Key? key, required this.email})
+      : super(key: key);
+  final String email;
   @override
   State<ResetPasswordCodePage> createState() => _ResetPasswordCodePageState();
 }
@@ -12,17 +15,109 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
   bool hide = true;
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
+  TextEditingController code = TextEditingController();
+
+  AuthUtility auth = AuthUtility();
+
+  doSendResetCode() {
+    final Future<Map<String, dynamic>> successfulMessage =
+        auth.passwordResetCode(email: widget.email);
+
+    successfulMessage.then((response) {
+      if (response['status']) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Success!"),
+                content: const Text(
+                    "A password reset code has been sent succesfully. If you did not recieve a code check your spam folder or the email may not be registered."),
+                actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Ok"))
+              ],
+              );
+            });
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Error!"),
+                content: const Text(
+                    "An error occured while sending the password reset code. Please try again later."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+      }
+    });
+  }
+
+  doChangePassword() {
+    final Future<Map<String, dynamic>> successfulMessage =
+        auth.passwordReset(email: widget.email, code: code.text, password: password.text);
+
+    successfulMessage.then((response) async {
+      if (response['status'] == true) {
+        await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Success!"),
+                content: const Text(
+                    "Your password has beem reset succesfully. You can now login with your new password."),
+                    actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+        Navigator.pushReplacementNamed(context, '/login');
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Error!"),
+                content: const Text(
+                    "An error occured while attempting to change your password. Please request a new code or register an account."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+      }
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 39, 78, 59),
+      backgroundColor: Colors.greenAccent,
       body: SingleChildScrollView(
         child: Stack(
           children: [
             const Padding(
-              padding: EdgeInsets.only(top: 40, left: 40),
+              padding: EdgeInsets.only(top: 50, left: 50),
               child: Text(
-                "Enter Verification \nCode Sent To \nYour Email",
+                "Code Sent To Email",
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 50,
@@ -32,28 +127,65 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               margin: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.45),
+                top: MediaQuery.of(context).size.height * 0.35,
+              ),
               width: double.infinity,
-              height: 450,
+              height: MediaQuery.of(context).size.height * 0.65,
               decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(50),
                       topLeft: Radius.circular(50))),
-              child: Column(
+              child: SingleChildScrollView(
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Enter Code",
+                    "Enter Code and New Password",
                     style: TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
-                  const TextField(
+                  TextField(
+                  key: const Key('codeKey'),
+                  controller: code,
+                  decoration: const InputDecoration(
+                    hintText: "Password Reset Code",
+                  ),
+                ),
+                  TextField(
+                    key: const Key('passwordKey'),
+                    controller: password,
+                    obscureText: hide,
                     decoration: InputDecoration(
-                      hintText: "Password Reset Code",
-                    ),
+                        hintText: "New Password",
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              hide = !hide;
+                            });
+                          },
+                          icon: hide ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  TextField(
+                    key: const Key('confirmPasswordKey'),
+                    controller: confirmPassword,
+                    obscureText: hide,
+                    decoration: InputDecoration(
+                        hintText: "Confirm Password",
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              hide = !hide;
+                            });
+                          },
+                          icon: hide ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
+                        )),
                   ),
                   const SizedBox(
                     height: 15,
@@ -61,31 +193,96 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                   Center(
                     child: ElevatedButton(
                         style: TextButton.styleFrom(
-                            backgroundColor: Colors.deepOrangeAccent,
+                            backgroundColor: Colors.green,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 60)),
                         onPressed: () {
-                          //add some sort of validation for code
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ResetPasswordNewPasswordPage()));
+                          RegExp passwordValidation = RegExp(
+                              r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+                          if (password.text.isEmpty ||
+                              confirmPassword.text.isEmpty ||
+                              code.text.isEmpty) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text("Error!"),
+                                    content:
+                                        const Text("Please fill out all fields!"),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Ok"))
+                                    ],
+                                  );
+                                });
+                          } else if (!passwordValidation.hasMatch(password.text)) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text("Error!"),
+                                    content: const Text(
+                                        "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Ok"))
+                                    ],
+                                  );
+                                });
+                          } else if (password.text != confirmPassword.text) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text("Error!"),
+                                    content: const Text("Passwords do not match each other, please try again."),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Ok"))
+                                    ],
+                                  );
+                                });
+                          } else {
+                            doChangePassword();
+                          }
                         },
                         child: const Text("Submit")),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Didn't Recieve a Code?"),
                       TextButton(
+                          key: const Key('resendCodeKey'),
                           onPressed: () {
                             //add code send here
+                            doSendResetCode();
                           },
-                          child: const Text("Resend"))
+                          child: const Text("Resend")),
+                      const Text("code or"),
+                      TextButton(
+                          key: const Key('registerButtonKey'),
+                        
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SignUpPage()));
+                          },
+                          child: const Text("Register")),
+                      const Text("instead?"),
                     ],
-                  )
+                  ),
                 ],
+              ),
               ),
             )
           ],
@@ -94,4 +291,3 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
     );
   }
 }
-//thanks for watching
