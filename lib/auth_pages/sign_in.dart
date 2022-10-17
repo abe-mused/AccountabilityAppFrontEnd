@@ -27,7 +27,8 @@ class _LoginPageState extends State<LoginPage> {
     AuthUtility auth = AuthUtility();
 
     doLogIn() {
-      final Future<Map<String, dynamic>> successfulMessage = auth.login(emailOrUsername.text, password.text);
+      final Future<Map<String, dynamic>> successfulMessage =
+          auth.login(emailOrUsername.text, password.text);
 
       successfulMessage.then((response) {
         if (response['status']) {
@@ -46,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: Color.fromARGB(255, 39, 78, 59),
       body: Stack(
         children: [
           const Padding(
@@ -74,72 +75,86 @@ class _LoginPageState extends State<LoginPage> {
                 topLeft: Radius.circular(50),
               ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 15,
-                ),
-                const Text(
-                  "Sign In",
-                  style: TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  controller: emailOrUsername,
-                  decoration: const InputDecoration(
-                    hintText: "E-mail or username",
+            child: SingleChildScrollView(
+              // removes bottom overflow pixel error
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 15,
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  obscureText: hidePassword,
-                  controller: password,
-                  decoration: InputDecoration(
-                      hintText: "Password",
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            hidePassword = !hidePassword;
-                          });
-                        },
-                        icon: hidePassword ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
-                      )),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ResetPasswordPage()));
-                    },
-                    child: const Text("Forgot password?"),
+                  const Text(
+                    "Sign In",
+                    style: TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
                   ),
-                ),
-                Center(
-                  child: ElevatedButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60),
-                      ),
-                      onPressed: doLogIn,
-                      child: const Text("Sign In")),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Dont't have an account?"),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage()));
-                        },
-                        child: const Text("Sign Up"))
-                  ],
-                )
-              ],
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  TextField(
+                    controller: emailOrUsername,
+                    decoration: const InputDecoration(
+                      hintText: "E-mail or username",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  TextField(
+                    obscureText: hidePassword,
+                    controller: password,
+                    decoration: InputDecoration(
+                        hintText: "Password",
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              hidePassword = !hidePassword;
+                            });
+                          },
+                          icon: hidePassword
+                              ? const Icon(Icons.visibility_off)
+                              : const Icon(Icons.visibility),
+                        )),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const ResetPasswordPage()));
+                      },
+                      child: const Text("Forgot password?"),
+                    ),
+                  ),
+                  Center(
+                    child: ElevatedButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 60),
+                        ),
+                        onPressed: doLogIn,
+                        child: const Text("Sign In")),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Dont't have an account?"),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SignUpPage()));
+                          },
+                          child: const Text("Sign Up"))
+                    ],
+                  )
+                ],
+              ),
             ),
           )
         ],

@@ -54,7 +54,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: Color.fromARGB(255, 39, 78, 59),
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -71,8 +71,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               margin: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.35,
-              ),
+                  top: MediaQuery.of(context).size.height * 0.45),
               width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.65,
               decoration: const BoxDecoration(
@@ -102,7 +101,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   Center(
                     child: ElevatedButton(
                         style: TextButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: Colors.deepOrangeAccent,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 60)),
                         onPressed: () {
