@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:developer' as developer;
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 import 'package:linear/model/community.dart';
+import 'package:linear/constants/apis.dart';
 
 // ignore: must_be_immutable
 class GetCommunityWidget extends StatefulWidget {
@@ -16,7 +13,42 @@ class GetCommunityWidget extends StatefulWidget {
 
 class _GetCommunityWidgetState extends State<GetCommunityWidget> {
   TextEditingController userInput = TextEditingController();
-  Community _community = Community(communityName: "basketball", creator: "abe", creationDate: 123);
+  Community _community =
+      Community(communityName: '', creationDate: 1, creator: '');
+
+  doGetCommunity() {
+    final Future<Map<String, dynamic>> successfulMessage =
+        getCommunity(userInput.text, widget.token);
+    successfulMessage.then((response) {
+      if (response['status'] == true) {
+        Community community = Community.fromJson(response['community']);
+        setState(() {
+          _community = community;
+        });
+      } else {
+        Community community =
+            Community(communityName: '', creationDate: 1, creator: '');
+        setState(() {
+          _community = community;
+        });
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Error!"),
+                content: Text("No results found. Try creating the community ${userInput.text}."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +76,7 @@ class _GetCommunityWidgetState extends State<GetCommunityWidget> {
       TextButton(
         onPressed: () async {
           //add name to db using the new_community_name variable
-          Community community = await postCommunity(userInput.text, widget.token);
-
-          print("this should be after");
-          setState(() {
-            _community = community;
-          });
+          doGetCommunity();
         },
         style: TextButton.styleFrom(
           primary: Colors.white,
@@ -58,66 +85,39 @@ class _GetCommunityWidgetState extends State<GetCommunityWidget> {
         ),
         child: const Text("Search"),
       ),
-      if (_community.communityName != "basketball")
-        const Text(
-          "Search Results:",
-          style: TextStyle(fontSize: 24),
-        ),
-      if (_community.communityName != "basketball") const SizedBox(height: 10),
-      if (_community.communityName != "basketball")
-        Text(
-          "name: ${_community.communityName}",
-          style: const TextStyle(fontSize: 24),
-        ),
-      if (_community.communityName != "basketball") const SizedBox(height: 5),
-      if (_community.communityName != "basketball")
-        Text(
-          "creator: ${_community.creator}",
-          style: const TextStyle(fontSize: 24),
-        ),
-      if (_community.communityName != "basketball") const SizedBox(height: 5),
-      if (_community.communityName != "basketball")
-        Text(
-          "creation date: ${DateTime.fromMillisecondsSinceEpoch(_community.creationDate)}",
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 24,
-          ),
+      if (_community.communityName != '')
+        Column(
+          children: [
+            const Text(
+              "Search Results:",
+              style: TextStyle(fontSize: 24),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Name: ${_community.communityName}",
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Creator: ${_community.creator}",
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Creation Date: ${_community.creationDate}",
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+          ],
         ),
     ]);
-  }
-
-  Future<Community> postCommunity(String text, String token) async {
-    developer.log("getting community with name $text and token '$token'");
-
-    return await http.get(
-      Uri.parse('https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community?communityName=$text'),
-      headers: {
-        "Authorization": token,
-        "Content-Type": "application/json",
-      },
-    ).then(
-      (response) {
-        developer.log("Response status: ${response.statusCode}");
-        print("Response body: ${response.body}");
-        if (response.statusCode == 200) {
-          var jsonResponse = jsonDecode(response.body);
-          var community = jsonResponse['community'];
-          if (community != null && community[0] != null) {
-            print("Not null");
-          } else if (community != null) {
-            print("Just empty");
-          } else {
-            print("Something else");
-          }
-          print("Success!: ${community[0]}");
-          return Community.fromJson(community[0]);
-        } else {
-          return Community(communityName: 'basketball', creationDate: 123, creator: 'abe');
-        }
-      },
-    );
-
-    // return false;
   }
 }
