@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:developer' as developer;
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:linear/constants/apis.dart';
 
-// ignore: must_be_immutable
 class CreateCommunityWidget extends StatefulWidget {
   CreateCommunityWidget({super.key, required this.token});
   String token;
@@ -14,8 +11,50 @@ class CreateCommunityWidget extends StatefulWidget {
 
 class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
   TextEditingController userInput = TextEditingController();
-  bool _success = false;
-  bool _error = false;
+
+  doCreateCommunity() {
+    final Future<Map<String, dynamic>> successfulMessage =
+        postCommunity(userInput.text, widget.token);
+
+    successfulMessage.then((response) {
+      if (response['status'] == true) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Success!"),
+                content: const Text(
+                    "Community succesfully Created."),
+                actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      //add routintg to community page
+                    },
+                    child: const Text("Ok"))
+              ],
+              );
+            });
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Error!"),
+                content: const Text(
+                    "An error occured while attempting to create the community."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,54 +87,14 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
       ),
       TextButton(
         onPressed: () async {
-          //add name to db using the new_community_name variable
-          bool tempSuccess = await postCommunity(userInput.text, widget.token);
-
-          print("this should be after");
-          setState(() {
-            _success = tempSuccess;
-            _error = !tempSuccess;
-          });
+          doCreateCommunity();
         },
         style: TextButton.styleFrom(
           primary: Colors.white,
           backgroundColor: Colors.blue,
           onSurface: Colors.grey,
         ),
-        child: Text(_success
-            ? "Success!"
-            : _error
-                ? "Error!"
-                : "Create Community"),
-      ),
+        child: const Text("Submit")),
     ]);
-  }
-
-  Future<bool> postCommunity(String text, String token) async {
-    developer.log("posting community with name $text and token '$token'");
-
-    return await http.post(
-      Uri.parse('https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community'),
-      body: jsonEncode({
-        "communityName": text,
-      }),
-      headers: {
-        "Authorization": token,
-        "Content-Type": "application/json",
-      },
-    ).then(
-      (response) {
-        developer.log("Response status: ${response.statusCode}");
-        print("Response body: ${response.body}");
-        if (response.statusCode == 200) {
-          print("Success!");
-          return true;
-        } else {
-          return false;
-        }
-      },
-    );
-
-    // return false;
   }
 }
