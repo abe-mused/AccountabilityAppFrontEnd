@@ -4,11 +4,18 @@ import 'package:linear/util/cognito/user_preferences.dart';
 
 class UserProvider with ChangeNotifier {
   User? _user;
+  int _selectedTab = 0;
 
   User? get user => _user;
+  int get selectedTab => _selectedTab;
 
   void setUser(User? user) {
     _user = user;
+    notifyListeners();
+  }
+
+  void setSelectedTab(int selectedTab) {
+    _selectedTab = selectedTab;
     notifyListeners();
   }
 

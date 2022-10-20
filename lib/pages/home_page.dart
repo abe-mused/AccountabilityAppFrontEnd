@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:linear/pages/create_community.dart';
-import 'package:linear/pages/get_community.dart';
+import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/util/cognito/user.dart';
-import 'package:linear/util/cognito/user_preferences.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -14,25 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selected_icon = 0; 
-  
-  void iconSelector(int index) {
-    if(index == 0){
-      Navigator.pushNamed(context, '/home'); 
-      
-    }
-     if(index == 1){
-      Navigator.pushNamed(context, '/search');  
-      
-    }
-    if(index == 2){
-      Navigator.pushNamed(context, '/profile');  
-      
-    }
-      setState(() {
-    selected_icon = index;
-    });
-  }
+  // int selected_icon = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +23,7 @@ class _HomePageState extends State<HomePage> {
       Navigator.pushReplacementNamed(context, '/login');
     } else {
       print("User is not null in the homePage");
-      print("name is ${user.username} email is ${user.email} name is ${user.name} token is ${user.idToken}");
+      print("name is ${user.username} email is ${user.email} name is ${user.name}");
     }
     return Scaffold(
       appBar: AppBar(
@@ -62,29 +42,9 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           const SizedBox(height: 20),
-          CreateCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),
-          const SizedBox(height: 20),
-          GetCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem( 
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem( 
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem( 
-              icon: Icon(Icons.account_circle_rounded),
-              label: 'Profile',
-            ),
-          ],
-          currentIndex: 0,
-          onTap: iconSelector,
-        ),
+      bottomNavigationBar: const LinearNavBar(),
     );
   }
 }
