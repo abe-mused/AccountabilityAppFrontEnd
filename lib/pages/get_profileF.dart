@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/user.dart';
 import 'package:linear/constants/apis.dart';
-
+//ignore this file for now but don't delete it
 // ignore: must_be_immutable
 class GetProfileWidget extends StatefulWidget {
   GetProfileWidget({super.key, required this.token});
@@ -12,7 +12,7 @@ class GetProfileWidget extends StatefulWidget {
 }
 
 class _GetProfileWidgetState extends State<GetProfileWidget> {
-  User _user = User(username: 'didnt', name: 'work');
+  User _user = User(username: 'didnt', name: 'work', communities: []);
 
   doGetUser() {
     final Future<Map<String, dynamic>> successfulMessage =
@@ -25,7 +25,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
         });
         print("success running getProfile");
       } else {
-        User user = User(username: 'error', name: 'error');
+        User user = User(username: 'error', name: 'error', communities: []);
         setState(() {
           _user = user;
         });

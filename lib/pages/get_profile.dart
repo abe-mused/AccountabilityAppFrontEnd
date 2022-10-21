@@ -12,12 +12,12 @@ class GetProfileWidget extends StatefulWidget {
 }
 
 class _GetProfileWidgetState extends State<GetProfileWidget> {
-  User _user = User(username: 'didnt', name: 'work');
+  User _user = User(username: 'didnt', name: 'work', communities: [[]]);
+  List colors = [ Colors.grey, const Color.fromARGB(0, 0, 0, 0)];
 
   @override
   void initState() {
     super.initState();
-    print(widget.token);
     doGetUser();
   }
 
@@ -31,7 +31,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
           _user = user;
         });
       } else {
-        User user = User(username: 'error', name: 'error');
+        User user = User(username: 'error', name: 'error', communities: [[{"communityName": "error"}]]);
         setState(() {
           _user = user;
         });
@@ -54,27 +54,30 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
     });
   }
 
-  // ignore: annotate_overrides
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
           Padding(
-            padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+            padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
             child: Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
+                    // ignore: unnecessary_string_interpolations
                     "${_user.name}",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 30.0,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
+                  //add logOut button here: dropDown menu with logOut option
                   IconButton(
                     onPressed: () {},
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.more_horiz,
                       size: 30.0,
                     ),
@@ -83,35 +86,29 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
               ),
             ),
           ),
-          SizedBox(height: 70.0),
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-                "https://free2music.com/images/singer/2019/02/10/troye-sivan_2.jpg"),
-            radius: 70.0,
-          ),
-          SizedBox(height: 20.0),
+          const Icon(Icons.account_circle_rounded, size: 185.0),
           Text(
             "@${_user.username}",
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 30.0,
             ),
           ),
-          SizedBox(height: 30.0),
+          const SizedBox(height: 30.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              SizedBox(width: 20.0),
+              const SizedBox(width: 20.0),
               Column(
                 children: [
-                  Text(
+                  const Text(
                     "29",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
                     ),
                   ),
-                  SizedBox(height: 15.0),
+                  const SizedBox(height: 15.0),
                   Text(
                     "Following",
                     style: TextStyle(
@@ -123,14 +120,16 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
               ),
               Column(
                 children: [
-                  Text(
+                  //turn into button - owner should be able to see followers
+                  const Text(
                     "121.9k",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
                     ),
                   ),
-                  SizedBox(height: 15.0),
+                  //turn into button - owner and others should be able to see following
+                  const SizedBox(height: 5.0),
                   Text(
                     "Followers",
                     style: TextStyle(
@@ -140,73 +139,99 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   ),
                 ],
               ),
-              Column(
-                children: [
-                  Text(
-                    "7.5M",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  Text(
-                    "Like",
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(0.3),
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w300),
-                  ),
-                ],
-              ),
-              SizedBox(width: 20.0),
+              const SizedBox(width: 20.0),
             ],
           ),
-          SizedBox(height: 30.0),
+          const SizedBox(height: 30.0),
+          // add logic, if user viewing is not the same as the user displayed, then show follow button
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     ElevatedButton(
+          //       onPressed: () {},
+          //       style: ElevatedButton.styleFrom(
+          //         fixedSize: const Size(140.0, 55.0),
+          //         primary: Colors.green,
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(15.0),
+          //         ),
+          //       ),
+          //       child: const Text(
+          //         "Follow",
+          //         style: TextStyle(fontSize: 18.0),
+          //       ),
+          //     ),
+              
+          //   ],
+          // ),
+          const SizedBox(height: 20.0),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {},
-                child: Text(
-                  "Follow",
-                  style: TextStyle(fontSize: 18.0),
-                ),
-                style: ElevatedButton.styleFrom(
-                  fixedSize: Size(140.0, 55.0),
-                  primary: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                ),
-              ),
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: const [
               SizedBox(width: 15.0),
-              OutlinedButton(
-                onPressed: () {},
-                child: Icon(Icons.mail_outline_outlined),
-                style: OutlinedButton.styleFrom(
-                    primary: Colors.black,
-                    backgroundColor: Colors.black12,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    fixedSize: Size(50.0, 60.0)),
-              )
+              Text(
+                "Communities",
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontSize: 23.0,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
             ],
           ),
-          SizedBox(height: 20.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Column(
             children: [
-              SizedBox(width: 50.0),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.more_vert),
-              )
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _user.communities?.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    tileColor: colors[index % colors.length],
+                    title: Text(_user.communities![index][0]['communityName']),            
+                  );
+                },
+              ),
+              ),
             ],
           ),
-          SizedBox(height: 10.0),
+          const SizedBox(height: 20.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: const [
+              SizedBox(width: 15.0),
+              Text(
+                "Posts",
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontSize: 23.0,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
+          ),
+          //replace this listBuilder with posts
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _user.communities?.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    tileColor: colors[index % colors.length],
+                    title: Text(_user.communities![index][0]['communityName']),            
+                  );
+                },
+              ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 80.0),
         ],
+        ),
       ),
     );
   }
