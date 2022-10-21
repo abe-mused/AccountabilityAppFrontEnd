@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/community.dart';
 import 'package:linear/constants/apis.dart';
+import 'package:linear/widgets/community_info_box.dart';
 
 // ignore: must_be_immutable
 class GetCommunityWidget extends StatefulWidget {
@@ -70,54 +71,39 @@ class _GetCommunityWidgetState extends State<GetCommunityWidget> {
               borderRadius: BorderRadius.circular(5.0),
             ),
             hintText: "Search for a Community:",
+            suffixIcon: IconButton(
+               icon: const Icon(Icons.search),
+               onPressed: () async {
+               //add name to db using the new_community_name variable
+                doGetCommunity();
+              },
+                style: IconButton.styleFrom(
+                backgroundColor: Colors.blue,
+                ),
           ),
         ),
       ),
-      TextButton(
-        onPressed: () async {
-          //add name to db using the new_community_name variable
-          doGetCommunity();
-        },
-        style: TextButton.styleFrom(
-          primary: Colors.white,
-          backgroundColor: Colors.blue,
-          onSurface: Colors.grey,
-        ),
-        child: const Text("Search"),
       ),
       if (_community.communityName != '')
-        Column(
-          children: [
-            const Text(
-              "Search Results:",
-              style: TextStyle(fontSize: 24),
+       Column(children: <Widget>[
+          Container(
+            decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            color: Colors.lightGreen,
             ),
-            const SizedBox(
-              height: 10,
+            child: Column( 
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+              Text("c/${_community.communityName}", style: TextStyle(fontSize: 25)),
+              Text("Created:${_community.creationDate}", style: TextStyle(fontSize: 25)),
+              Text("Created by u/${_community.creator}", style: TextStyle(fontSize: 25)),
+              ],
             ),
-            Text(
-              "Name: ${_community.communityName}",
-              style: const TextStyle(fontSize: 24),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              "Creator: ${_community.creator}",
-              style: const TextStyle(fontSize: 24),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              "Creation Date: ${_community.creationDate}",
-              style: const TextStyle(fontSize: 24),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
+        )
+         ],
         ),
     ]);
   }
 }
+
