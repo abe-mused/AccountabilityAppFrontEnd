@@ -73,3 +73,43 @@ Future<Map<String, dynamic>> getCommunity(
     };
   }
 }
+
+Future<Map<String, dynamic>> getProfile(
+    String token) async {
+  var url =
+      'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/profile';
+  try {return await http.get(
+    Uri.parse(url),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  ).then((response) {
+      developer.log("Response status: ${response.statusCode}");
+      print("Response body: ${response.body}");
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        var user = jsonResponse['user'];
+        if (user != null && user[0] != null) {
+          print("Success!: ${user[0]}");
+          return {
+            'status': true,
+            'message': 'User Succesfully Found.',
+            'user': user[0]
+          };
+        }
+      }
+      return {
+      'status': false,
+      'message': 'User not found.'
+    };
+  });}
+  catch (e) {
+    print(e);
+    print('User[] is null');
+    return {
+      'status': false,
+      'message': 'User not found.'
+    };
+  }
+}
