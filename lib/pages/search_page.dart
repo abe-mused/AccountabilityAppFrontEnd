@@ -22,17 +22,8 @@ class SearchPageState extends State<SearchPage> {
         title: const Text("Search Community"),
         elevation: 0.1,
       ),
-      body: Column(
+     body: Column(
         children: [
-          const SizedBox(
-            height: 30,
-          ),
-          const Center(
-            child: Text(
-              "Search Community",
-              style: TextStyle(fontSize: 30),
-            ),
-          ),
           const SizedBox(height: 20),
           GetCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),
           TextButton(

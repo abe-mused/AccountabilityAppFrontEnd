@@ -70,20 +70,18 @@ class _GetCommunityWidgetState extends State<GetCommunityWidget> {
               borderRadius: BorderRadius.circular(5.0),
             ),
             hintText: "Search for a Community:",
+            suffixIcon: IconButton(
+               icon: const Icon(Icons.search),
+               onPressed: () async {
+               //add name to db using the new_community_name variable
+              doGetCommunity();
+              },
+                style: IconButton.styleFrom(
+                backgroundColor: Colors.blue,
+                ),
           ),
         ),
       ),
-      TextButton(
-        onPressed: () async {
-          //add name to db using the new_community_name variable
-          doGetCommunity();
-        },
-        style: TextButton.styleFrom(
-          primary: Colors.white,
-          backgroundColor: Colors.blue,
-          onSurface: Colors.grey,
-        ),
-        child: const Text("Search"),
       ),
       if (_community.communityName != '')
         Column(
