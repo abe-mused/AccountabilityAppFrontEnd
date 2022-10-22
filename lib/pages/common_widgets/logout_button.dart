@@ -4,7 +4,14 @@ import 'package:linear/pages/profile_page.dart';
 
 enum DialogsAction { yes, cancel }
 
-class LogoutButton {
+class LogoutButton extends StatefulWidget {
+  const LogoutButton({super.key});
+
+  @override
+  State<LogoutButton> createState() => _LogoutButtonState();
+}
+
+class _LogoutButtonState extends State<LogoutButton> {
   static Future<DialogsAction> yesCancelDialog(
     BuildContext context,
     String title,
@@ -41,5 +48,28 @@ class LogoutButton {
       },
     );
     return (action != null) ? action : DialogsAction.cancel;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bool tappedYes = false;
+    return Container(
+      child: ElevatedButton(
+        onPressed: () async {
+          final action = await yesCancelDialog(
+              context, 'Logout', 'Are you sure you want to log out?');
+          if (action == DialogsAction.yes) {
+            setState(() => tappedYes = true);
+          } else {
+            setState(() => tappedYes = false);
+          }
+        },
+        child: Text(
+          'Logout'.toUpperCase(),
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
   }
 }

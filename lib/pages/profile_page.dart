@@ -10,7 +10,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
-  bool tappedYes = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,24 +17,7 @@ class ProfilePageState extends State<ProfilePage> {
         title: const Text("Profile"),
         centerTitle: true,
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            final action = await LogoutButton.yesCancelDialog(
-                context, 'Logout', 'Are you sure you want to log out?');
-
-            if (action == DialogsAction.yes) {
-              setState(() => tappedYes = true);
-            } else {
-              setState(() => tappedYes = false);
-            }
-          },
-          child: Text(
-            'Logout'.toUpperCase(),
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
+      body: Center(),
     );
   }
 }
