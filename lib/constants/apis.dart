@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -90,12 +89,14 @@ Future<Map<String, dynamic>> getProfile(
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         var user = jsonResponse['user'];
+        var posts = jsonResponse['posts'];
         if (user != null && user[0] != null) {
           print("Success!: ${user[0]}");
           return {
             'status': true,
             'message': 'User Succesfully Found.',
-            'user': user[0]
+            'user': user[0], 
+            'posts': posts
           };
         }
       }

@@ -11,12 +11,8 @@ class User {
       name: item['name'],
       communities: item['communities'],
     );
-    print (item['communities']);
     if (item['communities'] == null) {
-      print('it ran');
-
       user.communities = item['communities'];
-      print(user.communities);
     }
     return user;
   }
