@@ -5,7 +5,6 @@ import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:linear/pages/get_profile.dart';
 
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
@@ -20,10 +19,21 @@ class ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
+        // setting option is added here on top of Profile page
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              // do something
+            },
+          )
+        ],
       ),
       body: Center(
-        child: GetProfileWidget(token: user?.idToken ?? "INVALID TOKEN")
-      ),
+          child: GetProfileWidget(token: user?.idToken ?? "INVALID TOKEN")),
       bottomNavigationBar: const LinearNavBar(),
     );
   }
