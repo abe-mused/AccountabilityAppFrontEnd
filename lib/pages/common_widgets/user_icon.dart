@@ -15,7 +15,7 @@ class _UserIconState extends State<UserIcon> {
   List colors = [
     Colors.blue,
     Colors.green,
-    const Color.fromARGB(255, 141, 39, 32),
+    const Color.fromARGB(255, 141, 39, 32), //dark red
     Colors.purple,
     Colors.pink,
     Colors.brown,

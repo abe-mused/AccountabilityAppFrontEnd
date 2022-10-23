@@ -11,9 +11,7 @@ class User {
       name: item['name'],
       communities: item['communities'],
     );
-    if (item['communities'] == null) {
-      user.communities = item['communities'];
-    }
+    
     return user;
   }
 }

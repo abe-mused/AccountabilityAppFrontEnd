@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/user.dart';
-import 'package:linear/model/post_list.dart';
 import 'package:linear/constants/apis.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 
@@ -14,26 +13,23 @@ class GetProfileWidget extends StatefulWidget {
 }
 
 class _GetProfileWidgetState extends State<GetProfileWidget> {
-  User _user = User(username: 'loading', name: 'loading', communities: [
-    [
-      {"communityName": "error"}
-    ]
-  ]);
-  PostList _post = PostList(posts: []);
+  User _user = User(username: '', name: '', communities: []);
+  List<dynamic> _post = [];
+  
+  final ScrollController _scrollController = ScrollController();
 
-  var isLoading = true;
-  var showAllCommunities = 0;
-  var showAllPosts = 0;
+  bool isLoading = true;
+  bool isErrorFetchingUser = false;
 
-  List colors = [Colors.grey, const Color.fromARGB(0, 0, 0, 0)];
+  List colors = [Colors.grey, const Color.fromARGB(17, 158, 158, 158)];
 
   @override
   void initState() {
     super.initState();
-    doGetUser();
+    getUser();
   }
 
-  doGetUser() {
+  getUser() {
     final Future<Map<String, dynamic>> successfulMessage =
         getProfile(widget.token);
     successfulMessage.then((response) {
@@ -42,8 +38,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
         setState(() {
           _user = user;
         });
-        print("it rain posts ${response['posts']}");
-        PostList post = PostList.fromJson(response['posts']);
+
+        List<dynamic> post  = (response['posts']);
         setState(() {
           _post = post;
         });
@@ -51,64 +47,17 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
           isLoading = false;
         });
       } else {
-        User user = User(username: 'error', name: 'error', communities: [
-          [
-            {"communityName": "error"}
-          ]
-        ]);
         setState(() {
-          _user = user;
+          isLoading = false;
+          isErrorFetchingUser = true;
         });
-        PostList post = PostList(posts: []);
-        setState(() {
-          _post = post;
-        });
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text("Error!"),
-                content: const Text("No results found."),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text("Ok"))
-                ],
-              );
-            });
       }
     });
   }
 
-  doShowAllCommunities() {
-    if (showAllCommunities + 5 == _user.communities?.length) {
-      setState(() {
-        showAllCommunities = 0;
-      });
-    } else {
-      setState(() {
-        showAllCommunities = (_user.communities?.length ?? 0) - 5;
-      });
-    }
-  }
-
-  doShowAllPosts() {
-    if (showAllPosts + 5 == _post.posts.length) {
-      setState(() {
-        showAllPosts = 0;
-      });
-    } else {
-      setState(() {
-        showAllPosts = (_post.posts.length - 5);
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (isLoading == false) {
+    if (isLoading == false && isErrorFetchingUser == false) {
       return Scaffold(
         body: SingleChildScrollView(
           child: Column(
@@ -151,76 +100,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   fontSize: 30.0,
                 ),
               ),
-              const SizedBox(height: 30.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  const SizedBox(width: 20.0),
-                  Column(
-                    children: [
-                      const Text(
-                        "29",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      const SizedBox(height: 15.0),
-                      Text(
-                        "Following",
-                        style: TextStyle(
-                            color: Colors.black.withOpacity(0.3),
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w100),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      //turn into button - owner should be able to see followers
-                      const Text(
-                        "121.9k",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      //turn into button - owner and others should be able to see following
-                      const SizedBox(height: 5.0),
-                      Text(
-                        "Followers",
-                        style: TextStyle(
-                            color: Colors.black.withOpacity(0.3),
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w300),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 20.0),
-                ],
-              ),
-              const SizedBox(height: 30.0),
-              // add logic, if user viewing is not the same as the user displayed, then show follow button
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     ElevatedButton(
-              //       onPressed: () {},
-              //       style: ElevatedButton.styleFrom(
-              //         fixedSize: const Size(140.0, 55.0),
-              //         primary: Colors.green,
-              //         shape: RoundedRectangleBorder(
-              //           borderRadius: BorderRadius.circular(15.0),
-              //         ),
-              //       ),
-              //       child: const Text(
-              //         "Follow",
-              //         style: TextStyle(fontSize: 18.0),
-              //       ),
-              //     ),
-
-              //   ],
-              // ),
               const SizedBox(height: 20.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -264,7 +143,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                         child: ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: 5 + showAllCommunities,
+                          itemCount: 5,
                           itemBuilder: (context, index) {
                             return ListTile(
                               tileColor: colors[index % colors.length],
@@ -281,13 +160,49 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                             padding: const EdgeInsets.only(right: 10.0),
                             child: TextButton(
                               onPressed: () {
-                                doShowAllCommunities();
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('All Communities'),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    content: SizedBox(
+                                      height: 300,
+                                      width: 300,
+                                      child: Scrollbar( 
+                                        thumbVisibility: true,
+                                        controller: _scrollController,
+                                        child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        controller: _scrollController,
+                                        shrinkWrap: true,
+                                        itemCount: _user.communities?.length,
+                                        itemBuilder: (context, index) {
+                                          return Material (
+                                              child: ListTile(
+                                              tileColor: colors[index % colors.length],
+                                              title: Text(_user.communities![index][0]
+                                                  ['communityName']),
+                                            ),
+                                          );
+                                        },
+                                        ),
+                                      ),
+                                    ),
+                                    actions: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Okay'))
+                                    ],
+                                  ),
+                                );
                               },
-                              child: Text(
-                                showAllCommunities == 0
-                                    ? "Show More"
-                                    : "Show Less",
-                                style: const TextStyle(
+                              child: const Text(
+                                "Show More",
+                                  style: TextStyle(
                                   decoration: TextDecoration.underline,
                                   color: Colors.blue,
                                   fontSize: 15.0,
@@ -338,65 +253,22 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
               Column(
                 children: [
                   // ignore: prefer_is_empty
-                  if (_post.posts.length != 0) ...[
-                    if ((_post.posts.length) < 5) ...[
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, top: 5.0),
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: _post.posts.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              tileColor: colors[index % colors.length],
-                              title: Text(_post.posts[index]['title']),
-                            );
-                          },
-                        ),
+                  if (_post.length != 0) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 15.0, right: 15.0, top: 5.0),
+                      child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: _post.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            tileColor: colors[index % colors.length],
+                            title: Text(_post[index]['title']),
+                          );
+                        },
                       ),
-                    ] else ...[
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, top: 5.0),
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: 5 + showAllPosts,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              tileColor: colors[index % colors.length],
-                              title: Text(_post.posts[index]['title']),
-                            );
-                          },
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 10.0),
-                            child: TextButton(
-                              onPressed: () {
-                                doShowAllPosts();
-                              },
-                              child: Text(
-                                showAllPosts == 0
-                                    ? "Show More"
-                                    : "Show Less",
-                                style: const TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: Colors.blue,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 5.0),
-                        ],
-                      ),
-                    ],
+                    ),
                   ] else ...[
                     Padding(
                       padding: const EdgeInsets.only(
@@ -419,6 +291,14 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
               const SizedBox(height: 80.0),
             ],
           ),
+        ),
+      );
+    } else if (isLoading == false && isErrorFetchingUser == true) {
+      return const Scaffold(
+        body: Center(
+          child: Text(
+            "We ran into an error trying to obtain your profile. \nPlease try again later.",
+            textAlign: TextAlign.center,),
         ),
       );
     } else {

@@ -36,7 +36,7 @@ Future<Map<String, dynamic>> postCommunity(
 Future<Map<String, dynamic>> getCommunity(
     String communityName, String token) async {
   var url =
-      'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community?communityName=$communityName';
+      'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/search?communityName=$communityName';
   try {return await http.get(
     Uri.parse(url),
     headers: {
