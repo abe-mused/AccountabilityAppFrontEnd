@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linear/auth_pages/reset_password_new_password.dart';
 import 'package:linear/pages/common_widgets/logout_widget.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -48,8 +49,13 @@ class SettingsPage extends StatelessWidget {
                     leading: const Icon(Icons.lock_outline),
                     title: const Text("Change Password"),
                     trailing: const Icon(Icons.keyboard_arrow_right),
-                    onTap: () {
+                    onTap: () async {
                       // open change password
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const ResetPasswordNewPasswordPage()));
                     },
                   ),
                   _buildDivider(),
