@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linear/pages/common_widgets/logout_widget.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
@@ -22,12 +23,17 @@ class ProfilePageState extends State<ProfilePage> {
         // setting option is added here on top of Profile page
         actions: <Widget>[
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.settings,
               color: Colors.white,
             ),
-            onPressed: () {
-              // do something
+            onPressed: () async {
+              // added logout button
+              // user is redirected to a page where he or she will have the option to logout
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LogoutButton()));
             },
           )
         ],
