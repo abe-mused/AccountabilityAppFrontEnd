@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/pages/common_widgets/logout_widget.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
-import 'package:linear/pages/settings_page.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
