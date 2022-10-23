@@ -90,12 +90,12 @@ Future<Map<String, dynamic>> getProfile(
         var jsonResponse = jsonDecode(response.body);
         var user = jsonResponse['user'];
         var posts = jsonResponse['posts'];
-        if (user != null && user[0] != null) {
-          print("Success!: ${user[0]}");
+        if (user != null) {
+          print("Success!: $user");
           return {
             'status': true,
             'message': 'User Succesfully Found.',
-            'user': user[0], 
+            'user': user, 
             'posts': posts
           };
         }
