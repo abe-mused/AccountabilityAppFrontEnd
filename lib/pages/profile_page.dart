@@ -24,15 +24,18 @@ class ProfilePageState extends State<ProfilePage> {
         // setting option is added here on top of Profile page
         actions: <Widget>[
           IconButton(
+            // add logout button
             icon: const Icon(
-              Icons.settings,
+              Icons.logout_rounded, // logout button for user
               color: Colors.white,
             ),
             onPressed: () async {
               // added logout button
-              // user is redirected to a page where he or she will have the option to logout
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()));
+              // user is redirected to a message where he or she will have the option to logout
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LogoutButton()));
             },
           )
         ],
