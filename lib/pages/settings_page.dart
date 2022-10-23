@@ -1,9 +1,13 @@
+// ignore_for_file: unnecessary_const
+
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/reset_password_new_password.dart';
 import 'package:linear/pages/common_widgets/logout_widget.dart';
 
 class SettingsPage extends StatelessWidget {
-  static final String patch = "lib/src/pages/settings_page.dart";
+  static const String patch = "lib/src/pages/settings_page.dart";
+
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +27,14 @@ class SettingsPage extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
               margin: const EdgeInsets.all(10.0),
-              child: ListTile(
-                onTap: () {
-                  // open edit profile
-                },
+              child: const ListTile(
                 title: const Text(
-                  "Linear Profile",
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  "Welcome to the Settings Page",
+                  style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 leading: const CircleAvatar(
                   backgroundColor: Colors.black,
                 ),
-                trailing: const Icon(Icons.edit),
               ),
             ),
             const SizedBox(height: 10.0),
