@@ -14,6 +14,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
+  var _currentSelectedItem;
+
   @override
   Widget build(BuildContext context) {
     User? user = Provider.of<UserProvider>(context).user;
@@ -22,21 +24,37 @@ class ProfilePageState extends State<ProfilePage> {
         title: const Text("Profile"),
         // setting option is added here on top of Profile page
         actions: <Widget>[
-          IconButton(
-            // add logout button
-            icon: const Icon(
-              Icons.logout_rounded, // logout button for user
-              color: Colors.white,
-            ),
-            onPressed: () async {
-              // added logout button
-              // user is redirected to a message where he or she will have the option to logout
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const LogoutButton()));
-            },
-          )
+          PopupMenuButton(
+              // add icon, by default "3 dot" icon
+              // icon: Icon(Icons.book)
+              itemBuilder: (context) {
+            return [
+              const PopupMenuItem<int>(
+                value: 0,
+                child: Text("Logout"),
+              ),
+            ];
+          }, onSelected: (value) {
+            if (value == 0) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure you want to log out?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'OK'),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            }
+          }),
         ],
       ),
       body: Center(
