@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -37,7 +36,7 @@ Future<Map<String, dynamic>> postCommunity(
 Future<Map<String, dynamic>> getCommunity(
     String communityName, String token) async {
   var url =
-      'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community?communityName=$communityName';
+      'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/search?communityName=$communityName';
   try {return await http.get(
     Uri.parse(url),
     headers: {
@@ -90,12 +89,14 @@ Future<Map<String, dynamic>> getProfile(
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         var user = jsonResponse['user'];
-        if (user != null && user[0] != null) {
-          print("Success!: ${user[0]}");
+        var posts = jsonResponse['posts'];
+        if (user != null) {
+          print("Success!: $user");
           return {
             'status': true,
             'message': 'User Succesfully Found.',
-            'user': user[0]
+            'user': user, 
+            'posts': posts
           };
         }
       }

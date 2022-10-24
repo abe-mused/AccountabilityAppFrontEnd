@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/user.dart';
 import 'package:linear/constants/apis.dart';
+import 'package:linear/pages/common_widgets/user_icon.dart';
 
 // ignore: must_be_immutable
 class GetProfileWidget extends StatefulWidget {
@@ -12,16 +13,23 @@ class GetProfileWidget extends StatefulWidget {
 }
 
 class _GetProfileWidgetState extends State<GetProfileWidget> {
-  User _user = User(username: 'didnt', name: 'work', communities: [[]]);
-  List colors = [ Colors.grey, const Color.fromARGB(0, 0, 0, 0)];
+  User _user = User(username: '', name: '', communities: []);
+  List<dynamic> _post = [];
+  
+  final ScrollController _scrollController = ScrollController();
+
+  bool isLoading = true;
+  bool isErrorFetchingUser = false;
+
+  List colors = [Colors.grey, const Color.fromARGB(17, 158, 158, 158)];
 
   @override
   void initState() {
     super.initState();
-    doGetUser();
+    getUser();
   }
 
-  doGetUser() {
+  getUser() {
     final Future<Map<String, dynamic>> successfulMessage =
         getProfile(widget.token);
     successfulMessage.then((response) {
@@ -30,209 +38,273 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
         setState(() {
           _user = user;
         });
-      } else {
-        User user = User(username: 'error', name: 'error', communities: [[{"communityName": "error"}]]);
+
+        List<dynamic> post  = (response['posts']);
         setState(() {
-          _user = user;
+          _post = post;
         });
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text("Error!"),
-                content: const Text("No results found."),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text("Ok"))
-                ],
-              );
-            });
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+          isErrorFetchingUser = true;
+        });
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    // ignore: unnecessary_string_interpolations
-                    "${_user.name}",
-                    style: const TextStyle(
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  //add logOut button here: dropDown menu with logOut option
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.more_horiz,
-                      size: 30.0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Icon(Icons.account_circle_rounded, size: 185.0),
-          Text(
-            "@${_user.username}",
-            style: const TextStyle(
-              fontWeight: FontWeight.w800,
-              fontSize: 30.0,
-            ),
-          ),
-          const SizedBox(height: 30.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+    if (isLoading == false && isErrorFetchingUser == false) {
+      return Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
             children: [
-              const SizedBox(width: 20.0),
-              Column(
-                children: [
-                  const Text(
-                    "29",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
-                    ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        // ignore: unnecessary_string_interpolations
+                        "${_user.name}",
+                        style: const TextStyle(
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      //add logOut button here: dropDown menu with logOut option
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.more_horiz,
+                          size: 30.0,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 15.0),
+                ),
+              ),
+              UserIcon(radius: 100, username: _user.username),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10.0),
+              ),
+              Text(
+                "@${_user.username}",
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 30.0,
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const [
+                  SizedBox(width: 15.0),
                   Text(
-                    "Following",
+                    "Communities",
                     style: TextStyle(
-                        color: Colors.black.withOpacity(0.3),
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w100),
+                      decoration: TextDecoration.underline,
+                      fontSize: 23.0,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ],
               ),
               Column(
                 children: [
-                  //turn into button - owner should be able to see followers
-                  const Text(
-                    "121.9k",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
+                  // ignore: prefer_is_empty
+                  if (_user.communities?.length != 0) ...[
+                    if ((_user.communities?.length ?? 0) < 5) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 15.0, right: 15.0, top: 5.0),
+                        child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: _user.communities?.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              tileColor: colors[index % colors.length],
+                              title: Text(_user.communities![index][0]
+                                  ['communityName']),
+                            );
+                          },
+                        ),
+                      ),
+                    ] else ...[
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 15.0, right: 15.0, top: 5.0),
+                        child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              tileColor: colors[index % colors.length],
+                              title: Text(_user.communities![index][0]
+                                  ['communityName']),
+                            );
+                          },
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: TextButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('All Communities'),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    content: SizedBox(
+                                      height: 300,
+                                      width: 300,
+                                      child: Scrollbar( 
+                                        thumbVisibility: true,
+                                        controller: _scrollController,
+                                        child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        controller: _scrollController,
+                                        shrinkWrap: true,
+                                        itemCount: _user.communities?.length,
+                                        itemBuilder: (context, index) {
+                                          return Material (
+                                              child: ListTile(
+                                              tileColor: colors[index % colors.length],
+                                              title: Text(_user.communities![index][0]
+                                                  ['communityName']),
+                                            ),
+                                          );
+                                        },
+                                        ),
+                                      ),
+                                    ),
+                                    actions: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Okay'))
+                                    ],
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                "Show More",
+                                  style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Colors.blue,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 5.0),
+                        ],
+                      ),
+                    ],
+                  ] else ...[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: 1,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            tileColor: colors[index % colors.length],
+                            title: const Text(
+                                'You are not part of a community, try joining one!'),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  //turn into button - owner and others should be able to see following
-                  const SizedBox(height: 5.0),
+                  ],
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const [
+                  SizedBox(width: 15.0),
                   Text(
-                    "Followers",
+                    "Posts",
                     style: TextStyle(
-                        color: Colors.black.withOpacity(0.3),
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w300),
+                      decoration: TextDecoration.underline,
+                      fontSize: 23.0,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(width: 20.0),
+              //Posts list builder
+              Column(
+                children: [
+                  // ignore: prefer_is_empty
+                  if (_post.length != 0) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 15.0, right: 15.0, top: 5.0),
+                      child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: _post.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            tileColor: colors[index % colors.length],
+                            title: Text(_post[index]['title']),
+                          );
+                        },
+                      ),
+                    ),
+                  ] else ...[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: 1,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            tileColor: colors[index % colors.length],
+                            title: const Text(
+                                'You haven\'t made a post, try making one first!'),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              const SizedBox(height: 80.0),
             ],
           ),
-          const SizedBox(height: 30.0),
-          // add logic, if user viewing is not the same as the user displayed, then show follow button
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     ElevatedButton(
-          //       onPressed: () {},
-          //       style: ElevatedButton.styleFrom(
-          //         fixedSize: const Size(140.0, 55.0),
-          //         primary: Colors.green,
-          //         shape: RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(15.0),
-          //         ),
-          //       ),
-          //       child: const Text(
-          //         "Follow",
-          //         style: TextStyle(fontSize: 18.0),
-          //       ),
-          //     ),
-              
-          //   ],
-          // ),
-          const SizedBox(height: 20.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: const [
-              SizedBox(width: 15.0),
-              Text(
-                "Communities",
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  fontSize: 23.0,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ],
-          ),
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-                child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: _user.communities?.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    tileColor: colors[index % colors.length],
-                    title: Text(_user.communities![index][0]['communityName']),            
-                  );
-                },
-              ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: const [
-              SizedBox(width: 15.0),
-              Text(
-                "Posts",
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  fontSize: 23.0,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ],
-          ),
-          //replace this listBuilder with posts
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-                child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: _user.communities?.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    tileColor: colors[index % colors.length],
-                    title: Text(_user.communities![index][0]['communityName']),            
-                  );
-                },
-              ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 80.0),
-        ],
         ),
-      ),
-    );
+      );
+    } else if (isLoading == false && isErrorFetchingUser == true) {
+      return const Scaffold(
+        body: Center(
+          child: Text(
+            "We ran into an error trying to obtain your profile. \nPlease try again later.",
+            textAlign: TextAlign.center,),
+        ),
+      );
+    } else {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
   }
 }
