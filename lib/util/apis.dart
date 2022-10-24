@@ -85,3 +85,30 @@ Future<Map<String, dynamic>> getProfile(String token) async {
     return {'status': false, 'message': 'User not found.'};
   }
 }
+
+Future<Map<String, dynamic>> createPost(String postTitle, String postBody, String communityName, String token) async {
+  const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post';
+  return await http.post(
+    Uri.parse(url),
+    body: jsonEncode({
+      "postTitle": postTitle,
+      "postBody": postBody,
+      "communityName": communityName,
+    }),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  ).then(
+    (response) {
+      developer.log("Response status: ${response.statusCode}");
+      print("Response body create post: ${response.body}");
+      if (response.statusCode == 200) {
+        print("Success!");
+        return {'status': true, 'message': 'Post Succesfully Created.'};
+      } else {
+        return {'status': false, 'message': 'An error occurred while creating the post, please try again.'};
+      }
+    },
+  );
+}

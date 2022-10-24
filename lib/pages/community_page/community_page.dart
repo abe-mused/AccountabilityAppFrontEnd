@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/community.dart';
+import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
+import 'package:linear/pages/post_widgets/create_post.dart';
+import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -49,6 +52,19 @@ class CommunityPageState extends State<CommunityPage> {
                     ),
                   ],
                 ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            CreatePostWidget(token: token, communityName: community.communityName),
+            const SizedBox(height: 10),
+            PostWidget(
+              post: Post(
+                communityName: community.communityName,
+                postId: "somePostId",
+                creator: "abe",
+                creationDate: 1666106193212,
+                title: "someTitle",
+                body: "someBody",
               ),
             ),
           ],
