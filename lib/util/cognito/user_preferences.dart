@@ -21,6 +21,12 @@ class UserPreferences {
     return prefs.commit();
   }
 
+  Future<void> clearPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.clear();
+  }
+
   Future<User?> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 //
