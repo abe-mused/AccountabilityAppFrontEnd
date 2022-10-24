@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:linear/pages/common_widgets/logout_widget.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:linear/pages/get_profile.dart';
+import 'package:linear/util/cognito/user_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -14,7 +14,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
-  var _currentSelectedItem;
+  logout() {
+    final UserPreferences userPreferences = UserPreferences();
+    userPreferences.clearPreferences();
+    Navigator.pushReplacementNamed(context, '/login');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +51,9 @@ class ProfilePageState extends State<ProfilePage> {
                       child: const Text('Cancel'),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.pop(context, 'OK'),
+                      onPressed: () {
+                        logout();
+                      },
                       child: const Text('OK'),
                     ),
                   ],
