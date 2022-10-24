@@ -21,6 +21,7 @@ class SearchPageState extends State<SearchPage> {
       appBar: AppBar(
         title: const Text("Search Community"),
         elevation: 0.1,
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [

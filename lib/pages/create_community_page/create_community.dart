@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:linear/constants/apis.dart';
+import 'package:linear/util/apis.dart';
 
 class CreateCommunityWidget extends StatefulWidget {
   CreateCommunityWidget({super.key, required this.token});
@@ -13,8 +13,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
   TextEditingController userInput = TextEditingController();
 
   doCreateCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage =
-        postCommunity(userInput.text, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage = postCommunity(userInput.text, widget.token);
 
     successfulMessage.then((response) {
       if (response['status'] == true) {
@@ -23,16 +22,15 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Success!"),
-                content: const Text(
-                    "Community succesfully Created."),
+                content: const Text("Community succesfully Created."),
                 actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      //add routintg to community page
-                    },
-                    child: const Text("Ok"))
-              ],
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        //add routintg to community page
+                      },
+                      child: const Text("Ok"))
+                ],
               );
             });
       } else {
@@ -41,8 +39,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: const Text(
-                    "An error occured while attempting to create the community."),
+                content: const Text("An error occured while attempting to create the community."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -86,15 +83,15 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
         ),
       ),
       TextButton(
-        onPressed: () async {
-          doCreateCommunity();
-        },
-        style: TextButton.styleFrom(
-          primary: Colors.white,
-          backgroundColor: Colors.blue,
-          onSurface: Colors.grey,
-        ),
-        child: const Text("Submit")),
+          onPressed: () async {
+            doCreateCommunity();
+          },
+          style: TextButton.styleFrom(
+            primary: Colors.white,
+            backgroundColor: Colors.blue,
+            onSurface: Colors.grey,
+          ),
+          child: const Text("Submit")),
     ]);
   }
 }

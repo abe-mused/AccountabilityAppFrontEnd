@@ -29,6 +29,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("Linear Home Page!"),
         elevation: 0.1,
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
