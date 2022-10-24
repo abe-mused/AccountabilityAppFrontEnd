@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:linear/main.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
-import 'package:linear/pages/home_page.dart';
-import 'package:linear/pages/search_page.dart';
-import 'package:linear/pages/profile_page.dart';
+import 'package:linear/pages/home_page/home_page.dart';
+import 'package:linear/pages/search_page/search_page.dart';
+import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/widgets/scrolling_post_view.dart';
 import 'package:linear/widgets/community_info_box.dart';
 

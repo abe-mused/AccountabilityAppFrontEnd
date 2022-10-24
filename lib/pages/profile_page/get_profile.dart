@@ -15,7 +15,7 @@ class GetProfileWidget extends StatefulWidget {
 class _GetProfileWidgetState extends State<GetProfileWidget> {
   User _user = User(username: '', name: '', communities: []);
   List<dynamic> _post = [];
-  
+
   final ScrollController _scrollController = ScrollController();
 
   bool isLoading = true;
@@ -30,8 +30,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
   }
 
   getUser() {
-    final Future<Map<String, dynamic>> successfulMessage =
-        getProfile(widget.token);
+    final Future<Map<String, dynamic>> successfulMessage = getProfile(widget.token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         User user = User.fromJson(response['user']);
@@ -39,7 +38,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
           _user = user;
         });
 
-        List<dynamic> post  = (response['posts']);
+        List<dynamic> post = (response['posts']);
         setState(() {
           _post = post;
         });
@@ -63,8 +62,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -121,8 +119,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   if (_user.communities?.length != 0) ...[
                     if ((_user.communities?.length ?? 0) < 5) ...[
                       Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, top: 5.0),
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
                         child: ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
@@ -130,16 +127,14 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                           itemBuilder: (context, index) {
                             return ListTile(
                               tileColor: colors[index % colors.length],
-                              title: Text(_user.communities![index][0]
-                                  ['communityName']),
+                              title: Text(_user.communities![index][0]['communityName']),
                             );
                           },
                         ),
                       ),
                     ] else ...[
                       Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, top: 5.0),
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
                         child: ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
@@ -147,8 +142,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                           itemBuilder: (context, index) {
                             return ListTile(
                               tileColor: colors[index % colors.length],
-                              title: Text(_user.communities![index][0]
-                                  ['communityName']),
+                              title: Text(_user.communities![index][0]['communityName']),
                             );
                           },
                         ),
@@ -170,23 +164,22 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                     content: SizedBox(
                                       height: 300,
                                       width: 300,
-                                      child: Scrollbar( 
+                                      child: Scrollbar(
                                         thumbVisibility: true,
                                         controller: _scrollController,
                                         child: ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        controller: _scrollController,
-                                        shrinkWrap: true,
-                                        itemCount: _user.communities?.length,
-                                        itemBuilder: (context, index) {
-                                          return Material (
+                                          scrollDirection: Axis.vertical,
+                                          controller: _scrollController,
+                                          shrinkWrap: true,
+                                          itemCount: _user.communities?.length,
+                                          itemBuilder: (context, index) {
+                                            return Material(
                                               child: ListTile(
-                                              tileColor: colors[index % colors.length],
-                                              title: Text(_user.communities![index][0]
-                                                  ['communityName']),
-                                            ),
-                                          );
-                                        },
+                                                tileColor: colors[index % colors.length],
+                                                title: Text(_user.communities![index][0]['communityName']),
+                                              ),
+                                            );
+                                          },
                                         ),
                                       ),
                                     ),
@@ -202,7 +195,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                               },
                               child: const Text(
                                 "Show More",
-                                  style: TextStyle(
+                                style: TextStyle(
                                   decoration: TextDecoration.underline,
                                   color: Colors.blue,
                                   fontSize: 15.0,
@@ -217,16 +210,14 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                     ],
                   ] else ...[
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: 1,
                         itemBuilder: (context, index) {
                           return ListTile(
                             tileColor: colors[index % colors.length],
-                            title: const Text(
-                                'You are not part of a community, try joining one!'),
+                            title: const Text('You are not part of a community, try joining one!'),
                           );
                         },
                       ),
@@ -255,8 +246,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   // ignore: prefer_is_empty
                   if (_post.length != 0) ...[
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 15.0, right: 15.0, top: 5.0),
+                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
                       child: ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -271,16 +261,14 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                     ),
                   ] else ...[
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: 1,
                         itemBuilder: (context, index) {
                           return ListTile(
                             tileColor: colors[index % colors.length],
-                            title: const Text(
-                                'You haven\'t made a post, try making one first!'),
+                            title: const Text('You haven\'t made a post, try making one first!'),
                           );
                         },
                       ),
@@ -298,7 +286,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
         body: Center(
           child: Text(
             "We ran into an error trying to obtain your profile. \nPlease try again later.",
-            textAlign: TextAlign.center,),
+            textAlign: TextAlign.center,
+          ),
         ),
       );
     } else {

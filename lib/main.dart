@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_in.dart';
 import 'package:linear/auth_pages/sign_up.dart';
-import 'package:linear/pages/home_page.dart';
-import 'package:linear/pages/profile_page.dart';
-import 'package:linear/pages/search_page.dart';
-import 'package:linear/pages/community_page.dart';
-import 'package:linear/pages/create_community_page.dart';
+import 'package:linear/pages/home_page/home_page.dart';
+import 'package:linear/pages/profile_page/profile_page.dart';
+import 'package:linear/pages/search_page/search_page.dart';
+import 'package:linear/pages/community_page/community_page.dart';
+import 'package:linear/pages/search_page/create_community_page.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_preferences.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
-
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
