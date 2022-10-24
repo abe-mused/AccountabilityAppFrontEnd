@@ -3,7 +3,7 @@ import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:linear/pages/get_profile.dart';
+import 'package:linear/pages/profile_page/get_profile.dart';
 import 'package:linear/util/cognito/user_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -26,12 +26,8 @@ class ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
-        // setting option is added here on top of Profile page
         actions: <Widget>[
-          PopupMenuButton(
-              // add icon, by default "3 dot" icon
-              // icon: Icon(Icons.book)
-              itemBuilder: (context) {
+          PopupMenuButton(itemBuilder: (context) {
             return [
               const PopupMenuItem<int>(
                 value: 0,
@@ -63,8 +59,7 @@ class ProfilePageState extends State<ProfilePage> {
           }),
         ],
       ),
-      body: Center(
-          child: GetProfileWidget(token: user?.idToken ?? "INVALID TOKEN")),
+      body: Center(child: GetProfileWidget(token: user?.idToken ?? "INVALID TOKEN")),
       bottomNavigationBar: const LinearNavBar(),
     );
   }

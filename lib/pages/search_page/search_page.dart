@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
-import 'package:linear/pages/get_community.dart';
+import 'package:linear/pages/search_page/get_community.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +22,7 @@ class SearchPageState extends State<SearchPage> {
         title: const Text("Search Community"),
         elevation: 0.1,
       ),
-     body: Column(
+      body: Column(
         children: [
           const SizedBox(height: 20),
           GetCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),

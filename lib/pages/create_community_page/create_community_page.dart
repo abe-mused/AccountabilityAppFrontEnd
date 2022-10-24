@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
-import 'package:linear/pages/create_community.dart';
+import 'package:linear/pages/create_community_page/create_community.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
