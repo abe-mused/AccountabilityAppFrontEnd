@@ -12,7 +12,7 @@ class Community {
       creator: item['creator'],
       creationDate: item['creationDate'],
     );
-    if (item['dailyCheckIns'] == null) {
+    if (item['dailyCheckIns'] != null) {
       community.dailyCheckIns = item['dailyCheckIns'];
     }
     return community;

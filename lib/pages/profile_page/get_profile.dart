@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/user.dart';
-import 'package:linear/constants/apis.dart';
+import 'package:linear/util/apis.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 
 // ignore: must_be_immutable

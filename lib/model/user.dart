@@ -11,7 +11,6 @@ class User {
       name: item['name'],
       communities: item['communities'],
     );
-    
     return user;
   }
 }
