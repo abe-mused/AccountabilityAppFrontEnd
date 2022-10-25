@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/post.dart';
+import 'package:linear/pages/comment_page.dart';
 import 'package:linear/util/date_formatter.dart';
 
 class PostWidget extends StatelessWidget {
@@ -9,6 +10,8 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    dynamic postId, ownerId, mediaUrl;
+
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.9,
       child: Card(
@@ -24,7 +27,10 @@ class PostWidget extends StatelessWidget {
               ),
               Text(
                 "u/${post.creator}",
-                style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontFamily: 'MonteSerrat',
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
                 textAlign: TextAlign.left,
               ),
               Text(
@@ -42,7 +48,8 @@ class PostWidget extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 post.title,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 5),
@@ -51,10 +58,33 @@ class PostWidget extends StatelessWidget {
                 style: const TextStyle(fontSize: 12),
                 textAlign: TextAlign.center,
               ),
+              GestureDetector(
+                onTap: () => showComments(
+                  context,
+                  postId: postId,
+                  ownerId: ownerId,
+                  mediaUrl: mediaUrl,
+                ),
+                child: const Icon(
+                  Icons.chat,
+                  size: 20.0,
+                  color: Colors.blue,
+                ),
+              )
             ],
           ),
         ),
       ),
     );
   }
+}
+
+showComments(BuildContext context,
+    {required String postId,
+    required String ownerId,
+    required String mediaUrl}) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return CommentPage(
+        postId: postId, postOwnerId: ownerId, postMediaUrl: mediaUrl);
+  }));
 }
