@@ -24,7 +24,10 @@ class PostWidget extends StatelessWidget {
               ),
               Text(
                 "u/${post.creator}",
-                style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontFamily: 'MonteSerrat',
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
                 textAlign: TextAlign.left,
               ),
               Text(
@@ -42,7 +45,8 @@ class PostWidget extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 post.title,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 5),

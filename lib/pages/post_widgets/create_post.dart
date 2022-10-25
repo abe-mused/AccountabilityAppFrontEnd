@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:linear/util/apis.dart';
+import 'package:linear/pages/comment_page.dart';
 
 class CreatePostWidget extends StatefulWidget {
-  CreatePostWidget({super.key, required this.token, required this.communityName});
+  CreatePostWidget(
+      {super.key, required this.token, required this.communityName});
   String token;
   String communityName;
 
@@ -15,8 +17,11 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
   TextEditingController postTitleInput = TextEditingController();
 
   doCreatePost() {
-    final Future<Map<String, dynamic>> successfulMessage =
-        createPost(postTitleInput.text, postBodyInput.text, widget.communityName, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage = createPost(
+        postTitleInput.text,
+        postBodyInput.text,
+        widget.communityName,
+        widget.token);
 
     successfulMessage.then((response) {
       if (response['status'] == true) {
@@ -36,7 +41,8 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: const Text("An error occured while attempting to create the post."),
+                content: const Text(
+                    "An error occured while attempting to create the post."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -103,6 +109,12 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                     ),
                     hintText: "post body",
                   ),
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return const Comment();
+                    }));
+                  },
                 ),
               ),
               TextButton(
@@ -115,7 +127,8 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                           builder: (context) {
                             return AlertDialog(
                               title: const Text("Error!"),
-                              content: const Text("Please fill out all fields."),
+                              content:
+                                  const Text("Please fill out all fields."),
                               actions: [
                                 TextButton(
                                     onPressed: () {
