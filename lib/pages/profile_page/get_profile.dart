@@ -61,44 +61,54 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        // ignore: unnecessary_string_interpolations
-                        "${_user.name}",
-                        style: const TextStyle(
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      //add logOut button here: dropDown menu with logOut option
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.more_horiz,
-                          size: 30.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 30.0),
               ),
               UserIcon(radius: 100, username: _user.username),
               const Padding(
                 padding: EdgeInsets.only(bottom: 10.0),
               ),
               Text(
+                // ignore: unnecessary_string_interpolations
+                "${_user.name}",
+                style: const TextStyle(
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              Text(
                 "@${_user.username}",
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
-                  fontSize: 30.0,
+                  fontSize: 22.0,
                 ),
               ),
               const SizedBox(height: 20.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 15.0),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      //add logOut button here: dropDown menu with logOut option
+                      Text(
+                        "${_user.followers?.length ?? 0} Followers",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 22.0,
+                        ),
+                      ),
+                      Text(
+                        "${_user.following?.length ?? 0} Following",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 22.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: const [

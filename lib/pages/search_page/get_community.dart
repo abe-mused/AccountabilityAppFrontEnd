@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/community.dart';
+import 'package:linear/pages/community_page/community_page.dart';
 import 'package:linear/util/apis.dart';
+import 'package:linear/util/date_formatter.dart';
 
 // ignore: must_be_immutable
 class GetCommunityWidget extends StatefulWidget {
@@ -13,7 +15,7 @@ class GetCommunityWidget extends StatefulWidget {
 
 class _GetCommunityWidgetState extends State<GetCommunityWidget> {
   TextEditingController userInput = TextEditingController();
-  Community _community = Community(communityName: '', creationDate: 1, creator: '');
+  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
 
   doGetCommunity() {
     final Future<Map<String, dynamic>> successfulMessage = getCommunity(userInput.text, widget.token);
@@ -24,7 +26,7 @@ class _GetCommunityWidgetState extends State<GetCommunityWidget> {
           _community = community;
         });
       } else {
-        Community community = Community(communityName: '', creationDate: 1, creator: '');
+        Community community = Community(communityName: '', creationDate: 1, creator: '', members: []);
         setState(() {
           _community = community;
         });
@@ -81,44 +83,51 @@ class _GetCommunityWidgetState extends State<GetCommunityWidget> {
         ),
       ),
       if (_community.communityName != '')
-        Column(
-          children: <Widget>[
-            Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Colors.lightGreen,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text("c/${_community.communityName}", style: TextStyle(fontSize: 25)),
-                  Text("Created:${_community.creationDate}", style: TextStyle(fontSize: 25)),
-                  Text("Created by u/${_community.creator}", style: TextStyle(fontSize: 25)),
-                  const SizedBox(
-                    height: 10,
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.3,
+          width: MediaQuery.of(context).size.width,
+          child: Card(
+            margin: const EdgeInsets.only(top: 20.0),
+            child: Column(
+              children: <Widget>[
+                Text(
+                  "c/${_community.communityName}",
+                  style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Created on ${getFormattedDate(_community.creationDate)}",
+                  style: const TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  // ignore: unrelated_type_equality_checks
+                  "${_community.members.length} members",
+                  style: const TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CommunityPage(
+                          communityName: _community.communityName,
+                          token: widget.token,
+                        ),
+                      ),
+                    );
+                  },
+                  style: TextButton.styleFrom(
+                    primary: Colors.white,
+                    backgroundColor: Colors.blue,
                   ),
-                  Text(
-                    "Creation Date: ${_community.creationDate}",
-                    style: const TextStyle(fontSize: 24),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      Navigator.pushNamed(context, '/community', arguments: _community);
-                    },
-                    style: TextButton.styleFrom(
-                      primary: Colors.white,
-                      backgroundColor: Colors.blue,
-                    ),
-                    child: const Text("visit community"),
-                  ),
-                ],
-              ),
-            )
-          ],
+                  child: const Text("visit community"),
+                ),
+              ],
+            ),
+          ),
         ),
     ]);
   }

@@ -26,6 +26,7 @@ class ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
+        automaticallyImplyLeading: false,
         actions: <Widget>[
           PopupMenuButton(itemBuilder: (context) {
             return [

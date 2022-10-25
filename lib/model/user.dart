@@ -2,6 +2,8 @@ class User {
   String username;
   String name;
   List<dynamic>? communities;
+  List<dynamic>? following;
+  List<dynamic>? followers;
 
   User({required this.username, required this.name, required this.communities});
 
@@ -11,6 +13,8 @@ class User {
       name: item['name'],
       communities: item['communities'],
     );
+    user.followers = item['followers'] ?? [];
+    user.followers = item['following'] ?? [];
     return user;
   }
 }

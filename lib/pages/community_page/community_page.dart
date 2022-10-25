@@ -4,26 +4,52 @@ import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/post_widgets/create_post.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
+import 'package:linear/util/apis.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
+import 'package:linear/util/date_formatter.dart';
 import 'package:provider/provider.dart';
 
 class CommunityPage extends StatefulWidget {
-  const CommunityPage({Key? key}) : super(key: key);
+  CommunityPage({super.key, required this.communityName, required this.token});
+
+  String communityName;
+  String token;
 
   @override
   State<CommunityPage> createState() => CommunityPageState();
 }
 
 class CommunityPageState extends State<CommunityPage> {
+  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+  List<dynamic> _post = [];
+
+  @override
+  void initState() {
+    super.initState();
+    doGetCommunity();
+  }
+
+  doGetCommunity() {
+    final Future<Map<String, dynamic>> successfulMessage = getPostsForCommunity(widget.communityName, widget.token);
+    successfulMessage.then((response) {
+      if (response['status'] == true) {
+        Community community = Community.fromJson(response['community']);
+        print("ABE SAYS" + community.toString());
+        setState(() {
+          _community = community;
+        });
+
+        List<dynamic> post = (response['posts']);
+        setState(() {
+          _post = post;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    Community community = ModalRoute.of(context)!.settings.arguments as Community;
-
-    User? user = Provider.of<UserProvider>(context).user;
-
-    var token = user?.idToken ?? "INVALID_TOKEN";
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Community"),
@@ -41,12 +67,19 @@ class CommunityPageState extends State<CommunityPage> {
                 child: Column(
                   children: <Widget>[
                     Text(
-                      "c/${community.communityName}",
+                      "c/${_community.communityName}",
                       style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "created on ${DateTime.fromMillisecondsSinceEpoch(community.creationDate)}",
+                      "Created on ${getFormattedDate(_community.creationDate)}",
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      // ignore: unrelated_type_equality_checks
+                      "${_community.members.length} members",
                       style: const TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
@@ -55,18 +88,35 @@ class CommunityPageState extends State<CommunityPage> {
               ),
             ),
             const SizedBox(height: 10),
-            CreatePostWidget(token: token, communityName: community.communityName),
+            CreatePostWidget(token: widget.token, communityName: widget.communityName),
             const SizedBox(height: 10),
-            PostWidget(
-              post: Post(
-                communityName: community.communityName,
-                postId: "somePostId",
-                creator: "abe",
-                creationDate: 1666106193212,
-                title: "someTitle",
-                body: "someBody",
+            // ignore: prefer_is_empty
+            if ((_post.length) > 0) ...[
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: _post.length,
+                  itemBuilder: (context, index) {
+                    return PostWidget(
+                      post: Post(
+                        communityName: _post[index]['community'],
+                        postId: _post[index]['postId'],
+                        creator: _post[index]['creator'],
+                        creationDate: int.parse(_post[index]['creationDate']),
+                        title: _post[index]['title'],
+                        body: _post[index]['body'],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
+            ] else ...[
+              const Center(
+                child: Text("No posts yet"),
+              ),
+            ],
           ],
         ),
       ),

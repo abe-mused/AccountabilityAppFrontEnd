@@ -112,3 +112,36 @@ Future<Map<String, dynamic>> createPost(String postTitle, String postBody, Strin
     },
   );
 }
+
+Future<Map<String, dynamic>> getPostsForCommunity(String communityName, String token) async {
+  print("communityName is " + communityName);
+  var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community?communityName=$communityName';
+  try {
+    return await http.get(
+      Uri.parse(url),
+      headers: {
+        "Authorization": token,
+        "Content-Type": "application/json",
+      },
+    ).then((response) {
+      developer.log("Response status: ${response.statusCode}");
+      print("Response body postsForCommunity: ${response.body}");
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        var community = jsonResponse['community'];
+        var posts = jsonResponse['posts'];
+        return {
+          'status': true,
+          'message': 'Community Succesfully Found.',
+          'community': community,
+          'posts': posts,
+        };
+      }
+      return {'status': false, 'message': 'Community not found.'};
+    });
+  } catch (e) {
+    print(e);
+    print('Communuity[] is null');
+    return {'status': false, 'message': 'Community not found.'};
+  }
+}
