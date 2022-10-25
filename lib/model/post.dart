@@ -21,7 +21,7 @@ class Post {
 
   factory Post.fromJson(Map<String, dynamic> item) {
     Post post = Post(
-      communityName: item['communityName'],
+      communityName: item['community'],
       postId: item['postId'],
       creator: item['creator'],
       creationDate: item['creationDate'],
