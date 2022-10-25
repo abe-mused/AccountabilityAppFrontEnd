@@ -56,8 +56,8 @@ Future<Map<String, dynamic>> getCommunity(String communityName, String token) as
   }
 }
 
-Future<Map<String, dynamic>> getProfile(String token) async {
-  var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/profile';
+Future<Map<String, dynamic>> getProfile(String username, String token) async {
+  var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/profile?username=$username';
   try {
     return await http.get(
       Uri.parse(url),

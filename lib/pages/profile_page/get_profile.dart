@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:linear/model/user.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
+import 'package:linear/pages/community_page/community_page.dart';
+import 'package:linear/pages/post_widgets/post_widget.dart';
+import 'package:linear/model/post.dart';
+import 'package:linear/pages/profile_page/community_list.dart';
 
 // ignore: must_be_immutable
 class GetProfileWidget extends StatefulWidget {
-  GetProfileWidget({super.key, required this.token});
-  String token;
+  const GetProfileWidget({super.key, required this.token, required this.username});
+  final String token;
+  final String username;
 
   @override
   State<GetProfileWidget> createState() => _GetProfileWidgetState();
@@ -21,8 +26,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
   bool isLoading = true;
   bool isErrorFetchingUser = false;
 
-  List colors = [Colors.grey, const Color.fromARGB(17, 158, 158, 158)];
-
   @override
   void initState() {
     super.initState();
@@ -30,7 +33,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
   }
 
   getUser() {
-    final Future<Map<String, dynamic>> successfulMessage = getProfile(widget.token);
+    final Future<Map<String, dynamic>> successfulMessage =
+        getProfile(widget.username, widget.token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         User user = User.fromJson(response['user']);
@@ -85,7 +89,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
               ),
               const SizedBox(height: 20.0),
               Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 15.0),
+                padding: const EdgeInsets.only(
+                    left: 15.0, right: 15.0, top: 5.0, bottom: 15.0),
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -128,35 +133,13 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   // ignore: prefer_is_empty
                   if (_user.communities?.length != 0) ...[
                     if ((_user.communities?.length ?? 0) < 5) ...[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: _user.communities?.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              tileColor: colors[index % colors.length],
-                              title: Text(_user.communities![index][0]['communityName']),
-                            );
-                          },
-                        ),
-                      ),
+                      CommunityListWidget(
+                          user: _user,
+                          communityLength: _user.communities?.length,
+                          token: widget.token),
                     ] else ...[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              tileColor: colors[index % colors.length],
-                              title: Text(_user.communities![index][0]['communityName']),
-                            );
-                          },
-                        ),
-                      ),
+                      CommunityListWidget(
+                          user: _user, communityLength: 5, token: widget.token),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -184,9 +167,54 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                           itemCount: _user.communities?.length,
                                           itemBuilder: (context, index) {
                                             return Material(
-                                              child: ListTile(
-                                                tileColor: colors[index % colors.length],
-                                                title: Text(_user.communities![index][0]['communityName']),
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.9,
+                                                child: Card(
+                                                  margin: const EdgeInsets.only(
+                                                      top: 10.0,
+                                                      left: 5.0,
+                                                      right: 5.0),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5.0),
+                                                    child: Column(
+                                                      children: <Widget>[
+                                                        TextButton(
+                                                            onPressed: () {
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          CommunityPage(
+                                                                    communityName:
+                                                                        _user.communities![index][0]
+                                                                            [
+                                                                            'communityName'],
+                                                                    token: widget
+                                                                        .token,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                            child: Text(
+                                                              "c/${_user.communities![index][0]['communityName']}",
+                                                              style: const TextStyle(
+                                                                  fontFamily:
+                                                                      'MonteSerrat',
+                                                                  fontSize: 16),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left,
+                                                            )),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                             );
                                           },
@@ -219,19 +247,11 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                       ),
                     ],
                   ] else ...[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: 1,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            tileColor: colors[index % colors.length],
-                            title: const Text('You are not part of a community, try joining one!'),
-                          );
-                        },
-                      ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                        child: Text(
+                            '${_user.username} is not part of a community!')),
                   ],
                 ],
               ),
@@ -256,33 +276,32 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   // ignore: prefer_is_empty
                   if (_post.length != 0) ...[
                     Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                      padding: const EdgeInsets.only(
+                          left: 15.0, right: 15.0, top: 5.0),
                       child: ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: _post.length,
                         itemBuilder: (context, index) {
-                          return ListTile(
-                            tileColor: colors[index % colors.length],
-                            title: Text(_post[index]['title']),
+                          return PostWidget(
+                            post: Post(
+                              communityName: _post[index]['community'],
+                              postId: _post[index]['postId'],
+                              creator: _post[index]['creator'],
+                              creationDate:
+                                  int.parse(_post[index]['creationDate']),
+                              title: _post[index]['title'],
+                              body: _post[index]['body'],
+                            ),
                           );
                         },
                       ),
                     ),
                   ] else ...[
                     Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: 1,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            tileColor: colors[index % colors.length],
-                            title: const Text('You haven\'t made a post, try making one first!'),
-                          );
-                        },
-                      ),
-                    ),
+                        padding: const EdgeInsets.only(
+                            left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                        child: Text('${_user.name} hasn\'t made a post!')),
                   ],
                 ],
               ),
@@ -295,7 +314,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
       return const Scaffold(
         body: Center(
           child: Text(
-            "We ran into an error trying to obtain your profile. \nPlease try again later.",
+            "We ran into an error trying to obtain the profile. \nPlease try again later.",
             textAlign: TextAlign.center,
           ),
         ),
