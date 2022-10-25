@@ -21,8 +21,12 @@ class CommunityPage extends StatefulWidget {
 }
 
 class CommunityPageState extends State<CommunityPage> {
-  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+  Community _community =
+      Community(communityName: '', creationDate: 1, creator: '', members: []);
   List<dynamic> _post = [];
+
+  User? user = UserProvider().user;
+  List<dynamic> _likedPosts = [];
 
   @override
   void initState() {
@@ -31,7 +35,8 @@ class CommunityPageState extends State<CommunityPage> {
   }
 
   doGetCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage = getPostsForCommunity(widget.communityName, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage =
+        getPostsForCommunity(widget.communityName, widget.token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         Community community = Community.fromJson(response['community']);
@@ -44,12 +49,24 @@ class CommunityPageState extends State<CommunityPage> {
         setState(() {
           _post = post;
         });
+
+        if (_post.isNotEmpty) {
+          List<dynamic> likedPosts = [];
+          for (var i = 0; i < _post.length; i++) {
+            likedPosts.add(_post[i]['likes'].contains(user!.username));
+          }
+          setState(() {
+            _likedPosts = likedPosts;
+          });
+        }
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<UserProvider>(context).user;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Community"),
@@ -68,7 +85,10 @@ class CommunityPageState extends State<CommunityPage> {
                   children: <Widget>[
                     Text(
                       "c/${_community.communityName}",
-                      style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontFamily: 'MonteSerrat',
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -88,18 +108,27 @@ class CommunityPageState extends State<CommunityPage> {
               ),
             ),
             const SizedBox(height: 10),
-            CreatePostWidget(token: widget.token, communityName: widget.communityName),
+            CreatePostWidget(
+                token: widget.token, communityName: widget.communityName),
             const SizedBox(height: 10),
             // ignore: prefer_is_empty
             if ((_post.length) > 0) ...[
               Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                padding:
+                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
                 child: ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: _post.length,
                   itemBuilder: (context, index) {
                     return PostWidget(
+                      liked: _likedPosts[index],
+                      onLike: () {
+                        setState(() {
+                          _likedPosts[index] = !_likedPosts[index];
+                        });
+                      },
+                      token: widget.token,
                       post: Post(
                         communityName: _post[index]['community'],
                         postId: _post[index]['postId'],
@@ -107,6 +136,7 @@ class CommunityPageState extends State<CommunityPage> {
                         creationDate: int.parse(_post[index]['creationDate']),
                         title: _post[index]['title'],
                         body: _post[index]['body'],
+                        likes: _post[index]['likes'],
                       ),
                     );
                   },

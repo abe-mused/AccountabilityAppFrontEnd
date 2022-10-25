@@ -1,3 +1,4 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:linear/model/user.dart';
 import 'package:linear/util/apis.dart';
@@ -6,10 +7,14 @@ import 'package:linear/pages/community_page/community_page.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/profile_page/community_list.dart';
+import 'package:linear/util/cognito/user_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:linear/util/cognito/user.dart' as cognito_user;
 
 // ignore: must_be_immutable
 class GetProfileWidget extends StatefulWidget {
-  const GetProfileWidget({super.key, required this.token, required this.username});
+  const GetProfileWidget(
+      {super.key, required this.token, required this.username});
   final String token;
   final String username;
 
@@ -18,8 +23,10 @@ class GetProfileWidget extends StatefulWidget {
 }
 
 class _GetProfileWidgetState extends State<GetProfileWidget> {
-  User _user = User(username: '', name: '', communities: []);
+  User _viewUser = User(username: '', name: '', communities: []);
+  cognito_user.User? user = UserProvider().user;
   List<dynamic> _post = [];
+  List<dynamic> _likedPosts = [];
 
   final ScrollController _scrollController = ScrollController();
 
@@ -39,7 +46,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
       if (response['status'] == true) {
         User user = User.fromJson(response['user']);
         setState(() {
-          _user = user;
+          _viewUser = user;
         });
 
         List<dynamic> post = (response['posts']);
@@ -49,6 +56,17 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
         setState(() {
           isLoading = false;
         });
+
+        if (_post.isNotEmpty) {
+          List<dynamic> likedPosts = [];
+          for (var i = 0; i < _post.length; i++) {
+            likedPosts.add(_post[i]['likes'].contains(user.username));
+            print(likedPosts[i]);
+          }
+          setState(() {
+            _likedPosts = likedPosts;
+          });
+        }
       } else {
         setState(() {
           isLoading = false;
@@ -60,6 +78,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<UserProvider>(context).user;
+
     if (isLoading == false && isErrorFetchingUser == false) {
       return Scaffold(
         body: SingleChildScrollView(
@@ -68,20 +88,20 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
               const Padding(
                 padding: EdgeInsets.only(bottom: 30.0),
               ),
-              UserIcon(radius: 100, username: _user.username),
+              UserIcon(radius: 100, username: _viewUser.username),
               const Padding(
                 padding: EdgeInsets.only(bottom: 10.0),
               ),
               Text(
                 // ignore: unnecessary_string_interpolations
-                "${_user.name}",
+                "${_viewUser.name}",
                 style: const TextStyle(
                   fontSize: 30.0,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               Text(
-                "@${_user.username}",
+                "@${_viewUser.username}",
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 22.0,
@@ -97,14 +117,14 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                     children: [
                       //add logOut button here: dropDown menu with logOut option
                       Text(
-                        "${_user.followers?.length ?? 0} Followers",
+                        "${_viewUser.followers?.length ?? 0} Followers",
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 22.0,
                         ),
                       ),
                       Text(
-                        "${_user.following?.length ?? 0} Following",
+                        "${_viewUser.following?.length ?? 0} Following",
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 22.0,
@@ -131,15 +151,17 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
               Column(
                 children: [
                   // ignore: prefer_is_empty
-                  if (_user.communities?.length != 0) ...[
-                    if ((_user.communities?.length ?? 0) < 5) ...[
+                  if (_viewUser.communities?.length != 0) ...[
+                    if ((_viewUser.communities?.length ?? 0) < 5) ...[
                       CommunityListWidget(
-                          user: _user,
-                          communityLength: _user.communities?.length,
+                          user: _viewUser,
+                          communityLength: _viewUser.communities?.length,
                           token: widget.token),
                     ] else ...[
                       CommunityListWidget(
-                          user: _user, communityLength: 5, token: widget.token),
+                          user: _viewUser,
+                          communityLength: 5,
+                          token: widget.token),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -164,7 +186,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                           scrollDirection: Axis.vertical,
                                           controller: _scrollController,
                                           shrinkWrap: true,
-                                          itemCount: _user.communities?.length,
+                                          itemCount:
+                                              _viewUser.communities?.length,
                                           itemBuilder: (context, index) {
                                             return Material(
                                               child: SizedBox(
@@ -192,7 +215,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                                                       (context) =>
                                                                           CommunityPage(
                                                                     communityName:
-                                                                        _user.communities![index][0]
+                                                                        _viewUser.communities![index][0]
                                                                             [
                                                                             'communityName'],
                                                                     token: widget
@@ -202,7 +225,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                                               );
                                                             },
                                                             child: Text(
-                                                              "c/${_user.communities![index][0]['communityName']}",
+                                                              "c/${_viewUser.communities![index][0]['communityName']}",
                                                               style: const TextStyle(
                                                                   fontFamily:
                                                                       'MonteSerrat',
@@ -247,11 +270,11 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                       ),
                     ],
                   ] else ...[
-                      Padding(
+                    Padding(
                         padding: const EdgeInsets.only(
                             left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
                         child: Text(
-                            '${_user.username} is not part of a community!')),
+                            '${_viewUser.username} is not part of a community!')),
                   ],
                 ],
               ),
@@ -284,6 +307,13 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                         itemCount: _post.length,
                         itemBuilder: (context, index) {
                           return PostWidget(
+                            liked: _likedPosts[index],
+                            onLike: () {
+                              setState(() {
+                                _likedPosts[index] = !_likedPosts[index];
+                              });
+                            },
+                            token: widget.token,
                             post: Post(
                               communityName: _post[index]['community'],
                               postId: _post[index]['postId'],
@@ -292,6 +322,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                   int.parse(_post[index]['creationDate']),
                               title: _post[index]['title'],
                               body: _post[index]['body'],
+                              likes: _post[index]['likes'],
                             ),
                           );
                         },
@@ -301,7 +332,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                     Padding(
                         padding: const EdgeInsets.only(
                             left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-                        child: Text('${_user.name} hasn\'t made a post!')),
+                        child: Text('${_viewUser.name} hasn\'t made a post!')),
                   ],
                 ],
               ),
