@@ -9,6 +9,7 @@ import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:linear/util/date_formatter.dart';
 import 'package:provider/provider.dart';
+import 'package:linear/pages/community_page/join_leave_community.dart';
 
 class CommunityPage extends StatefulWidget {
   CommunityPage({super.key, required this.communityName, required this.token});
@@ -23,6 +24,9 @@ class CommunityPage extends StatefulWidget {
 class CommunityPageState extends State<CommunityPage> {
   Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
   List<dynamic> _post = [];
+  
+  var buttonTextJoin = "Join";
+  var buttonTextJoined = "Joined";
 
   @override
   void initState() {
@@ -82,6 +86,17 @@ class CommunityPageState extends State<CommunityPage> {
                       "${_community.members.length} members",
                       style: const TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
+                    ),
+                     const SizedBox(height: 10),
+                    ElevatedButton(
+                     onPressed: () {
+                       //JoinLeaveCommunityWidget(token: widget.token, communityName: widget.communityName);
+                       joinAndLeave(widget.communityName, widget.token);
+                       setState(() {
+                        buttonTextJoined = "Joined";
+                      });
+                      },
+                      child: Text(buttonTextJoin)
                     ),
                   ],
                 ),
