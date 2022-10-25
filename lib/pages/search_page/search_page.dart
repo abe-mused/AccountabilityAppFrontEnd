@@ -23,17 +23,21 @@ class SearchPageState extends State<SearchPage> {
         elevation: 0.1,
         automaticallyImplyLeading: false,
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          GetCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),
-          TextButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/createCommunity');
-            },
-            child: const Text("Can't find a community? Create a community here!"),
-          ),
-        ],
+      body: SingleChildScrollView(
+        // removes bottom overflow pixel error
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            GetCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/createCommunity');
+              },
+              child: const Text("Can't find a community? Create a community here!"),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: const LinearNavBar(),
     );

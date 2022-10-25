@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/post.dart';
+import 'package:linear/util/date_formatter.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({super.key, required this.post});
@@ -9,7 +10,6 @@ class PostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      // height: MediaQuery.of(context).size.height * 0.2,
       width: MediaQuery.of(context).size.width * 0.9,
       child: Card(
         margin: const EdgeInsets.only(top: 20.0),
@@ -28,7 +28,7 @@ class PostWidget extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
               Text(
-                "created on ${DateTime.fromMillisecondsSinceEpoch(post.creationDate)}",
+                "Created on ${getFormattedDate(post.creationDate)}",
                 style: const TextStyle(fontSize: 12),
                 textAlign: TextAlign.center,
               ),
