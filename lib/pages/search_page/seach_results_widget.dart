@@ -1,35 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/community.dart';
+import 'package:linear/model/user.dart';
 import 'package:linear/pages/community_page/community_page.dart';
-import 'package:linear/util/apis.dart';
+import 'package:linear/pages/profile_page/get_profile.dart';
+import 'package:linear/util/apis.dart' as API;
 import 'package:linear/util/date_formatter.dart';
 
 // ignore: must_be_immutable
-class GetCommunityWidget extends StatefulWidget {
-  GetCommunityWidget({super.key, required this.token});
+class SearchResultWidget extends StatefulWidget {
+  SearchResultWidget({super.key, required this.token});
   String token;
 
   @override
-  State<GetCommunityWidget> createState() => _GetCommunityWidgetState();
+  State<SearchResultWidget> createState() => _SearchResultWidgetState();
 }
 
-class _GetCommunityWidgetState extends State<GetCommunityWidget> {
+class _SearchResultWidgetState extends State<SearchResultWidget> {
   TextEditingController userInput = TextEditingController();
   Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+  User _user = User(username: '', name: '', communities: []);
 
-  doGetCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage = getCommunity(userInput.text, widget.token);
-    successfulMessage.then((response) {
+  getSearchResults() {
+    final Future<Map<String, dynamic>> apiResponse = API.getSearchResults(userInput.text, widget.token);
+    apiResponse.then((response) {
       if (response['status'] == true) {
-        Community community = Community.fromJson(response['community']);
-        setState(() {
-          _community = community;
-        });
+        // print("ABE SAYS: " + response['searchResults'].toString());
+        if (response['searchResults']['communities'][0] != null) {
+          print("COMMUNIT IS: " + response['searchResults']['communities'][0].toString());
+
+          Community community = Community.fromJson(response['searchResults']['communities'][0]);
+          print("objectobjectobject");
+          setState(() {
+            _community = community;
+          });
+        }
+        if (response['searchResults']['users'][0] != null) {
+          User user = User.fromJson(response['searchResults']['users'][0]);
+          setState(() {
+            _user = user;
+          });
+        }
       } else {
-        Community community = Community(communityName: '', creationDate: 1, creator: '', members: []);
-        setState(() {
-          _community = community;
-        });
         showDialog(
             context: context,
             builder: (context) {
@@ -68,12 +79,11 @@ class _GetCommunityWidgetState extends State<GetCommunityWidget> {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5.0),
             ),
-            hintText: "Search for a Community:",
+            hintText: "Search for something...",
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
               onPressed: () async {
-                //add name to db using the new_community_name variable
-                doGetCommunity();
+                getSearchResults();
               },
               style: IconButton.styleFrom(
                 backgroundColor: Colors.blue,
@@ -83,6 +93,11 @@ class _GetCommunityWidgetState extends State<GetCommunityWidget> {
         ),
       ),
       if (_community.communityName != '')
+        const Text(
+          "communities:",
+          style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      if (_community.communityName != '')
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.3,
           width: MediaQuery.of(context).size.width,
@@ -90,6 +105,7 @@ class _GetCommunityWidgetState extends State<GetCommunityWidget> {
             margin: const EdgeInsets.only(top: 20.0),
             child: Column(
               children: <Widget>[
+                const SizedBox(height: 10),
                 Text(
                   "c/${_community.communityName}",
                   style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
@@ -125,10 +141,33 @@ class _GetCommunityWidgetState extends State<GetCommunityWidget> {
                   ),
                   child: const Text("visit community"),
                 ),
+                const SizedBox(height: 10),
               ],
             ),
           ),
         ),
+      const SizedBox(height: 20),
+      if (_user.username != '')
+        const Text(
+          "Users:",
+          style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      if (_user.username != '')
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Card(
+            child: TextButton(
+              onPressed: () {
+                // TODO: Add push to user page once Tavir pushes his code
+              },
+              child: Text(
+                "u/${_user.username}",
+                style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ),
+      const SizedBox(height: 10),
     ]);
   }
 }
