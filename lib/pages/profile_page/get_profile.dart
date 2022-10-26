@@ -27,6 +27,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
   cognito_user.User? user = UserProvider().user;
   List<dynamic> _post = [];
   List<dynamic> _likedPosts = [];
+  String followButtonText = " ";
+  String secondaryFollowButtonText = " ";
 
   final ScrollController _scrollController = ScrollController();
 
@@ -76,9 +78,28 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
     });
   }
 
+    statusFollow(){
+    var isFollowing = 0;
+    
+    if(_viewUser.followers!=null){
+      for (var i = 0; i < _viewUser.followers!.length; i++) {
+          if(_viewUser.followers![i].contains(user!.username)){
+          followButtonText = "Following";
+          secondaryFollowButtonText = "Follow";
+          isFollowing = 1; 
+        }
+      }
+    }
+    if(isFollowing != 1){
+    followButtonText = "Follow";
+    secondaryFollowButtonText = "Following";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserProvider>(context).user;
+    statusFollow();
 
     if (isLoading == false && isErrorFetchingUser == false) {
       return Scaffold(
@@ -100,6 +121,15 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   fontWeight: FontWeight.w900,
                 ),
               ),
+              ElevatedButton(
+                      onPressed: () {
+                        followAndUnfollow(widget.username, widget.token);
+                        setState(() {
+                         followButtonText = secondaryFollowButtonText;
+                       });
+                       },
+                       child: Text(followButtonText)
+                     ),
               Text(
                 "@${_viewUser.username}",
                 style: const TextStyle(

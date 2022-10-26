@@ -27,6 +27,8 @@ class CommunityPageState extends State<CommunityPage> {
 
   User? user = UserProvider().user;
   List<dynamic> _likedPosts = [];
+  String joinButtonText = " ";
+  String secondaryJoinButtonText = " ";
 
   @override
   void initState() {
@@ -63,9 +65,26 @@ class CommunityPageState extends State<CommunityPage> {
     });
   }
 
+  statusMember(){
+    var isMember = 0;
+    for (var i = 0; i < _community.members.length; i++) {
+      if(_community.members[i].contains(user!.username)){
+        joinButtonText = "Joined";
+        secondaryJoinButtonText = "Join";
+        isMember = 1;
+        
+      }
+    }
+    if(isMember != 1){
+    joinButtonText = "Join";
+    secondaryJoinButtonText = "Joined";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserProvider>(context).user;
+     statusMember();
 
     return Scaffold(
       appBar: AppBar(
@@ -103,6 +122,17 @@ class CommunityPageState extends State<CommunityPage> {
                       style: const TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
+                    const SizedBox(height: 10),
+                      ElevatedButton(
+                      onPressed: () {
+                         setState(() {
+                         joinButtonText = secondaryJoinButtonText;
+                       });
+                        joinAndLeave(widget.communityName, widget.token);
+                       
+                       },
+                       child: Text(joinButtonText)
+                     ),
                   ],
                 ),
               ),
