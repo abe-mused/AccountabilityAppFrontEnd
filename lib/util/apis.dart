@@ -2,8 +2,10 @@ import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-Future<Map<String, dynamic>> postCommunity(String communityName, String token) async {
-  const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community';
+Future<Map<String, dynamic>> postCommunity(
+    String communityName, String token) async {
+  const url =
+      'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community';
   return await http.post(
     Uri.parse(url),
     body: jsonEncode({
@@ -21,14 +23,20 @@ Future<Map<String, dynamic>> postCommunity(String communityName, String token) a
         print("Success!");
         return {'status': true, 'message': 'Community Succesfully Created.'};
       } else {
-        return {'status': false, 'message': 'An error occurred while creating the community, please try again.'};
+        return {
+          'status': false,
+          'message':
+              'An error occurred while creating the community, please try again.'
+        };
       }
     },
   );
 }
 
-Future<Map<String, dynamic>> getCommunity(String communityName, String token) async {
-  var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/search?communityName=$communityName';
+Future<Map<String, dynamic>> getCommunity(
+    String communityName, String token) async {
+  var url =
+      'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/search?searchTerm=$communityName';
   try {
     return await http.get(
       Uri.parse(url),
@@ -41,10 +49,14 @@ Future<Map<String, dynamic>> getCommunity(String communityName, String token) as
       print("Response body: ${response.body}");
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        var community = jsonResponse['community'];
+        var community = jsonResponse['communities'];
         if (community != null && community[0] != null) {
           print("Success!: ${community[0]}");
-          return {'status': true, 'message': 'Community Succesfully Found.', 'community': community[0]};
+          return {
+            'status': true,
+            'message': 'Community Succesfully Found.',
+            'community': community[0]
+          };
         }
       }
       return {'status': false, 'message': 'Community not found.'};
@@ -57,7 +69,8 @@ Future<Map<String, dynamic>> getCommunity(String communityName, String token) as
 }
 
 Future<Map<String, dynamic>> getProfile(String token) async {
-  var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/profile';
+  var url =
+      'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/profile';
   try {
     return await http.get(
       Uri.parse(url),
@@ -74,7 +87,12 @@ Future<Map<String, dynamic>> getProfile(String token) async {
         var posts = jsonResponse['posts'];
         if (user != null) {
           print("Success!: $user");
-          return {'status': true, 'message': 'User Succesfully Found.', 'user': user, 'posts': posts};
+          return {
+            'status': true,
+            'message': 'User Succesfully Found.',
+            'user': user,
+            'posts': posts
+          };
         }
       }
       return {'status': false, 'message': 'User not found.'};
@@ -86,8 +104,10 @@ Future<Map<String, dynamic>> getProfile(String token) async {
   }
 }
 
-Future<Map<String, dynamic>> createPost(String postTitle, String postBody, String communityName, String token) async {
-  const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post';
+Future<Map<String, dynamic>> createPost(String postTitle, String postBody,
+    String communityName, String token) async {
+  const url =
+      'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post';
   return await http.post(
     Uri.parse(url),
     body: jsonEncode({
@@ -107,15 +127,56 @@ Future<Map<String, dynamic>> createPost(String postTitle, String postBody, Strin
         print("Success!");
         return {'status': true, 'message': 'Post Succesfully Created.'};
       } else {
-        return {'status': false, 'message': 'An error occurred while creating the post, please try again.'};
+        return {
+          'status': false,
+          'message':
+              'An error occurred while creating the post, please try again.'
+        };
+<<<<<<< Updated upstream
       }
     },
   );
 }
 
-Future<Map<String, dynamic>> getPostsForCommunity(String communityName, String token) async {
+Future<Map<String, dynamic>> createComment(
+    String postId, String commentBody, String token) async {
+  const url =
+      'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/comment';
+  return await http.post(
+    Uri.parse(url),
+    body: jsonEncode({
+      "postId": postId,
+      "commentBody": commentBody,
+    }),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  ).then(
+    (response) {
+      developer.log("Response status: ${response.statusCode}");
+      print("Response body create post: ${response.body}");
+      if (response.statusCode == 200) {
+        print("Success!");
+        return {'status': true, 'message': 'Comment Succesfully Created.'};
+      } else {
+        return {
+          'status': false,
+          'message':
+              'An error occurred while creating the comment, please try again.'
+        };
+=======
+>>>>>>> Stashed changes
+      }
+    },
+  );
+}
+
+Future<Map<String, dynamic>> getPostsForCommunity(
+    String communityName, String token) async {
   print("communityName is " + communityName);
-  var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community?communityName=$communityName';
+  var url =
+      'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community?communityName=$communityName';
   try {
     return await http.get(
       Uri.parse(url),
