@@ -6,7 +6,7 @@ class Post {
   String title;
   String body;
   List<String>? comments;
-  List<String>? likes;
+  List<dynamic>? likes;
 
   Post({
     required this.communityName,
