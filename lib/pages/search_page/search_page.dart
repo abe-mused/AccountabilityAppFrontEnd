@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
-import 'package:linear/pages/search_page/get_community.dart';
+import 'package:linear/pages/search_page/seach_results_widget.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +19,7 @@ class SearchPageState extends State<SearchPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Search Community"),
+        title: const Text("Search"),
         elevation: 0.1,
         automaticallyImplyLeading: false,
       ),
@@ -29,7 +29,7 @@ class SearchPageState extends State<SearchPage> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            GetCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),
+            SearchResultWidget(token: user?.idToken ?? "INVALID TOKEN"),
             TextButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/createCommunity');
