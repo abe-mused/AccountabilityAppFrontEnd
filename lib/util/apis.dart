@@ -168,3 +168,56 @@ Future<Map<String, dynamic>> getPostsForCommunity(String communityName, String t
     return {'status': false, 'message': 'Community not found.'};
   }
 }
+
+Future<Map<String, dynamic>> joinAndLeave(String communityName, String token) async {
+   print("Anabelle says communityName is " + communityName);
+   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/join?communityName=$communityName';
+   return await http.patch(
+     Uri.parse(url),
+     body: jsonEncode({
+       "communityName": communityName,
+     }),
+     headers: {
+       "Authorization": token,
+       "Content-Type": "application/json",
+     },
+   ).then(
+     (response) {
+       developer.log("Response status: ${response.statusCode}");
+       print("Response body: ${response.body}");
+       if (response.statusCode == 200) {
+         print("Success!");
+         return {'status': true, 'message': 'Community joined/left'};
+       } else {
+         return {'status': false, 'message': 'An error occurred while joining/leaving, please try again.'};
+       }
+     },
+   );
+ }
+
+ Future<Map<String, dynamic>> followAndUnfollow(String otherUser, String token) async {
+   print("Anabelle says otherUser is " + otherUser);
+   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/follow?otherUser=$otherUser';
+   return await http.patch(
+     Uri.parse(url),
+     body: jsonEncode({
+       "otherUser": otherUser,
+     }),
+     headers: {
+       "Authorization": token,
+       "Content-Type": "application/json",
+     },
+   ).then(
+     (response) {
+       developer.log("Response status: ${response.statusCode}");
+       print("Response body: ${response.body}");
+       if (response.statusCode == 200) {
+         print("Success!");
+         return {'status': true, 'message': 'User followed/unfollowed'};
+       } else {
+         return {'status': false, 'message': 'An error occurred while following/unfollowing, please try again.'};
+       }
+     },
+   );
+ }
+
