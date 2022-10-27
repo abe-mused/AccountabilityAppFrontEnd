@@ -1,39 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:linear/util/apis.dart';
 
-class CreatePostWidget extends StatefulWidget {
-  CreatePostWidget({super.key, required this.token, required this.communityName});
+class CreateCommentWidget extends StatefulWidget {
+  CreateCommentWidget({super.key, required this.token, required this.postId});
   String token;
-  String communityName;
+  String postId;
 
   @override
-  State<CreatePostWidget> createState() => _CreatePostWidgetState();
+  State<CreateCommentWidget> createState() => _CreateCommentWidgetState();
 }
 
-class _CreatePostWidgetState extends State<CreatePostWidget> {
-  TextEditingController postBodyInput = TextEditingController();
-  TextEditingController postTitleInput = TextEditingController();
+class _CreateCommentWidgetState extends State<CreateCommentWidget> {
+  TextEditingController commentBodyInput = TextEditingController();
 
-  bool _isCreatingPost = false;
+  bool _isCreatingComment = false;
 
-  doCreatePost() {
+  doCreateComment() {
     setState(() {
-      _isCreatingPost = true;
+      _isCreatingComment = true;
     });
 
-    final Future<Map<String, dynamic>> successfulMessage =
-        createPost(postTitleInput.text, postBodyInput.text, widget.communityName, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage = createComment(commentBodyInput.text, widget.postId, widget.token);
 
     successfulMessage.then((response) {
       if (response['status'] == true) {
-        postBodyInput.clear();
-        postTitleInput.clear();
+        commentBodyInput.clear();
         showDialog(
             context: context,
             builder: (context) {
               return const AlertDialog(
                 title: Text("Success!"),
-                content: Text("Post succesfully Created."),
+                content: Text("Comment succesfully Created."),
               );
             });
       } else {
@@ -42,7 +39,7 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: const Text("An error occured while attempting to create the post."),
+                content: const Text("An error occured while attempting to create the Comment."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -54,14 +51,14 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
             });
       }
       setState(() {
-        _isCreatingPost = false;
+        _isCreatingComment = false;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isCreatingPost) {
+    if (_isCreatingComment) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -74,14 +71,14 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              Text(
-                "post something in c/${widget.communityName}!",
+              const Text(
+                "create a comment!",
                 style: const TextStyle(fontSize: 24),
               ),
               Container(
                 margin: const EdgeInsets.all(10),
                 child: TextFormField(
-                  controller: postTitleInput,
+                  controller: commentBodyInput,
                   style: const TextStyle(
                     fontSize: 20,
                   ),
@@ -94,34 +91,14 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    hintText: "post title",
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: postBodyInput,
-                  style: const TextStyle(
-                    fontSize: 20,
-                  ),
-                  onChanged: (value) {
-                    setState(() {});
-                  },
-                  decoration: InputDecoration(
-                    focusColor: Colors.white,
-                    fillColor: Colors.grey,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    hintText: "post body",
+                    hintText: "comment body",
                   ),
                 ),
               ),
               TextButton(
                 onPressed: () async {
-                  if (postTitleInput.text != '' && postBodyInput.text != '') {
-                    doCreatePost();
+                  if (commentBodyInput.text != '') {
+                    doCreateComment();
                   } else {
                     showDialog(
                         context: context,
@@ -144,7 +121,7 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                   backgroundColor: Colors.blue,
                   onSurface: Colors.grey,
                 ),
-                child: const Text("create post"),
+                child: const Text("create comment"),
               ),
             ],
           ),
