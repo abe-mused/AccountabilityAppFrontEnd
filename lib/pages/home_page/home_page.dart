@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
+import 'package:linear/pages/home_page/home_page_content.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -31,19 +32,11 @@ class _HomePageState extends State<HomePage> {
         elevation: 0.1,
         automaticallyImplyLeading: false,
       ),
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 30,
-          ),
-          Center(
-            child: Text(
-              "Hello ${user?.name}",
-              style: const TextStyle(fontSize: 30),
-            ),
-          ),
-          const SizedBox(height: 20),
-        ],
+      body: Center(
+        child: HomePageContent(
+          token: user!.idToken,
+          username: user.username,
+        ),
       ),
       bottomNavigationBar: const LinearNavBar(),
     );
