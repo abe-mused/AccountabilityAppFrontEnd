@@ -13,8 +13,7 @@ import 'package:linear/util/cognito/user.dart' as cognito_user;
 
 // ignore: must_be_immutable
 class GetProfileWidget extends StatefulWidget {
-  const GetProfileWidget(
-      {super.key, required this.token, required this.username});
+  const GetProfileWidget({super.key, required this.token, required this.username});
   final String token;
   final String username;
 
@@ -27,13 +26,13 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
   cognito_user.User? user = UserProvider().user;
   List<dynamic> _post = [];
   List<dynamic> _likedPosts = [];
-  String followButtonText = " ";
-  String secondaryFollowButtonText = " ";
 
   final ScrollController _scrollController = ScrollController();
 
   bool isLoading = true;
   bool isErrorFetchingUser = false;
+
+  bool _isFollowing = false;
 
   @override
   void initState() {
@@ -41,9 +40,12 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
     getUser();
   }
 
+  isViewingOwnProfile() {
+    return user!.username == widget.username;
+  }
+
   getUser() {
-    final Future<Map<String, dynamic>> successfulMessage =
-        getProfile(widget.username, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage = getProfile(widget.username, widget.token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         User user = User.fromJson(response['user']);
@@ -51,12 +53,13 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
           _viewUser = user;
         });
 
+        print("_viewUser.followers is ${_viewUser.followers}");
+
         List<dynamic> post = (response['posts']);
         setState(() {
           _post = post;
-        });
-        setState(() {
           isLoading = false;
+          _isFollowing = user.followers!.contains(user.username);
         });
 
         if (_post.isNotEmpty) {
@@ -78,28 +81,9 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
     });
   }
 
-    statusFollow(){
-    var isFollowing = 0;
-    
-    if(_viewUser.followers!=null){
-      for (var i = 0; i < _viewUser.followers!.length; i++) {
-          if(_viewUser.followers![i].contains(user!.username)){
-          followButtonText = "Following";
-          secondaryFollowButtonText = "Follow";
-          isFollowing = 1; 
-        }
-      }
-    }
-    if(isFollowing != 1){
-    followButtonText = "Follow";
-    secondaryFollowButtonText = "Following";
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserProvider>(context).user;
-    statusFollow();
 
     if (isLoading == false && isErrorFetchingUser == false) {
       return Scaffold(
@@ -121,15 +105,16 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              ElevatedButton(
-                      onPressed: () {
-                        followAndUnfollow(widget.username, widget.token);
-                        setState(() {
-                         followButtonText = secondaryFollowButtonText;
-                       });
-                       },
-                       child: Text(followButtonText)
-                     ),
+              if (!isViewingOwnProfile())
+                ElevatedButton(
+                  onPressed: () {
+                    followAndUnfollow(widget.username, widget.token);
+                    setState(() {
+                      _isFollowing = !_isFollowing;
+                    });
+                  },
+                  child: Text(_isFollowing ? 'Unfollow' : 'Follow'),
+                ),
               Text(
                 "@${_viewUser.username}",
                 style: const TextStyle(
@@ -139,8 +124,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
               ),
               const SizedBox(height: 20.0),
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 5.0, bottom: 15.0),
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 15.0),
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -183,15 +167,9 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   // ignore: prefer_is_empty
                   if (_viewUser.communities?.length != 0) ...[
                     if ((_viewUser.communities?.length ?? 0) < 5) ...[
-                      CommunityListWidget(
-                          user: _viewUser,
-                          communityLength: _viewUser.communities?.length,
-                          token: widget.token),
+                      CommunityListWidget(user: _viewUser, communityLength: _viewUser.communities?.length, token: widget.token),
                     ] else ...[
-                      CommunityListWidget(
-                          user: _viewUser,
-                          communityLength: 5,
-                          token: widget.token),
+                      CommunityListWidget(user: _viewUser, communityLength: 5, token: widget.token),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -216,24 +194,15 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                           scrollDirection: Axis.vertical,
                                           controller: _scrollController,
                                           shrinkWrap: true,
-                                          itemCount:
-                                              _viewUser.communities?.length,
+                                          itemCount: _viewUser.communities?.length,
                                           itemBuilder: (context, index) {
                                             return Material(
                                               child: SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.9,
+                                                width: MediaQuery.of(context).size.width * 0.9,
                                                 child: Card(
-                                                  margin: const EdgeInsets.only(
-                                                      top: 10.0,
-                                                      left: 5.0,
-                                                      right: 5.0),
+                                                  margin: const EdgeInsets.only(top: 10.0, left: 5.0, right: 5.0),
                                                   child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
+                                                    padding: const EdgeInsets.all(5.0),
                                                     child: Column(
                                                       children: <Widget>[
                                                         TextButton(
@@ -241,28 +210,17 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                                               Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          CommunityPage(
-                                                                    communityName:
-                                                                        _viewUser.communities![index][0]
-                                                                            [
-                                                                            'communityName'],
-                                                                    token: widget
-                                                                        .token,
+                                                                  builder: (context) => CommunityPage(
+                                                                    communityName: _viewUser.communities![index][0]['communityName'],
+                                                                    token: widget.token,
                                                                   ),
                                                                 ),
                                                               );
                                                             },
                                                             child: Text(
                                                               "c/${_viewUser.communities![index][0]['communityName']}",
-                                                              style: const TextStyle(
-                                                                  fontFamily:
-                                                                      'MonteSerrat',
-                                                                  fontSize: 16),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
+                                                              style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 16),
+                                                              textAlign: TextAlign.left,
                                                             )),
                                                       ],
                                                     ),
@@ -301,10 +259,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                     ],
                   ] else ...[
                     Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-                        child: Text(
-                            '${_viewUser.username} is not part of a community!')),
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                        child: Text('${_viewUser.username} is not part of a community!')),
                   ],
                 ],
               ),
@@ -329,8 +285,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   // ignore: prefer_is_empty
                   if (_post.length != 0) ...[
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 15.0, right: 15.0, top: 5.0),
+                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
                       child: ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -348,8 +303,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                               communityName: _post[index]['community'],
                               postId: _post[index]['postId'],
                               creator: _post[index]['creator'],
-                              creationDate:
-                                  int.parse(_post[index]['creationDate']),
+                              creationDate: int.parse(_post[index]['creationDate']),
                               title: _post[index]['title'],
                               body: _post[index]['body'],
                               likes: _post[index]['likes'],
@@ -360,8 +314,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                     ),
                   ] else ...[
                     Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
                         child: Text('${_viewUser.name} hasn\'t made a post!')),
                   ],
                 ],
