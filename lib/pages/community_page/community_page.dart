@@ -21,14 +21,15 @@ class CommunityPage extends StatefulWidget {
 }
 
 class CommunityPageState extends State<CommunityPage> {
-  Community _community =
-      Community(communityName: '', creationDate: 1, creator: '', members: []);
-  List<dynamic> _post = [];
+  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+  List<dynamic> _posts = [];
 
   User? user = UserProvider().user;
   List<dynamic> _likedPosts = [];
-  String joinButtonText = " ";
-  String secondaryJoinButtonText = " ";
+  bool _isMember = false;
+
+  bool _isUpdatingMembership = false;
+  bool _isloading = true;
 
   @override
   void initState() {
@@ -37,8 +38,7 @@ class CommunityPageState extends State<CommunityPage> {
   }
 
   doGetCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage =
-        getPostsForCommunity(widget.communityName, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage = getPostsForCommunity(widget.communityName, widget.token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         Community community = Community.fromJson(response['community']);
@@ -49,43 +49,42 @@ class CommunityPageState extends State<CommunityPage> {
 
         List<dynamic> post = (response['posts']);
         setState(() {
-          _post = post;
+          _posts = post;
         });
 
-        if (_post.isNotEmpty) {
+        if (_posts.isNotEmpty) {
           List<dynamic> likedPosts = [];
-          for (var i = 0; i < _post.length; i++) {
-            likedPosts.add(_post[i]['likes'].contains(user!.username));
+          for (var i = 0; i < _posts.length; i++) {
+            likedPosts.add(_posts[i]['likes'].contains(user!.username));
           }
           setState(() {
             _likedPosts = likedPosts;
           });
         }
+        setState(() {
+          _isMember = _community.members.contains(user!.username);
+          _isloading = false;
+        });
       }
     });
-  }
-
-  statusMember(){
-    var isMember = 0;
-    for (var i = 0; i < _community.members.length; i++) {
-      if(_community.members[i].contains(user!.username)){
-        joinButtonText = "Joined";
-        secondaryJoinButtonText = "Join";
-        isMember = 1;
-        
-      }
-    }
-    if(isMember != 1){
-    joinButtonText = "Join";
-    secondaryJoinButtonText = "Joined";
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserProvider>(context).user;
-     statusMember();
+    //  statusMember();
 
+    if (_isloading) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Community"),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+        bottomNavigationBar: const LinearNavBar(),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Community"),
@@ -96,7 +95,7 @@ class CommunityPageState extends State<CommunityPage> {
         child: Column(
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.2,
+              height: MediaQuery.of(context).size.height * 0.3,
               width: MediaQuery.of(context).size.width,
               child: Card(
                 margin: const EdgeInsets.only(top: 20.0),
@@ -104,10 +103,7 @@ class CommunityPageState extends State<CommunityPage> {
                   children: <Widget>[
                     Text(
                       "c/${_community.communityName}",
-                      style: const TextStyle(
-                          fontFamily: 'MonteSerrat',
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -123,33 +119,70 @@ class CommunityPageState extends State<CommunityPage> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 10),
+                    if (!_isUpdatingMembership)
                       ElevatedButton(
-                      onPressed: () {
-                         setState(() {
-                         joinButtonText = secondaryJoinButtonText;
-                       });
-                        joinAndLeave(widget.communityName, widget.token);
-                       
-                       },
-                       child: Text(joinButtonText)
-                     ),
+                        onPressed: () async {
+                          setState(() {
+                            _isUpdatingMembership = true;
+                          });
+                          await joinAndLeave(widget.communityName, widget.token);
+
+                          setState(() {
+                            if (_isMember) {
+                              _community.members.remove(user!.username);
+                              _community = _community;
+                            } else {
+                              _community.members.add(user!.username);
+                              _community = _community;
+                            }
+                            _isMember = !_isMember;
+                            _isUpdatingMembership = false;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: _isMember ? Colors.white : Colors.blue,
+                          onPrimary: _isMember ? Colors.blue : Colors.white,
+                          side: BorderSide(color: Colors.blue, width: 1),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                        ),
+                        child: Text(_isMember ? "Leave community" : "Join community"),
+                      ),
+                    if (_isUpdatingMembership)
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.blue,
+                          onPrimary: Colors.white,
+                          side: BorderSide(color: Colors.blue, width: 1),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                        ),
+                        child: const SizedBox(
+                          height: 10.0,
+                          width: 10.0,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 10),
-            CreatePostWidget(
-                token: widget.token, communityName: widget.communityName),
+            CreatePostWidget(token: widget.token, communityName: widget.communityName),
             const SizedBox(height: 10),
             // ignore: prefer_is_empty
-            if ((_post.length) > 0) ...[
+            if ((_posts.length) > 0) ...[
               Padding(
-                padding:
-                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
                 child: ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: _post.length,
+                  itemCount: _posts.length,
                   itemBuilder: (context, index) {
                     return PostWidget(
                       liked: _likedPosts[index],
@@ -160,13 +193,13 @@ class CommunityPageState extends State<CommunityPage> {
                       },
                       token: widget.token,
                       post: Post(
-                        communityName: _post[index]['community'],
-                        postId: _post[index]['postId'],
-                        creator: _post[index]['creator'],
-                        creationDate: int.parse(_post[index]['creationDate']),
-                        title: _post[index]['title'],
-                        body: _post[index]['body'],
-                        likes: _post[index]['likes'],
+                        communityName: _posts[index]['community'],
+                        postId: _posts[index]['postId'],
+                        creator: _posts[index]['creator'],
+                        creationDate: int.parse(_posts[index]['creationDate']),
+                        title: _posts[index]['title'],
+                        body: _posts[index]['body'],
+                        likes: _posts[index]['likes'],
                       ),
                     );
                   },

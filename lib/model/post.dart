@@ -5,7 +5,7 @@ class Post {
   int creationDate;
   String title;
   String body;
-  List<String>? comments;
+  List<dynamic>? comments;
   List<dynamic>? likes;
 
   Post({

@@ -3,6 +3,7 @@ import 'package:linear/model/community.dart';
 import 'package:linear/model/user.dart';
 import 'package:linear/pages/community_page/community_page.dart';
 import 'package:linear/pages/profile_page/get_profile.dart';
+import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart' as API;
 import 'package:linear/util/date_formatter.dart';
 
@@ -21,11 +22,13 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
   User _user = User(username: '', name: '', communities: []);
 
   getSearchResults() {
+    _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+    _user = User(username: '', name: '', communities: []);
     final Future<Map<String, dynamic>> apiResponse = API.getSearchResults(userInput.text, widget.token);
     apiResponse.then((response) {
       if (response['status'] == true) {
         // print("ABE SAYS: " + response['searchResults'].toString());
-        if (response['searchResults']['communities'][0] != null) {
+        if (!response['searchResults']['communities'].isEmpty) {
           print("COMMUNIT IS: " + response['searchResults']['communities'][0].toString());
 
           Community community = Community.fromJson(response['searchResults']['communities'][0]);
@@ -34,7 +37,7 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
             _community = community;
           });
         }
-        if (response['searchResults']['users'][0] != null) {
+        if (!response['searchResults']['users'].isEmpty) {
           User user = User.fromJson(response['searchResults']['users'][0]);
           setState(() {
             _user = user;
@@ -158,7 +161,14 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
           child: Card(
             child: TextButton(
               onPressed: () {
-                // TODO: Add push to user page once Tavir pushes his code
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(
+                      username: _user.username,
+                    ),
+                  ),
+                );
               },
               child: Text(
                 "u/${_user.username}",
