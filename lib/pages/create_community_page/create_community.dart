@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/util/apis.dart';
+import 'package:linear/pages/community_page/community_page.dart';
 
 class CreateCommunityWidget extends StatefulWidget {
   CreateCommunityWidget({super.key, required this.token});
@@ -17,6 +18,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
 
     successfulMessage.then((response) {
       if (response['status'] == true) {
+        joinAndLeave(userInput.text, widget.token);
         showDialog(
             context: context,
             builder: (context) {
@@ -26,9 +28,16 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                 actions: [
                   TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
-                        //add routintg to community page
-                      },
+                       Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CommunityPage(
+                          communityName: userInput.text,
+                          token: widget.token,
+                        ),
+                      ),
+                    );
+                  },
                       child: const Text("Ok"))
                 ],
               );
@@ -56,12 +65,6 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      const Center(
-        child: Text(
-          "Create a Community:",
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
       Container(
         margin: const EdgeInsets.all(10),
         child: TextFormField(
