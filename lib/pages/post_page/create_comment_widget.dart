@@ -77,11 +77,6 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
                 "create a comment!",
                 style: const TextStyle(fontSize: 24),
               ),
-              // align comments
-              const Align(
-                // comments will be aligned to the center left within a comment
-                alignment: Alignment.centerLeft,
-              ),
               Container(
                 margin: const EdgeInsets.all(10),
                 child: TextFormField(

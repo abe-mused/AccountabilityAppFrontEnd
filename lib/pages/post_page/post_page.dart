@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+// ignore: unused_import
 import 'package:linear/model/community.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/post_page/create_comment_widget.dart';
+// ignore: unused_import
 import 'package:linear/pages/post_widgets/create_post.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/util/apis.dart';
@@ -22,7 +24,15 @@ class PostPage extends StatefulWidget {
 }
 
 class PostPageState extends State<PostPage> {
-  Post _post = Post(title: '', body: '', communityName: '', postId: '', creationDate: 1, creator: '', likes: [], comments: []);
+  Post _post = Post(
+      title: '',
+      body: '',
+      communityName: '',
+      postId: '',
+      creationDate: 1,
+      creator: '',
+      likes: [],
+      comments: []);
   List<dynamic> _comments = [];
 
   User? user = UserProvider().user;
@@ -37,10 +47,12 @@ class PostPageState extends State<PostPage> {
   }
 
   doGetPost() {
-    final Future<Map<String, dynamic>> successfulMessage = getPostWithComments(widget.postId, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage =
+        getPostWithComments(widget.postId, widget.token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
-        response['post']['creationDate'] = int.parse(response['post']['creationDate']);
+        response['post']['creationDate'] =
+            int.parse(response['post']['creationDate']);
         Post post = Post.fromJson(response['post']);
         print("ABE SAYS" + post.toString());
         List<dynamic> likedPosts = [];
@@ -118,23 +130,47 @@ class PostPageState extends State<PostPage> {
                       padding: const EdgeInsets.all(5.0),
                       child: Column(
                         children: <Widget>[
-                          Text(
-                            "u/${_comments[index]['creator']}",
-                            style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 16),
-                            textAlign: TextAlign.left,
-                          ),
-                          Text(
-                            getFormattedDate(int.parse(_comments[index]['creationDate'].toString())),
-                            style: const TextStyle(fontSize: 12),
-                            textAlign: TextAlign.center,
-                          ),
                           const SizedBox(height: 10),
-                          Text(
-                            _comments[index]['body'],
-                            style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 16),
-                            textAlign: TextAlign.left,
+                          // row for comment creator
+                          Row(
+                            children: [
+                              Text(
+                                "u/${_comments[index]['creator']}",
+                                style: const TextStyle(
+                                    fontFamily: 'MonteSerrat',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22),
+                                textAlign: TextAlign.left,
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 10),
+                          // row for creation date
+                          Row(
+                            children: [
+                              Text(
+                                getFormattedDate(int.parse(_comments[index]
+                                        ['creationDate']
+                                    .toString())),
+                                style: const TextStyle(fontSize: 16),
+                                textAlign: TextAlign.left,
+                              ),
+                              const Spacer(),
+                            ],
+                          ),
+                          // row for comment body
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Text(
+                                _comments[index]['body'],
+                                style: const TextStyle(
+                                    fontFamily: 'MonteSerrat', fontSize: 18),
+                                textAlign: TextAlign.left,
+                              ),
+                              const Spacer(),
+                              const SizedBox(height: 10),
+                            ],
+                          ),
                         ],
                       ),
                     ),
