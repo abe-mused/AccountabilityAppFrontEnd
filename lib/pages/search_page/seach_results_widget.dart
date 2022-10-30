@@ -20,6 +20,24 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
   TextEditingController userInput = TextEditingController();
   Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
   User _user = User(username: '', name: '', communities: []);
+  
+    showLoading(BuildContext context){
+    AlertDialog loadStatus = AlertDialog( 
+      content: new Row( 
+        children: [
+          CircularProgressIndicator(),
+        ]
+      )
+    );
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context){
+          return loadStatus;
+        },
+      );
+
+  }
 
   getSearchResults() {
     _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
@@ -27,9 +45,10 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
     final Future<Map<String, dynamic>> apiResponse = API.getSearchResults(userInput.text, widget.token);
     apiResponse.then((response) {
       if (response['status'] == true) {
+        Navigator.pop(context);
         // print("ABE SAYS: " + response['searchResults'].toString());
         if (!response['searchResults']['communities'].isEmpty) {
-          print("COMMUNIT IS: " + response['searchResults']['communities'][0].toString());
+          print("COMMUNITY IS: " + response['searchResults']['communities'][0].toString());
 
           Community community = Community.fromJson(response['searchResults']['communities'][0]);
           print("objectobjectobject");
@@ -43,13 +62,17 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
             _user = user;
           });
         }
+        /*else{ 
+           Navigator.pop(context);
+        }*/
       } else {
+        Navigator.pop(context);
         showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: Text("No results found. Try creating the community ${userInput.text}."),
+                content: Text("No results found. Try searching again."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -65,7 +88,13 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+         const Align(
+                  alignment: Alignment.centerLeft,
+              ),
       Container(
         margin: const EdgeInsets.all(10),
         child: TextFormField(
@@ -86,6 +115,7 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
               onPressed: () async {
+                showLoading(context);
                 getSearchResults();
               },
               style: IconButton.styleFrom(
@@ -95,71 +125,52 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
           ),
         ),
       ),
-      if (_community.communityName != '')
-        const Text(
-          "communities:",
-          style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+      if (_community.communityName == '' && _user.username == '')
+       SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: const Card(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: Text("No results found",
+            style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),)
+          ),
         ),
       if (_community.communityName != '')
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.3,
-          width: MediaQuery.of(context).size.width,
+      Container( 
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(3.0),
           child: Card(
-            margin: const EdgeInsets.only(top: 20.0),
-            child: Column(
-              children: <Widget>[
-                const SizedBox(height: 10),
-                Text(
-                  "c/${_community.communityName}",
-                  style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Created on ${getFormattedDate(_community.creationDate)}",
-                  style: const TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  // ignore: unrelated_type_equality_checks
-                  "${_community.members.length} members",
-                  style: const TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CommunityPage(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: Container(
+              alignment: Alignment.centerLeft, 
+              child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CommunityPage(
                           communityName: _community.communityName,
                           token: widget.token,
                         ),
-                      ),
-                    );
-                  },
-                  style: TextButton.styleFrom(
-                    primary: Colors.white,
-                    backgroundColor: Colors.blue,
                   ),
-                  child: const Text("visit community"),
-                ),
-                const SizedBox(height: 10),
-              ],
+                );
+              },
+              child: Text(
+                "c/${_community.communityName}", textAlign: TextAlign.left,
+                style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold,),
+              ),
             ),
           ),
         ),
-      const SizedBox(height: 20),
+      ),
       if (_user.username != '')
-        const Text(
-          "Users:",
-          style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      if (_user.username != '')
-        SizedBox(
+        Container(
+          padding: const EdgeInsets.all(3.0),
           width: MediaQuery.of(context).size.width,
-          child: Card(
-            child: TextButton(
+         child: Card(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: Container(
+              alignment: Alignment.centerLeft, 
+              child: TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -171,10 +182,11 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
                 );
               },
               child: Text(
-                "u/${_user.username}",
+                "u/${_user.username}", textAlign: TextAlign.left,
                 style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
+          ),
           ),
         ),
       const SizedBox(height: 10),

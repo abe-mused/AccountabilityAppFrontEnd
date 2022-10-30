@@ -24,15 +24,6 @@ class CreateCommunityPageState extends State<CreateCommunityPage> {
       ),
       body: Column(
         children: [
-          const SizedBox(
-            height: 30,
-          ),
-          Center(
-            child: Text(
-              "Hello ${user?.name}",
-              style: const TextStyle(fontSize: 30),
-            ),
-          ),
           const SizedBox(height: 20),
           CreateCommunityWidget(token: user?.idToken ?? "INVALID TOKEN"),
         ],
