@@ -20,7 +20,9 @@ Future<Map<String, dynamic>> postCommunity(String communityName, String token) a
       if (response.statusCode == 200) {
         print("Success!");
         return {'status': true, 'message': 'Community Succesfully Created.'};
-      } else {
+      } else if('${response.body}' == '{"message":"The community already exists!"}'){
+        return {'status': false, 'message': 'The community already exists!'};
+      }else{
         return {'status': false, 'message': 'An error occurred while creating the community, please try again.'};
       }
     },
