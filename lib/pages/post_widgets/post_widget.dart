@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/post.dart';
+import 'package:linear/pages/post_page/post_page.dart';
 import 'package:linear/util/date_formatter.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
@@ -9,20 +10,14 @@ import 'package:linear/util/cognito/user.dart';
 import 'package:provider/provider.dart';
 
 class PostWidget extends StatelessWidget {
-  const PostWidget(
-      {super.key,
-      required this.post,
-      required this.liked,
-      required this.onLike,
-      required this.token});
+  const PostWidget({super.key, required this.post, required this.liked, required this.onLike, required this.token});
   final Post post;
   final String token;
   final bool liked;
   final VoidCallback onLike;
 
   likeUnlikePost() {
-    final Future<Map<String, dynamic>> successfulMessage =
-        likePost(post.postId, token);
+    final Future<Map<String, dynamic>> successfulMessage = likePost(post.postId, token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         onLike();
@@ -75,20 +70,16 @@ class PostWidget extends StatelessWidget {
                         children: [
                           Text(
                             "c/${post.communityName}",
-                            style: const TextStyle(
-                                fontFamily: 'MonteSerrat', fontSize: 16),
+                            style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 16),
                             textAlign: TextAlign.left,
                           ),
                           Text(
                             "u/${post.creator}",
-                            style: const TextStyle(
-                                fontFamily: 'MonteSerrat',
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.left,
                           ),
                           Text(
-                            "Created on ${getFormattedDate(post.creationDate)}",
+                            getFormattedDate(post.creationDate),
                             style: const TextStyle(fontSize: 12),
                             textAlign: TextAlign.center,
                           ),
@@ -122,9 +113,7 @@ class PostWidget extends StatelessWidget {
                               children: [
                                 Text(
                                   post.title,
-                                  style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 5),
@@ -139,8 +128,7 @@ class PostWidget extends StatelessWidget {
                                           controller: scrollController,
                                           child: Text(
                                             post.body,
-                                            style:
-                                                const TextStyle(fontSize: 16),
+                                            style: const TextStyle(fontSize: 16),
                                             textAlign: TextAlign.left,
                                           ),
                                         ),
@@ -167,34 +155,52 @@ class PostWidget extends StatelessWidget {
                       width: 1000,
                     ),
                     Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            if (liked) ...[
-                              IconButton(
-                                onPressed: () {
-                                  likeUnlikePost();
-                                },
-                                icon: const Icon(
-                                  Icons.favorite,
-                                  color: Colors.pink,
-                                  size: 34.0,
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PostPage(
+                                    postId: post.postId,
+                                    token: token,
+                                  ),
                                 ),
-                              )
-                            ] else ...[
-                              IconButton(
-                                onPressed: () {
-                                  likeUnlikePost();
-                                },
-                                icon: const Icon(
-                                  Icons.favorite_border,
-                                  size: 34.0,
-                                ),
-                              )
-                            ],
-                          ],
-                        )),
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.comment,
+                              size: 34.0,
+                            ),
+                          ),
+                          if (liked) ...[
+                            IconButton(
+                              onPressed: () {
+                                likeUnlikePost();
+                              },
+                              icon: const Icon(
+                                Icons.favorite,
+                                color: Colors.pink,
+                                size: 34.0,
+                              ),
+                            )
+                          ] else ...[
+                            IconButton(
+                              onPressed: () {
+                                likeUnlikePost();
+                              },
+                              icon: const Icon(
+                                Icons.favorite_border,
+                                size: 34.0,
+                              ),
+                            )
+                          ]
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
