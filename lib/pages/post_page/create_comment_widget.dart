@@ -20,10 +20,10 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
       _isCreatingComment = true;
     });
 
-    final Future<Map<String, dynamic>> successfulMessage =
+    final Future<Map<String, dynamic>> responseMessage =
         createComment(commentBodyInput.text, widget.postId, widget.token);
 
-    successfulMessage.then((response) {
+    responseMessage.then((response) {
       if (response['status'] == true) {
         commentBodyInput.clear();
         showDialog(
@@ -31,7 +31,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
             builder: (context) {
               return const AlertDialog(
                 title: Text("Success!"),
-                content: Text("Comment succesfully Created."),
+                content: Text("Comment succesfully created."),
               );
             });
       } else {
@@ -41,7 +41,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
               return AlertDialog(
                 title: const Text("Error!"),
                 content: const Text(
-                    "An error occured while attempting to create the Comment."),
+                    "An error occured while attempting to create the comment."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -74,7 +74,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
           child: Column(
             children: [
               const Text(
-                "create a comment!",
+                "Create a comment!",
                 style: const TextStyle(fontSize: 24),
               ),
               Container(

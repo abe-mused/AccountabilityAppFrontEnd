@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-// ignore: unused_import
-import 'package:linear/model/community.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/post_page/create_comment_widget.dart';
-// ignore: unused_import
-import 'package:linear/pages/post_widgets/create_post.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/util/cognito/user.dart';
@@ -47,9 +43,9 @@ class PostPageState extends State<PostPage> {
   }
 
   doGetPost() {
-    final Future<Map<String, dynamic>> successfulMessage =
+    final Future<Map<String, dynamic>> responseMessage =
         getPostWithComments(widget.postId, widget.token);
-    successfulMessage.then((response) {
+    responseMessage.then((response) {
       if (response['status'] == true) {
         response['post']['creationDate'] =
             int.parse(response['post']['creationDate']);
@@ -125,12 +121,12 @@ class PostPageState extends State<PostPage> {
                 return SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: Card(
-                    margin: const EdgeInsets.only(top: 10.0),
+                    margin: const EdgeInsets.only(top: 15.0),
                     child: Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.all(25.0),
                       child: Column(
                         children: <Widget>[
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 3),
                           // row for comment creator
                           Row(
                             children: [
@@ -158,7 +154,13 @@ class PostPageState extends State<PostPage> {
                             ],
                           ),
                           // row for comment body
-                          const SizedBox(height: 20),
+                          const Divider(
+                            height: 20,
+                            color: Colors.black,
+                            indent: 3,
+                            endIndent: 3,
+                          ),
+                          const SizedBox(height: 10),
                           Row(
                             children: [
                               Text(
