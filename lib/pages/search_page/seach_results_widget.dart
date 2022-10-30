@@ -20,6 +20,8 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
   TextEditingController userInput = TextEditingController();
   Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
   User _user = User(username: '', name: '', communities: []);
+  bool _isLoading = false;
+  bool _initialize = true;
 
   getSearchResults() {
     _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
@@ -29,18 +31,27 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
       if (response['status'] == true) {
         // print("ABE SAYS: " + response['searchResults'].toString());
         if (!response['searchResults']['communities'].isEmpty) {
-          print("COMMUNIT IS: " + response['searchResults']['communities'][0].toString());
-
+          print("COMMUNITY IS: " + response['searchResults']['communities'][0].toString());
           Community community = Community.fromJson(response['searchResults']['communities'][0]);
           print("objectobjectobject");
           setState(() {
             _community = community;
+            _isLoading = false;
+            _initialize = false;
           });
         }
         if (!response['searchResults']['users'].isEmpty) {
           User user = User.fromJson(response['searchResults']['users'][0]);
           setState(() {
             _user = user;
+            _isLoading = false;
+            _initialize = false;
+          });
+        }
+        else{
+            setState(() {
+            _isLoading = false;
+            _initialize = false;
           });
         }
       } else {
@@ -48,11 +59,15 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text("Error!"),
-                content: Text("No results found. Try creating the community ${userInput.text}."),
+                title: const Text(""),
+                content: Text("No results found. Try searching again."),
                 actions: [
                   TextButton(
                       onPressed: () {
+                         setState(() {
+                           _isLoading = false;
+                           _initialize = false;
+                        });
                         Navigator.pop(context);
                       },
                       child: const Text("Ok"))
@@ -65,7 +80,13 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+         const Align(
+                  alignment: Alignment.centerLeft,
+              ),
       Container(
         margin: const EdgeInsets.all(10),
         child: TextFormField(
@@ -86,6 +107,10 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
               onPressed: () async {
+                 setState(() {
+                  _isLoading = true;
+                  _initialize = false;
+                 });
                 getSearchResults();
               },
               style: IconButton.styleFrom(
@@ -95,71 +120,70 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
           ),
         ),
       ),
-      if (_community.communityName != '')
-        const Text(
-          "communities:",
-          style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      if (_community.communityName != '')
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.3,
-          width: MediaQuery.of(context).size.width,
+      if (_isLoading)
+       Container( 
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(3.0),
           child: Card(
-            margin: const EdgeInsets.only(top: 20.0),
-            child: Column(
-              children: <Widget>[
-                const SizedBox(height: 10),
-                Text(
-                  "c/${_community.communityName}",
-                  style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Created on ${getFormattedDate(_community.creationDate)}",
-                  style: const TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  // ignore: unrelated_type_equality_checks
-                  "${_community.members.length} members",
-                  style: const TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CommunityPage(
-                          communityName: _community.communityName,
-                          token: widget.token,
-                        ),
-                      ),
-                    );
-                  },
-                  style: TextButton.styleFrom(
-                    primary: Colors.white,
-                    backgroundColor: Colors.blue,
-                  ),
-                  child: const Text("visit community"),
-                ),
-                const SizedBox(height: 10),
-              ],
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: Container(
+              padding: const EdgeInsets.all(10.0),
+              alignment: Alignment.center, 
+              child: CircularProgressIndicator(),
             ),
           ),
         ),
-      const SizedBox(height: 20),
-      if (_user.username != '')
-        const Text(
-          "Users:",
-          style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      if (_user.username != '')
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
+      if (_community.communityName == '' && _user.username == '' && !_isLoading && !_initialize)
+       Container( 
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(3.0),
           child: Card(
-            child: TextButton(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: Container(
+              padding: const EdgeInsets.all(10.0),
+              alignment: Alignment.centerLeft, 
+              child: Text("No results found",
+            style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.w500),)
+          ),
+        ),
+      ),
+      if (_community.communityName != '')
+      Container( 
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(3.0),
+          child: Card(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: Container(
+              alignment: Alignment.centerLeft, 
+              child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CommunityPage(
+                          communityName: _community.communityName,
+                          token: widget.token,
+                        ),
+                  ),
+                );
+              },
+              child: Text(
+                "c/${_community.communityName}", textAlign: TextAlign.left,
+                style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.w500,),
+              ),
+            ),
+          ),
+        ),
+      ),
+      if (_user.username != '')
+        Container(
+          padding: const EdgeInsets.all(3.0),
+          width: MediaQuery.of(context).size.width,
+         child: Card(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: Container(
+              alignment: Alignment.centerLeft, 
+              child: TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -171,10 +195,11 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
                 );
               },
               child: Text(
-                "u/${_user.username}",
-                style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+                "u/${_user.username}", textAlign: TextAlign.left,
+                style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.w500),
               ),
             ),
+          ),
           ),
         ),
       const SizedBox(height: 10),
