@@ -8,6 +8,7 @@ import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:linear/util/date_formatter.dart';
 import 'package:provider/provider.dart';
+import 'package:linear/pages/common_widgets/user_icon.dart';
 
 class PostPage extends StatefulWidget {
   PostPage({super.key, required this.postId, required this.token});
@@ -127,6 +128,7 @@ class PostPageState extends State<PostPage> {
                       child: Column(
                         children: <Widget>[
                           const SizedBox(height: 3),
+                          const CircleAvatar(),
                           // row for comment creator
                           Row(
                             children: [

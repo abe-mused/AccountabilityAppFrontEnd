@@ -120,18 +120,18 @@ class AuthUtility {
   }
 
   Future<Map<String, dynamic>> passwordReset(
-      {required String email, required String code, required String password}) async {
+      {required String email,
+      required String code,
+      required String password}) async {
     final cognitoUser = CognitoUser(email, userPool);
     bool passwordConfirmed = false;
     try {
-      passwordConfirmed = await cognitoUser.confirmPassword(
-          code, password);
+      passwordConfirmed = await cognitoUser.confirmPassword(code, password);
     } on CognitoClientException catch (e) {
       print("An error occurred while resetting the password:  $e");
       return {
         'status': false,
-        'message':
-            'Invalid verification code provided, please try again.'
+        'message': 'Invalid verification code provided, please try again.'
       };
     } catch (e) {
       print("An error occurred while resetting the password:  $e");
@@ -140,12 +140,11 @@ class AuthUtility {
         'message':
             'An error occurred while resetting the password, please try again.'
       };
-    } 
+    }
     print(passwordConfirmed);
     return {
       'status': true,
-      'message': 
-            'Your password has been reset succesfully.'
+      'message': 'Your password has been reset succesfully.'
     };
   }
 }
