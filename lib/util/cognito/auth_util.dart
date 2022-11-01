@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
+import 'package:http/http.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_preferences.dart';
 
@@ -67,21 +68,32 @@ class AuthUtility {
       AttributeArg(name: 'email', value: email),
     ];
     CognitoUserPoolData? data;
+
+    // TO DO: add exception handling for user already exists
+    // EXCEPTION HANDLING FOR SIGN UP PAGE
+    // (lines 75 - 95)
     try {
       data = await userPool.signUp(
         username,
         password,
         userAttributes: userAttributes,
       );
-      //TODO: add exception handling for user already exists
+    } on CognitoUserPoolData catch (e) {
+      // throw exception when user enters existing email
+      print("An account with this email already exists:  $e");
+      return {
+        'status': false,
+        'message': 'Please sign in with the email associated with this account.'
+      };
     } catch (e) {
-      print("An error occurred while creating the user's account:  $e");
+      print("An error occurred while authenticating user:  $e");
       return {
         'status': false,
         'message':
-            'An error occurred while creating the account, please try again.'
+            'Unsuccessful login, an unknown error occurred. Please try again.'
       };
     }
+
     print("not bad news: $data");
 
     return {

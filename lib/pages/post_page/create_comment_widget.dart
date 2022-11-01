@@ -123,7 +123,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
                   backgroundColor: Colors.blue,
                   onSurface: Colors.grey,
                 ),
-                child: const Text("create comment"),
+                child: const Text("Add a Comment"),
               ),
             ],
           ),

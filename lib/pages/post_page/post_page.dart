@@ -126,9 +126,12 @@ class PostPageState extends State<PostPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(25.0),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          const SizedBox(height: 3),
-                          const CircleAvatar(),
+                          UserIcon(
+                              radius: 35,
+                              username: _comments[index]['creator']),
+                          const SizedBox(height: 5, width: 20),
                           // row for comment creator
                           Row(
                             children: [
@@ -157,7 +160,7 @@ class PostPageState extends State<PostPage> {
                           ),
                           // row for comment body
                           const Divider(
-                            height: 20,
+                            height: 35,
                             color: Colors.black,
                             indent: 3,
                             endIndent: 3,
