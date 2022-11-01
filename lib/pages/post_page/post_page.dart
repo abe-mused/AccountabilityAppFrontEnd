@@ -190,11 +190,15 @@ class PostPageState extends State<PostPage> {
                             endIndent: 0,
                             color: Colors.black,
                           ),
-                          Text(
-                            _comments[index]['body'],
-                            style: const TextStyle(
-                                fontFamily: 'MonteSerrat', fontSize: 18),
-                            textAlign: TextAlign.left,
+                          Row(
+                            children: [
+                              Text(
+                                _comments[index]['body'],
+                                style: const TextStyle(
+                                    fontFamily: 'MonteSerrat', fontSize: 18),
+                                textAlign: TextAlign.left,
+                              ),
+                            ],
                           ),
                           const SizedBox(
                             height: 20,
