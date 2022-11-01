@@ -78,7 +78,7 @@ class AuthUtility {
         password,
         userAttributes: userAttributes,
       );
-    } on CognitoUserPoolData catch (e) {
+    } on CognitoUser catch (e) {
       // throw exception when user enters existing email
       print("An account with this email already exists:  $e");
       return {

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/post_page/create_comment_widget.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
+import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
@@ -122,61 +124,80 @@ class PostPageState extends State<PostPage> {
                 return SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: Card(
-                    margin: const EdgeInsets.only(top: 15.0),
+                    margin: const EdgeInsets.only(top: 20.0),
                     child: Padding(
-                      padding: const EdgeInsets.all(25.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          UserIcon(
-                              radius: 35,
-                              username: _comments[index]['creator']),
-                          const SizedBox(height: 5, width: 20),
-                          // row for comment creator
-                          Row(
-                            children: [
-                              Text(
-                                "u/${_comments[index]['creator']}",
-                                style: const TextStyle(
-                                    fontFamily: 'MonteSerrat',
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 22),
-                                textAlign: TextAlign.left,
-                              ),
-                            ],
+                          Container(
+                            color: Colors.white,
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: 60,
+                                  height: 60,
+                                  child: RawMaterialButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProfilePage(
+                                            username:
+                                                "u/${_comments[index]['creator']}",
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: UserIcon(
+                                      username: _comments[index]['creator'],
+                                      radius: 45,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "u/${_comments[index]['creator']}",
+                                        style: const TextStyle(
+                                            fontFamily: 'MonteSerrat',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 22),
+                                      ),
+                                      Text(
+                                        getFormattedDate(int.parse(
+                                            _comments[index]['creationDate']
+                                                .toString())),
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          // row for creation date
-                          Row(
-                            children: [
-                              Text(
-                                getFormattedDate(int.parse(_comments[index]
-                                        ['creationDate']
-                                    .toString())),
-                                style: const TextStyle(fontSize: 16),
-                                textAlign: TextAlign.left,
-                              ),
-                              const Spacer(),
-                            ],
-                          ),
-                          // row for comment body
                           const Divider(
-                            height: 35,
+                            height: 10,
+                            thickness: 0.6,
+                            indent: 0,
+                            endIndent: 0,
                             color: Colors.black,
-                            indent: 3,
-                            endIndent: 3,
                           ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Text(
-                                _comments[index]['body'],
-                                style: const TextStyle(
-                                    fontFamily: 'MonteSerrat', fontSize: 18),
-                                textAlign: TextAlign.left,
-                              ),
-                              const Spacer(),
-                              const SizedBox(height: 10),
-                            ],
+                          Text(
+                            _comments[index]['body'],
+                            style: const TextStyle(
+                                fontFamily: 'MonteSerrat', fontSize: 18),
+                            textAlign: TextAlign.left,
+                          ),
+                          const SizedBox(
+                            height: 20,
                           ),
                         ],
                       ),
