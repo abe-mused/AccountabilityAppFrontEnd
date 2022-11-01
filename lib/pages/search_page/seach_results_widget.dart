@@ -82,8 +82,6 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
             setState(() {});
           },
           decoration: InputDecoration(
-            focusColor: Colors.white,
-            fillColor: Colors.grey,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5.0),
             ),
@@ -103,9 +101,7 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
       if (_community.communityName != '')
         const Text(
           "communities:",
-          style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       if (_community.communityName != '')
         SizedBox(
@@ -119,8 +115,7 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
                 Text(
                   "c/${_community.communityName}",
                   style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold),
+                      fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 Text(
@@ -135,7 +130,7 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
                   style: const TextStyle(fontSize: 16),
                   textAlign: TextAlign.center,
                 ),
-                TextButton(
+                ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -147,14 +142,6 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
                       ),
                     );
                   },
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor:
-                        MediaQuery.of(context).platformBrightness ==
-                                Brightness.dark
-                            ? AppThemes.lightTheme.colorScheme.primaryContainer
-                            : AppThemes.darkTheme.colorScheme.primaryContainer,
-                  ),
                   child: const Text("visit community"),
                 ),
                 const SizedBox(height: 10),
@@ -166,9 +153,7 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
       if (_user.username != '')
         const Text(
           "Users:",
-          style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       if (_user.username != '')
         SizedBox(
@@ -187,9 +172,8 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
               },
               child: Text(
                 "u/${_user.username}",
-                style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
           ),

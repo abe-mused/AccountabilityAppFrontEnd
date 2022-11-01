@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppThemes {
-  static var lightTheme = FlexThemeData.light(
-    scheme: FlexScheme.mallardGreen,
-    fontFamily: GoogleFonts.montserrat().fontFamily,
+  static const _theme = FlexScheme.jungle;
+  static final _fontFamily = GoogleFonts.montserrat().fontFamily;
+  
+
+  static final lightTheme = FlexThemeData.light(
+    scheme: _theme,
+    fontFamily: _fontFamily,
   );
 
-  static var darkTheme = FlexThemeData.dark(
-    scheme: FlexScheme.mallardGreen,
-    fontFamily: GoogleFonts.montserrat().fontFamily,
+  static final darkTheme = FlexThemeData.dark(
+    scheme: _theme,
+    fontFamily: _fontFamily,
   );
 
   static primaryTextButtonStyle(context) {
@@ -20,7 +24,7 @@ class AppThemes {
           MediaQuery.of(context!).platformBrightness == Brightness.dark
               ? AppThemes.lightTheme.colorScheme.primaryContainer
               : AppThemes.darkTheme.colorScheme.primaryContainer,
-              shape: const RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
     );
@@ -45,5 +49,11 @@ class AppThemes {
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
     );
+  }
+
+  static iconColor(context) {
+    return MediaQuery.of(context).platformBrightness == Brightness.dark
+        ? AppThemes.lightTheme.colorScheme.secondary
+        : AppThemes.darkTheme.colorScheme.secondary;
   }
 }

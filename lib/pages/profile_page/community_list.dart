@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/user.dart';
 import 'package:linear/pages/community_page/community_page.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 class CommunityListWidget extends StatelessWidget {
   const CommunityListWidget(
@@ -52,9 +53,9 @@ class CommunityListWidget extends StatelessWidget {
                           ),
                         )),
                     if (user.username == user.communities![index][1]['creator'])
-                      const Icon(
+                      Icon(
                         Icons.admin_panel_settings,
-                        color: Colors.blue,
+                        color: AppThemes.iconColor(context),
                         size: 30.0,
                       ),
                   ],

@@ -21,7 +21,7 @@ main() async {
 }
 
 class LinearApp extends StatelessWidget {
-  LinearApp({super.key, required this.userProvider});
+  const LinearApp({super.key, required this.userProvider});
 
   final UserProvider userProvider;
 

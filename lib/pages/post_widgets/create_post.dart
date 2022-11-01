@@ -115,7 +115,7 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                   ),
                 ),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () async {
                   if (postTitleInput.text != '' && postBodyInput.text != '') {
                     doCreatePost();
@@ -136,7 +136,6 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                         });
                   }
                 },
-                style: AppThemes.primaryTextButtonStyle(context),
                 child: const Text("create post"),
               ),
             ],

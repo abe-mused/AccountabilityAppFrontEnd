@@ -76,8 +76,6 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
             setState(() {});
           },
           decoration: InputDecoration(
-            //focusColor: Colors.white,
-            //fillColor: Colors.grey,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5.0),
             ),
@@ -85,11 +83,10 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
           ),
         ),
       ),
-      TextButton(
+      ElevatedButton(
           onPressed: () async {
             doCreateCommunity();
           },
-          style: AppThemes.primaryTextButtonStyle(context),
           child: const Text("Submit")),
     ]);
   }

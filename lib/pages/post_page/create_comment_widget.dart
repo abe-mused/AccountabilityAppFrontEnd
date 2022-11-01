@@ -96,7 +96,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
                   ),
                 ),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () async {
                   if (commentBodyInput.text != '') {
                     doCreateComment();
@@ -117,7 +117,6 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
                         });
                   }
                 },
-                style: AppThemes.primaryTextButtonStyle(context),
                 child: const Text("create comment"),
               ),
             ],

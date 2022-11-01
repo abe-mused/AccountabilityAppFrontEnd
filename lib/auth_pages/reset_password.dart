@@ -55,7 +55,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? AppThemes.darkTheme.primaryColor : AppThemes.lightTheme.primaryColor,
+      backgroundColor:
+          MediaQuery.of(context).platformBrightness == Brightness.dark
+              ? AppThemes.darkTheme.primaryColor
+              : AppThemes.lightTheme.primaryColor,
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -65,6 +68,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 "Reset Your \nPassword",
                 style: TextStyle(
                     fontSize: 50,
+                    color: Colors.white,
                     fontWeight: FontWeight.w300),
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/model/user.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
@@ -289,10 +290,12 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                                             _viewUser.communities![
                                                                     index][1]
                                                                 ['creator'])
-                                                          const Icon(
+                                                          Icon(
                                                             Icons
                                                                 .admin_panel_settings,
-                                                            color: Colors.blue,
+                                                            color: AppThemes
+                                                                .iconColor(
+                                                                    context),
                                                             size: 30.0,
                                                           ),
                                                       ],
@@ -319,7 +322,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                 "Show More",
                                 style: TextStyle(
                                   decoration: TextDecoration.underline,
-                                  color: Colors.blue,
                                   fontSize: 15.0,
                                   fontWeight: FontWeight.w800,
                                 ),

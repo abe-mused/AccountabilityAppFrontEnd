@@ -22,7 +22,15 @@ class PostPage extends StatefulWidget {
 }
 
 class PostPageState extends State<PostPage> {
-  Post _post = Post(title: '', body: '', communityName: '', postId: '', creationDate: 1, creator: '', likes: [], comments: []);
+  Post _post = Post(
+      title: '',
+      body: '',
+      communityName: '',
+      postId: '',
+      creationDate: 1,
+      creator: '',
+      likes: [],
+      comments: []);
   List<dynamic> _comments = [];
 
   User? user = UserProvider().user;
@@ -37,10 +45,12 @@ class PostPageState extends State<PostPage> {
   }
 
   doGetPost() {
-    final Future<Map<String, dynamic>> successfulMessage = getPostWithComments(widget.postId, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage =
+        getPostWithComments(widget.postId, widget.token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
-        response['post']['creationDate'] = int.parse(response['post']['creationDate']);
+        response['post']['creationDate'] =
+            int.parse(response['post']['creationDate']);
         Post post = Post.fromJson(response['post']);
         print("ABE SAYS" + post.toString());
         List<dynamic> likedPosts = [];
@@ -120,20 +130,19 @@ class PostPageState extends State<PostPage> {
                         children: <Widget>[
                           Text(
                             "u/${_comments[index]['creator']}",
-                            style: const TextStyle(//fontFamily: 'MonteSerrat', 
-                            fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                             textAlign: TextAlign.left,
                           ),
                           Text(
-                            getFormattedDate(int.parse(_comments[index]['creationDate'].toString())),
+                            getFormattedDate(int.parse(
+                                _comments[index]['creationDate'].toString())),
                             style: const TextStyle(fontSize: 12),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 10),
                           Text(
                             _comments[index]['body'],
-                            style: const TextStyle(//fontFamily: 'MonteSerrat', 
-                            fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                             textAlign: TextAlign.left,
                           ),
                           const SizedBox(height: 10),

@@ -106,9 +106,7 @@ class CommunityPageState extends State<CommunityPage> {
                     Text(
                       "c/${_community.communityName}",
                       style: const TextStyle(
-                          fontFamily: 'MonteSerrat',
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
+                          fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -147,8 +145,7 @@ class CommunityPageState extends State<CommunityPage> {
                         },
                         style: _isMember
                             ? AppThemes.secondaryTextButtonStyle(context)
-                              
-                            : AppThemes.primaryTextButtonStyle(context),
+                            : null,
                         child: Text(
                             _isMember ? "Leave community" : "Join community"),
                       ),

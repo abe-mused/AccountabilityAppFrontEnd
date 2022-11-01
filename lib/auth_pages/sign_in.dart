@@ -53,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
               "Welcome to linear!",
               style: TextStyle(
                 fontSize: 50,
+                color: Colors.white,
                 fontWeight: FontWeight.w300,
               ),
             ),

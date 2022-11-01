@@ -80,6 +80,7 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Text("Create Your Account",
                 style: TextStyle(
                     fontSize: 50,
+                    color: Colors.white,
                     fontWeight: FontWeight.w300)),
           ),
           Container(

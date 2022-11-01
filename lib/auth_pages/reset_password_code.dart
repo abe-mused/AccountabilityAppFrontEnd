@@ -109,7 +109,10 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? AppThemes.darkTheme.primaryColor : AppThemes.lightTheme.primaryColor,
+      backgroundColor:
+          MediaQuery.of(context).platformBrightness == Brightness.dark
+              ? AppThemes.darkTheme.primaryColor
+              : AppThemes.lightTheme.primaryColor,
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -119,6 +122,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                 "Code Sent To Email",
                 style: TextStyle(
                     fontSize: 50,
+                    color: Colors.white,
                     fontWeight: FontWeight.w300),
               ),
             ),
@@ -270,7 +274,6 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                         TextButton(
                             key: const Key('resendCodeKey'),
                             onPressed: () {
-                              //add code send here
                               doSendResetCode();
                             },
                             child: const Text("Resend")),
