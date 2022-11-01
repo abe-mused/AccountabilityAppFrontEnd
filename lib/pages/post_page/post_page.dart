@@ -120,7 +120,8 @@ class PostPageState extends State<PostPage> {
                         children: <Widget>[
                           Text(
                             "u/${_comments[index]['creator']}",
-                            style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 16),
+                            style: const TextStyle(//fontFamily: 'MonteSerrat', 
+                            fontSize: 16),
                             textAlign: TextAlign.left,
                           ),
                           Text(
@@ -131,7 +132,8 @@ class PostPageState extends State<PostPage> {
                           const SizedBox(height: 10),
                           Text(
                             _comments[index]['body'],
-                            style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 16),
+                            style: const TextStyle(//fontFamily: 'MonteSerrat', 
+                            fontSize: 16),
                             textAlign: TextAlign.left,
                           ),
                           const SizedBox(height: 10),

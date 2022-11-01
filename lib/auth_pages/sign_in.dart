@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_up.dart';
 import 'package:linear/auth_pages/reset_password.dart';
-// import 'package:linear/pages/home_page.dart';
-// import 'package:linear/util/auth_util.dart' as auth_util;
 import 'package:linear/util/cognito/auth_util.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
-
 import '../util/cognito/user.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -44,10 +42,9 @@ class _LoginPageState extends State<LoginPage> {
         // }
       });
     }
-
+    
     return Scaffold(
-      // backgroundColor: Color.fromARGB(255, 39, 78, 59),
-      backgroundColor: Colors.blue,
+      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? AppThemes.darkTheme.primaryColor : AppThemes.lightTheme.primaryColor,
       body: Stack(
         children: [
           const Padding(
@@ -55,7 +52,6 @@ class _LoginPageState extends State<LoginPage> {
             child: Text(
               "Welcome to linear!",
               style: TextStyle(
-                color: Colors.white,
                 fontSize: 50,
                 fontWeight: FontWeight.w300,
               ),
@@ -68,16 +64,16 @@ class _LoginPageState extends State<LoginPage> {
             ),
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.65,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
+            decoration:  BoxDecoration(
+              color: MediaQuery.of(context).platformBrightness == Brightness.dark ? ThemeData.dark().primaryColor : Colors.white,
+              borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(50),
                 topLeft: Radius.circular(50),
               ),
             ),
             child: SingleChildScrollView(
               // removes bottom overflow pixel error
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -126,7 +122,6 @@ class _LoginPageState extends State<LoginPage> {
                   Center(
                     child: ElevatedButton(
                         style: TextButton.styleFrom(
-                          backgroundColor: Colors.green,
                           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60),
                         ),
                         onPressed: doLogIn,

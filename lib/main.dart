@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_in.dart';
-import 'package:linear/auth_pages/sign_up.dart';
 import 'package:linear/constants/routes.dart';
-import 'package:linear/pages/community_page/community_page.dart';
-import 'package:linear/pages/create_community_page/create_community_page.dart';
 import 'package:linear/pages/home_page/home_page.dart';
-import 'package:linear/pages/profile_page/profile_page.dart';
-import 'package:linear/pages/search_page/search_page.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_preferences.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
-
+import 'package:linear/constants/themeSettings.dart';
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final UserProvider userProvider = UserProvider();
@@ -26,7 +21,7 @@ main() async {
 }
 
 class LinearApp extends StatelessWidget {
-  const LinearApp({super.key, required this.userProvider});
+  LinearApp({super.key, required this.userProvider});
 
   final UserProvider userProvider;
 
@@ -41,10 +36,9 @@ class LinearApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Linear',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
+        theme: AppThemes.lightTheme,
+        darkTheme: AppThemes.darkTheme,
+        themeMode: ThemeMode.system,
         home: FutureBuilder(
             future: getUserData(),
             builder: (context, snapshot) {
@@ -67,6 +61,9 @@ class LinearApp extends StatelessWidget {
   }
 
   bool isUserDataLoaded(AsyncSnapshot<User?> snapshot) {
-    return snapshot.data?.email == null && snapshot.data?.username == null && snapshot.data?.name == null && snapshot.data?.idToken == null;
+    return snapshot.data?.email == null &&
+        snapshot.data?.username == null &&
+        snapshot.data?.name == null &&
+        snapshot.data?.idToken == null;
   }
 }

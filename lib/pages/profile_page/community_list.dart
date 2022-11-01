@@ -47,7 +47,6 @@ class CommunityListWidget extends StatelessWidget {
                         child: Text(
                           "c/${user.communities![index][0]['communityName']}",
                           style: const TextStyle(
-                            fontFamily: 'MonteSerrat',
                             fontSize: 16.0,
                             fontWeight: FontWeight.w800,
                           ),

@@ -5,9 +5,7 @@ import 'package:linear/util/date_formatter.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/util/cognito/user_provider.dart';
-import 'package:linear/util/cognito/user.dart';
-import 'package:provider/provider.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({super.key, required this.post, required this.liked, required this.onLike, required this.token});
@@ -37,7 +35,6 @@ class PostWidget extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Container(
-                color: Colors.white,
                 padding: const EdgeInsets.all(10),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,12 +67,14 @@ class PostWidget extends StatelessWidget {
                         children: [
                           Text(
                             "c/${post.communityName}",
-                            style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 16),
+                            style: const TextStyle(
+                            fontSize: 16),
                             textAlign: TextAlign.left,
                           ),
                           Text(
                             "u/${post.creator}",
-                            style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.left,
                           ),
                           Text(
@@ -94,11 +93,9 @@ class PostWidget extends StatelessWidget {
                 thickness: 0.6,
                 indent: 0,
                 endIndent: 0,
-                color: Colors.black,
               ),
               const SizedBox(height: 10),
               Container(
-                color: Colors.white,
                 padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [

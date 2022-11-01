@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:linear/model/community.dart';
 import 'package:linear/model/user.dart';
 import 'package:linear/pages/community_page/community_page.dart';
-import 'package:linear/pages/profile_page/get_profile.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart' as API;
 import 'package:linear/util/date_formatter.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 // ignore: must_be_immutable
 class SearchResultWidget extends StatefulWidget {
@@ -18,20 +18,24 @@ class SearchResultWidget extends StatefulWidget {
 
 class _SearchResultWidgetState extends State<SearchResultWidget> {
   TextEditingController userInput = TextEditingController();
-  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+  Community _community =
+      Community(communityName: '', creationDate: 1, creator: '', members: []);
   User _user = User(username: '', name: '', communities: []);
 
   getSearchResults() {
-    _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+    _community =
+        Community(communityName: '', creationDate: 1, creator: '', members: []);
     _user = User(username: '', name: '', communities: []);
-    final Future<Map<String, dynamic>> apiResponse = API.getSearchResults(userInput.text, widget.token);
+    final Future<Map<String, dynamic>> apiResponse =
+        API.getSearchResults(userInput.text, widget.token);
     apiResponse.then((response) {
       if (response['status'] == true) {
-        // print("ABE SAYS: " + response['searchResults'].toString());
         if (!response['searchResults']['communities'].isEmpty) {
-          print("COMMUNIT IS: " + response['searchResults']['communities'][0].toString());
+          print("COMMUNIT IS: " +
+              response['searchResults']['communities'][0].toString());
 
-          Community community = Community.fromJson(response['searchResults']['communities'][0]);
+          Community community =
+              Community.fromJson(response['searchResults']['communities'][0]);
           print("objectobjectobject");
           setState(() {
             _community = community;
@@ -49,7 +53,8 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: Text("No results found. Try creating the community ${userInput.text}."),
+                content: Text(
+                    "No results found. Try creating the community ${userInput.text}."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -98,7 +103,9 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
       if (_community.communityName != '')
         const Text(
           "communities:",
-          style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold),
         ),
       if (_community.communityName != '')
         SizedBox(
@@ -111,7 +118,9 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
                 const SizedBox(height: 10),
                 Text(
                   "c/${_community.communityName}",
-                  style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 Text(
@@ -139,8 +148,12 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
                     );
                   },
                   style: TextButton.styleFrom(
-                    primary: Colors.white,
-                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    backgroundColor:
+                        MediaQuery.of(context).platformBrightness ==
+                                Brightness.dark
+                            ? AppThemes.lightTheme.colorScheme.primaryContainer
+                            : AppThemes.darkTheme.colorScheme.primaryContainer,
                   ),
                   child: const Text("visit community"),
                 ),
@@ -153,7 +166,9 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
       if (_user.username != '')
         const Text(
           "Users:",
-          style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold),
         ),
       if (_user.username != '')
         SizedBox(
@@ -172,7 +187,9 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
               },
               child: Text(
                 "u/${_user.username}",
-                style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
               ),
             ),
           ),

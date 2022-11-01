@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/reset_password_code.dart';
 import 'package:linear/auth_pages/sign_in.dart';
 import 'package:linear/util/cognito/auth_util.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({Key? key}) : super(key: key);
@@ -54,7 +55,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 39, 78, 59),
+      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? AppThemes.darkTheme.primaryColor : AppThemes.lightTheme.primaryColor,
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -63,7 +64,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               child: Text(
                 "Reset Your \nPassword",
                 style: TextStyle(
-                    color: Colors.white,
                     fontSize: 50,
                     fontWeight: FontWeight.w300),
               ),
@@ -74,9 +74,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   top: MediaQuery.of(context).size.height * 0.45),
               width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.65,
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                  color: MediaQuery.of(context).platformBrightness ==
+                          Brightness.dark
+                      ? ThemeData.dark().primaryColor
+                      : Colors.white,
+                  borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(50),
                       topLeft: Radius.circular(50))),
               child: Column(
@@ -101,7 +104,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   Center(
                     child: ElevatedButton(
                         style: TextButton.styleFrom(
-                            backgroundColor: Colors.deepOrangeAccent,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 60)),
                         onPressed: () {
@@ -117,10 +119,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                         "Invalid email! please try again."),
                                     actions: [
                                       TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text("Ok"))
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Ok"))
                                     ],
                                   );
                                 });

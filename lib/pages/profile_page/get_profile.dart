@@ -94,7 +94,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                 padding: EdgeInsets.only(bottom: 30.0),
               ),
               Text(
-                // ignore: unnecessary_string_interpolations
                 "u/${_viewUser.username}",
                 style: const TextStyle(
                   fontSize: 24.0,
@@ -121,15 +120,12 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                           Text(
                             "${_viewUser.followers?.length ?? 0}",
                             style: const TextStyle(
-                                fontFamily: 'MonteSerrat',
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold),
+                                fontSize: 24, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                           const Text(
                             "Followers",
-                            style: TextStyle(
-                                fontFamily: 'MonteSerrat', fontSize: 16),
+                            style: TextStyle(fontSize: 16),
                             textAlign: TextAlign.left,
                           ),
                         ],
@@ -143,15 +139,12 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                           Text(
                             "${_viewUser.following?.length ?? 0}",
                             style: const TextStyle(
-                                fontFamily: 'MonteSerrat',
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold),
+                                fontSize: 24, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                           const Text(
                             "Following",
-                            style: TextStyle(
-                                fontFamily: 'MonteSerrat', fontSize: 16),
+                            style: TextStyle(fontSize: 16),
                             textAlign: TextAlign.left,
                           ),
                         ],
@@ -166,9 +159,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      // ignore: unnecessary_string_interpolations
-                      "${_viewUser.name}",
-                      //textAlign: TextAlign.start,
+                      _viewUser.name,
                       style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w900,
@@ -198,7 +189,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   Text(
                     "Communities",
                     style: TextStyle(
-                      fontFamily: 'MonteSerrat',
                       decoration: TextDecoration.underline,
                       fontSize: 23.0,
                       fontWeight: FontWeight.w900,
@@ -210,7 +200,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                 children: [
                   // ignore: prefer_is_empty
                   if (_viewUser.communities?.length != 0) ...[
-                    if ((_viewUser.communities?.length ?? 0) < 3) ...[
+                    if ((_viewUser.communities?.length ?? 0) <= 3) ...[
                       CommunityListWidget(
                           user: _viewUser,
                           communityLength: _viewUser.communities?.length,
@@ -289,8 +279,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                                               "c/${_viewUser.communities![index][0]['communityName']}",
                                                               style:
                                                                   const TextStyle(
-                                                                fontFamily:
-                                                                    'MonteSerrat',
                                                                 fontSize: 16.0,
                                                                 fontWeight:
                                                                     FontWeight
@@ -359,7 +347,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   Text(
                     "Posts",
                     style: TextStyle(
-                      fontFamily: 'MonteSerrat',
                       decoration: TextDecoration.underline,
                       fontSize: 23.0,
                       fontWeight: FontWeight.w900,

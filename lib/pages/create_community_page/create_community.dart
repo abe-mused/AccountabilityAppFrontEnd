@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/util/apis.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 class CreateCommunityWidget extends StatefulWidget {
   CreateCommunityWidget({super.key, required this.token});
@@ -13,7 +14,8 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
   TextEditingController userInput = TextEditingController();
 
   doCreateCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage = postCommunity(userInput.text, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage =
+        postCommunity(userInput.text, widget.token);
 
     successfulMessage.then((response) {
       if (response['status'] == true) {
@@ -39,7 +41,8 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: const Text("An error occured while attempting to create the community."),
+                content: const Text(
+                    "An error occured while attempting to create the community."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -73,8 +76,8 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
             setState(() {});
           },
           decoration: InputDecoration(
-            focusColor: Colors.white,
-            fillColor: Colors.grey,
+            //focusColor: Colors.white,
+            //fillColor: Colors.grey,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5.0),
             ),
@@ -86,11 +89,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
           onPressed: () async {
             doCreateCommunity();
           },
-          style: TextButton.styleFrom(
-            primary: Colors.white,
-            backgroundColor: Colors.blue,
-            onSurface: Colors.grey,
-          ),
+          style: AppThemes.primaryTextButtonStyle(context),
           child: const Text("Submit")),
     ]);
   }
