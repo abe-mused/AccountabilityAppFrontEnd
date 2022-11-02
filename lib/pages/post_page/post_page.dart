@@ -143,8 +143,8 @@ class PostPageState extends State<PostPage> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => ProfilePage(
-                                            username:
-                                                "u/${_comments[index]['creator']}",
+                                            username: _comments[index]
+                                                ['creator'],
                                           ),
                                         ),
                                       );
