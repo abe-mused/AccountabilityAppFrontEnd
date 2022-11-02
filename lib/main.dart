@@ -7,6 +7,7 @@ import 'package:linear/util/cognito/user_preferences.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:linear/constants/themeSettings.dart';
+
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final UserProvider userProvider = UserProvider();
