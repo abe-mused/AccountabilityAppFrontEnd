@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/util/apis.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 class CreateCommentWidget extends StatefulWidget {
   CreateCommentWidget({super.key, required this.token, required this.postId});
@@ -20,7 +21,8 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
       _isCreatingComment = true;
     });
 
-    final Future<Map<String, dynamic>> successfulMessage = createComment(commentBodyInput.text, widget.postId, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage =
+        createComment(commentBodyInput.text, widget.postId, widget.token);
 
     successfulMessage.then((response) {
       if (response['status'] == true) {
@@ -39,7 +41,8 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: const Text("An error occured while attempting to create the Comment."),
+                content: const Text(
+                    "An error occured while attempting to create the Comment."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -73,7 +76,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
             children: [
               const Text(
                 "create a comment!",
-                style: const TextStyle(fontSize: 24),
+                style: TextStyle(fontSize: 24),
               ),
               Container(
                 margin: const EdgeInsets.all(10),
@@ -86,8 +89,6 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
                     setState(() {});
                   },
                   decoration: InputDecoration(
-                    focusColor: Colors.white,
-                    fillColor: Colors.grey,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -95,7 +96,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
                   ),
                 ),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () async {
                   if (commentBodyInput.text != '') {
                     doCreateComment();
@@ -116,11 +117,6 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
                         });
                   }
                 },
-                style: TextButton.styleFrom(
-                  primary: Colors.white,
-                  backgroundColor: Colors.blue,
-                  onSurface: Colors.grey,
-                ),
                 child: const Text("create comment"),
               ),
             ],

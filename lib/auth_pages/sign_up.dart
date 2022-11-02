@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_in.dart';
 import 'package:linear/util/cognito/auth_util.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -71,15 +72,15 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 39, 78, 59),
+      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? AppThemes.darkTheme.primaryColor : AppThemes.lightTheme.primaryColor,
       body: Stack(
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 40, left: 40),
             child: Text("Create Your Account",
                 style: TextStyle(
-                    color: Colors.white,
                     fontSize: 50,
+                    color: Colors.white,
                     fontWeight: FontWeight.w300)),
           ),
           Container(
@@ -88,9 +89,12 @@ class _SignUpPageState extends State<SignUpPage> {
                 EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.7,
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+                color:
+                    MediaQuery.of(context).platformBrightness == Brightness.dark
+                        ? ThemeData.dark().primaryColor
+                        : Colors.white,
+                borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(50),
                     topLeft: Radius.circular(50))),
             child: SingleChildScrollView(
@@ -170,7 +174,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   Center(
                     child: ElevatedButton(
                         style: TextButton.styleFrom(
-                            backgroundColor: Colors.green,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 60)),
                         onPressed: () {

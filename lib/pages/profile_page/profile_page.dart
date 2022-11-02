@@ -64,16 +64,22 @@ class ProfilePageState extends State<ProfilePage> {
             ]
           ],
         ),
-      body: Center(child: GetProfileWidget(token: user?.idToken ?? "INVALID TOKEN",username: user?.username ?? "INVALID USERNAME")),
-      bottomNavigationBar: const LinearNavBar(),
+        body: Center(
+            child: GetProfileWidget(
+                token: user?.idToken ?? "INVALID TOKEN",
+                username: user?.username ?? "INVALID USERNAME")),
+        bottomNavigationBar: const LinearNavBar(),
       );
     } else {
-        return Scaffold(
+      return Scaffold(
         appBar: AppBar(
           title: const Text("Profile"),
           automaticallyImplyLeading: true,
         ),
-        body: Center(child: GetProfileWidget(token: user?.idToken ?? "INVALID TOKEN",username: widget.username)),
+        body: Center(
+            child: GetProfileWidget(
+                token: user?.idToken ?? "INVALID TOKEN",
+                username: widget.username)),
         bottomNavigationBar: const LinearNavBar(),
       );
     }

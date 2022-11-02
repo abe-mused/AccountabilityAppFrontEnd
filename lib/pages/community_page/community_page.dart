@@ -9,6 +9,7 @@ import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:linear/util/date_formatter.dart';
 import 'package:provider/provider.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 class CommunityPage extends StatefulWidget {
   CommunityPage({super.key, required this.communityName, required this.token});
@@ -21,7 +22,8 @@ class CommunityPage extends StatefulWidget {
 }
 
 class CommunityPageState extends State<CommunityPage> {
-  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+  Community _community =
+      Community(communityName: '', creationDate: 1, creator: '', members: []);
   List<dynamic> _posts = [];
 
   User? user = UserProvider().user;
@@ -38,7 +40,8 @@ class CommunityPageState extends State<CommunityPage> {
   }
 
   doGetCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage = getPostsForCommunity(widget.communityName, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage =
+        getPostsForCommunity(widget.communityName, widget.token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         Community community = Community.fromJson(response['community']);
@@ -72,7 +75,6 @@ class CommunityPageState extends State<CommunityPage> {
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserProvider>(context).user;
-    //  statusMember();
 
     if (_isloading) {
       return Scaffold(
@@ -103,7 +105,8 @@ class CommunityPageState extends State<CommunityPage> {
                   children: <Widget>[
                     Text(
                       "c/${_community.communityName}",
-                      style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -125,7 +128,8 @@ class CommunityPageState extends State<CommunityPage> {
                           setState(() {
                             _isUpdatingMembership = true;
                           });
-                          await joinAndLeave(widget.communityName, widget.token);
+                          await joinAndLeave(
+                              widget.communityName, widget.token);
 
                           setState(() {
                             if (_isMember) {
@@ -139,23 +143,16 @@ class CommunityPageState extends State<CommunityPage> {
                             _isUpdatingMembership = false;
                           });
                         },
-                        style: ElevatedButton.styleFrom(
-                          primary: _isMember ? Colors.white : Colors.blue,
-                          onPrimary: _isMember ? Colors.blue : Colors.white,
-                          side: BorderSide(color: Colors.blue, width: 1),
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                        ),
-                        child: Text(_isMember ? "Leave community" : "Join community"),
+                        style: _isMember
+                            ? AppThemes.secondaryTextButtonStyle(context)
+                            : null,
+                        child: Text(
+                            _isMember ? "Leave community" : "Join community"),
                       ),
                     if (_isUpdatingMembership)
                       ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.blue,
-                          onPrimary: Colors.white,
-                          side: BorderSide(color: Colors.blue, width: 1),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
@@ -164,7 +161,8 @@ class CommunityPageState extends State<CommunityPage> {
                           height: 10.0,
                           width: 10.0,
                           child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         ),
                       ),
@@ -173,12 +171,14 @@ class CommunityPageState extends State<CommunityPage> {
               ),
             ),
             const SizedBox(height: 10),
-            CreatePostWidget(token: widget.token, communityName: widget.communityName),
+            CreatePostWidget(
+                token: widget.token, communityName: widget.communityName),
             const SizedBox(height: 10),
             // ignore: prefer_is_empty
             if ((_posts.length) > 0) ...[
               Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                padding:
+                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
                 child: ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,

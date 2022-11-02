@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/util/apis.dart';
 
 class CreatePostWidget extends StatefulWidget {
@@ -89,8 +90,6 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                     setState(() {});
                   },
                   decoration: InputDecoration(
-                    focusColor: Colors.white,
-                    fillColor: Colors.grey,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -109,8 +108,6 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                     setState(() {});
                   },
                   decoration: InputDecoration(
-                    focusColor: Colors.white,
-                    fillColor: Colors.grey,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -118,7 +115,7 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                   ),
                 ),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () async {
                   if (postTitleInput.text != '' && postBodyInput.text != '') {
                     doCreatePost();
@@ -139,11 +136,6 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                         });
                   }
                 },
-                style: TextButton.styleFrom(
-                  primary: Colors.white,
-                  backgroundColor: Colors.blue,
-                  onSurface: Colors.grey,
-                ),
                 child: const Text("create post"),
               ),
             ],
