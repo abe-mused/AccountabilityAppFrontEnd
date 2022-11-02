@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:linear/model/community.dart';
 import 'package:linear/model/user.dart';
 import 'package:linear/pages/community_page/community_page.dart';
-import 'package:linear/pages/profile_page/get_profile.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart' as API;
 import 'package:linear/util/date_formatter.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 // ignore: must_be_immutable
 class SearchResultWidget extends StatefulWidget {
@@ -18,29 +18,44 @@ class SearchResultWidget extends StatefulWidget {
 
 class _SearchResultWidgetState extends State<SearchResultWidget> {
   TextEditingController userInput = TextEditingController();
-  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+  Community _community =
+      Community(communityName: '', creationDate: 1, creator: '', members: []);
   User _user = User(username: '', name: '', communities: []);
+  bool _isLoading = false;
+  bool _initialize = true;
 
   getSearchResults() {
-    _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+    _community =
+        Community(communityName: '', creationDate: 1, creator: '', members: []);
     _user = User(username: '', name: '', communities: []);
-    final Future<Map<String, dynamic>> apiResponse = API.getSearchResults(userInput.text, widget.token);
+    final Future<Map<String, dynamic>> apiResponse =
+        API.getSearchResults(userInput.text, widget.token);
     apiResponse.then((response) {
       if (response['status'] == true) {
-        // print("ABE SAYS: " + response['searchResults'].toString());
         if (!response['searchResults']['communities'].isEmpty) {
-          print("COMMUNIT IS: " + response['searchResults']['communities'][0].toString());
+          print("COMMUNITY IS: " +
+              response['searchResults']['communities'][0].toString());
 
-          Community community = Community.fromJson(response['searchResults']['communities'][0]);
+          Community community =
+              Community.fromJson(response['searchResults']['communities'][0]);
           print("objectobjectobject");
           setState(() {
             _community = community;
+            _isLoading = false;
+            _initialize = false;
           });
         }
         if (!response['searchResults']['users'].isEmpty) {
           User user = User.fromJson(response['searchResults']['users'][0]);
           setState(() {
             _user = user;
+            _isLoading = false;
+            _initialize = false;
+          });
+        } else {
+          setState(() {
+            _isLoading = false;
+            _initialize = false;
           });
         }
       } else {
@@ -49,10 +64,14 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: Text("No results found. Try creating the community ${userInput.text}."),
+                content: Text("No results found. Try searching again."),
                 actions: [
                   TextButton(
                       onPressed: () {
+                        setState(() {
+                          _isLoading = false;
+                          _initialize = false;
+                        });
                         Navigator.pop(context);
                       },
                       child: const Text("Ok"))
@@ -65,119 +84,138 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Container(
-        margin: const EdgeInsets.all(10),
-        child: TextFormField(
-          controller: userInput,
-          style: const TextStyle(
-            fontSize: 20,
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Align(
+            alignment: Alignment.centerLeft,
           ),
-          onChanged: (value) {
-            setState(() {});
-          },
-          decoration: InputDecoration(
-            focusColor: Colors.white,
-            fillColor: Colors.grey,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5.0),
-            ),
-            hintText: "Search for something...",
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () async {
-                getSearchResults();
-              },
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.blue,
+          Container(
+            margin: const EdgeInsets.all(10),
+            child: TextFormField(
+              controller: userInput,
+              style: const TextStyle(
+                fontSize: 20,
               ),
-            ),
-          ),
-        ),
-      ),
-      if (_community.communityName != '')
-        const Text(
-          "communities:",
-          style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      if (_community.communityName != '')
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.3,
-          width: MediaQuery.of(context).size.width,
-          child: Card(
-            margin: const EdgeInsets.only(top: 20.0),
-            child: Column(
-              children: <Widget>[
-                const SizedBox(height: 10),
-                Text(
-                  "c/${_community.communityName}",
-                  style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
+              onChanged: (value) {
+                setState(() {});
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  "Created on ${getFormattedDate(_community.creationDate)}",
-                  style: const TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  // ignore: unrelated_type_equality_checks
-                  "${_community.members.length} members",
-                  style: const TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CommunityPage(
-                          communityName: _community.communityName,
-                          token: widget.token,
-                        ),
-                      ),
-                    );
+                hintText: "Search for something...",
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () async {
+                    setState(() {
+                      _isLoading = true;
+                      _initialize = false;
+                    });
+                    getSearchResults();
                   },
-                  style: TextButton.styleFrom(
-                    primary: Colors.white,
+                  style: IconButton.styleFrom(
                     backgroundColor: Colors.blue,
                   ),
-                  child: const Text("visit community"),
                 ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          ),
-        ),
-      const SizedBox(height: 20),
-      if (_user.username != '')
-        const Text(
-          "Users:",
-          style: TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      if (_user.username != '')
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: Card(
-            child: TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(
-                      username: _user.username,
-                    ),
-                  ),
-                );
-              },
-              child: Text(
-                "u/${_user.username}",
-                style: const TextStyle(fontFamily: 'MonteSerrat', fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
           ),
-        ),
-      const SizedBox(height: 10),
-    ]);
+          if (_isLoading)
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(3.0),
+              child: Card(
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                child: Container(
+                  padding: const EdgeInsets.all(10.0),
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+          if (_community.communityName == '' &&
+              _user.username == '' &&
+              !_isLoading &&
+              !_initialize)
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(3.0),
+              child: Card(
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "No results found",
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+                    )),
+              ),
+            ),
+          if (_community.communityName != '')
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(3.0),
+              child: Card(
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CommunityPage(
+                            communityName: _community.communityName,
+                            token: widget.token,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "c/${_community.communityName}",
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          if (_user.username != '')
+            Container(
+              padding: const EdgeInsets.all(3.0),
+              width: MediaQuery.of(context).size.width,
+              child: Card(
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfilePage(
+                            username: _user.username,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "u/${_user.username}",
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          const SizedBox(height: 10),
+        ]);
   }
 }

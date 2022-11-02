@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/user.dart';
 import 'package:linear/pages/community_page/community_page.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 class CommunityListWidget extends StatelessWidget {
   const CommunityListWidget(
-      {super.key, required this.user, required this.communityLength, required this.token});
+      {super.key,
+      required this.user,
+      required this.communityLength,
+      required this.token});
 
   final User user;
-  final int ?communityLength;
+  final int? communityLength;
   final String token;
 
   @override
@@ -25,26 +29,35 @@ class CommunityListWidget extends StatelessWidget {
               margin: const EdgeInsets.only(top: 10.0),
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     TextButton(
-                      onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CommunityPage(
-                            communityName: user.communities![index][0]['communityName'],
-                            token: token,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CommunityPage(
+                                communityName: user.communities![index][0]
+                                    ['communityName'],
+                                token: token,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "c/${user.communities![index][0]['communityName']}",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w800,
                           ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "c/${user.communities![index][0]['communityName']}",
-                      style: const TextStyle(
-                          fontFamily: 'MonteSerrat', fontSize: 16),
-                      textAlign: TextAlign.left,
-                    )),
+                        )),
+                    if (user.username == user.communities![index][1]['creator'])
+                      Icon(
+                        Icons.admin_panel_settings,
+                        color: AppThemes.iconColor(context),
+                        size: 30.0,
+                      ),
                   ],
                 ),
               ),

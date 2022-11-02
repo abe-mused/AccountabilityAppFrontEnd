@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:linear/auth_pages/reset_password_new_password.dart';
 import 'package:linear/auth_pages/sign_up.dart';
 import 'package:linear/util/cognito/auth_util.dart';
+import 'package:linear/constants/themeSettings.dart';
 
 class ResetPasswordCodePage extends StatefulWidget {
   const ResetPasswordCodePage({Key? key, required this.email})
@@ -33,12 +33,12 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                 content: const Text(
                     "A password reset code has been sent succesfully. If you did not recieve a code check your spam folder or the email may not be registered."),
                 actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Ok"))
-              ],
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
               );
             });
       } else {
@@ -63,8 +63,8 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
   }
 
   doChangePassword() {
-    final Future<Map<String, dynamic>> successfulMessage =
-        auth.passwordReset(email: widget.email, code: code.text, password: password.text);
+    final Future<Map<String, dynamic>> successfulMessage = auth.passwordReset(
+        email: widget.email, code: code.text, password: password.text);
 
     successfulMessage.then((response) async {
       if (response['status'] == true) {
@@ -75,7 +75,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                 title: const Text("Success!"),
                 content: const Text(
                     "Your password has beem reset succesfully. You can now login with your new password."),
-                    actions: [
+                actions: [
                   TextButton(
                       onPressed: () {
                         Navigator.pop(context);
@@ -104,13 +104,15 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
             });
       }
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.greenAccent,
+      backgroundColor:
+          MediaQuery.of(context).platformBrightness == Brightness.dark
+              ? AppThemes.darkTheme.primaryColor
+              : AppThemes.lightTheme.primaryColor,
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -119,8 +121,8 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
               child: Text(
                 "Code Sent To Email",
                 style: TextStyle(
-                    color: Colors.white,
                     fontSize: 50,
+                    color: Colors.white,
                     fontWeight: FontWeight.w300),
               ),
             ),
@@ -131,158 +133,166 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
               ),
               width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.65,
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                  color: MediaQuery.of(context).platformBrightness ==
+                          Brightness.dark
+                      ? ThemeData.dark().primaryColor
+                      : Colors.white,
+                  borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(50),
                       topLeft: Radius.circular(50))),
               child: SingleChildScrollView(
                 child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Enter Code and New Password",
-                    style: TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  TextField(
-                  key: const Key('codeKey'),
-                  controller: code,
-                  decoration: const InputDecoration(
-                    hintText: "Password Reset Code",
-                  ),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Enter Code and New Password",
+                      style:
+                          TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    TextField(
+                      key: const Key('codeKey'),
+                      controller: code,
+                      decoration: const InputDecoration(
+                        hintText: "Password Reset Code",
+                      ),
+                    ),
+                    TextField(
+                      key: const Key('passwordKey'),
+                      controller: password,
+                      obscureText: hide,
+                      decoration: InputDecoration(
+                          hintText: "New Password",
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                hide = !hide;
+                              });
+                            },
+                            icon: hide
+                                ? const Icon(Icons.visibility_off)
+                                : const Icon(Icons.visibility),
+                          )),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    TextField(
+                      key: const Key('confirmPasswordKey'),
+                      controller: confirmPassword,
+                      obscureText: hide,
+                      decoration: InputDecoration(
+                          hintText: "Confirm Password",
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                hide = !hide;
+                              });
+                            },
+                            icon: hide
+                                ? const Icon(Icons.visibility_off)
+                                : const Icon(Icons.visibility),
+                          )),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Center(
+                      child: ElevatedButton(
+                          style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 60)),
+                          onPressed: () {
+                            RegExp passwordValidation = RegExp(
+                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+                            if (password.text.isEmpty ||
+                                confirmPassword.text.isEmpty ||
+                                code.text.isEmpty) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text("Error!"),
+                                      content: const Text(
+                                          "Please fill out all fields!"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("Ok"))
+                                      ],
+                                    );
+                                  });
+                            } else if (!passwordValidation
+                                .hasMatch(password.text)) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text("Error!"),
+                                      content: const Text(
+                                          "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("Ok"))
+                                      ],
+                                    );
+                                  });
+                            } else if (password.text != confirmPassword.text) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text("Error!"),
+                                      content: const Text(
+                                          "Passwords do not match each other, please try again."),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("Ok"))
+                                      ],
+                                    );
+                                  });
+                            } else {
+                              doChangePassword();
+                            }
+                          },
+                          child: const Text("Submit")),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                            key: const Key('resendCodeKey'),
+                            onPressed: () {
+                              doSendResetCode();
+                            },
+                            child: const Text("Resend")),
+                        const Text("code or"),
+                        TextButton(
+                            key: const Key('registerButtonKey'),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SignUpPage()));
+                            },
+                            child: const Text("Register")),
+                        const Text("instead?"),
+                      ],
+                    ),
+                  ],
                 ),
-                  TextField(
-                    key: const Key('passwordKey'),
-                    controller: password,
-                    obscureText: hide,
-                    decoration: InputDecoration(
-                        hintText: "New Password",
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              hide = !hide;
-                            });
-                          },
-                          icon: hide ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  TextField(
-                    key: const Key('confirmPasswordKey'),
-                    controller: confirmPassword,
-                    obscureText: hide,
-                    decoration: InputDecoration(
-                        hintText: "Confirm Password",
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              hide = !hide;
-                            });
-                          },
-                          icon: hide ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Center(
-                    child: ElevatedButton(
-                        style: TextButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 60)),
-                        onPressed: () {
-                          RegExp passwordValidation = RegExp(
-                              r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-                          if (password.text.isEmpty ||
-                              confirmPassword.text.isEmpty ||
-                              code.text.isEmpty) {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text("Error!"),
-                                    content:
-                                        const Text("Please fill out all fields!"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("Ok"))
-                                    ],
-                                  );
-                                });
-                          } else if (!passwordValidation.hasMatch(password.text)) {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text("Error!"),
-                                    content: const Text(
-                                        "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("Ok"))
-                                    ],
-                                  );
-                                });
-                          } else if (password.text != confirmPassword.text) {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text("Error!"),
-                                    content: const Text("Passwords do not match each other, please try again."),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("Ok"))
-                                    ],
-                                  );
-                                });
-                          } else {
-                            doChangePassword();
-                          }
-                        },
-                        child: const Text("Submit")),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                          key: const Key('resendCodeKey'),
-                          onPressed: () {
-                            //add code send here
-                            doSendResetCode();
-                          },
-                          child: const Text("Resend")),
-                      const Text("code or"),
-                      TextButton(
-                          key: const Key('registerButtonKey'),
-                        
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const SignUpPage()));
-                          },
-                          child: const Text("Register")),
-                      const Text("instead?"),
-                    ],
-                  ),
-                ],
-              ),
               ),
             )
           ],
