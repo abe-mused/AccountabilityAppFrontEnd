@@ -9,6 +9,8 @@ class User {
     required this.username,
     required this.name,
     required this.communities,
+    required this.followers,
+    required this.following
   });
 
   factory User.fromJson(Map<String, dynamic> item) {
@@ -18,9 +20,9 @@ class User {
       username: item['username'],
       name: item['name'],
       communities: item['communities'],
+      followers: item['followers'] ?? [],
+      following: item['following'] ?? [],
     );
-    user.followers = item['followers'];
-    user.followers = item['following'];
     return user;
   }
 }
