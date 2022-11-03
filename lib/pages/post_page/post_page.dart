@@ -129,7 +129,6 @@ class PostPageState extends State<PostPage> {
                       child: Column(
                         children: <Widget>[
                           Container(
-                            color: Colors.white,
                             padding: const EdgeInsets.all(10),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +165,6 @@ class PostPageState extends State<PostPage> {
                                       Text(
                                         "u/${_comments[index]['creator']}",
                                         style: const TextStyle(
-                                            fontFamily: 'MonteSerrat',
                                             fontWeight: FontWeight.bold,
                                             fontSize: 22),
                                       ),
@@ -187,14 +185,12 @@ class PostPageState extends State<PostPage> {
                             thickness: 0.6,
                             indent: 0,
                             endIndent: 0,
-                            color: Colors.black,
                           ),
                           Row(
                             children: [
                               Text(
                                 _comments[index]['body'],
-                                style: const TextStyle(
-                                    fontFamily: 'MonteSerrat', fontSize: 18),
+                                style: const TextStyle(fontSize: 18),
                                 textAlign: TextAlign.left,
                               ),
                             ],
