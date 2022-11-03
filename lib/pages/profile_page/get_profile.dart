@@ -23,7 +23,7 @@ class GetProfileWidget extends StatefulWidget {
 }
 
 class _GetProfileWidgetState extends State<GetProfileWidget> {
-  User _viewUser = User(username: '', name: '', communities: []);
+  User _viewUser = User(username: '', name: '', communities: [], followers: [], following: []);
   cognito_user.User? currentUser = UserProvider().user;
   List<dynamic> _post = [];
   List<dynamic> _likedPosts = [];
@@ -32,6 +32,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
 
   bool isLoading = true;
   bool isErrorFetchingUser = false;
+  bool _isUpdatingFollow = false;
 
   bool _isFollowing = false;
 
@@ -61,7 +62,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
         setState(() {
           _post = post;
           isLoading = false;
-          _isFollowing = user.followers!.contains(user.username);
+          _isFollowing = user.followers!.contains(currentUser!.username);
         });
 
         if (_post.isNotEmpty) {
@@ -169,18 +170,48 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                   ],
                 ),
               ),
-
-              if (!isViewingOwnProfile())
+              if (!_isUpdatingFollow && !isViewingOwnProfile())
                 ElevatedButton(
-                  onPressed: () {
-                    followAndUnfollow(widget.username, widget.token);
+                  onPressed: () async {
                     setState(() {
-                      _isFollowing = !_isFollowing;
-                    });
+                    _isUpdatingFollow = true;
+                  });
+                  await followAndUnfollow(widget.username, widget.token);
+                  setState(() {
+                    if (_isFollowing) {
+                      _viewUser.followers!.remove(currentUser!.username);
+                      _viewUser = _viewUser;
+                    } else {
+                       _viewUser.followers!.add(currentUser!.username);
+                       _viewUser = _viewUser;
+                    }
+                    _isFollowing = !_isFollowing;
+                    _isUpdatingFollow = false;
+                  });
                   },
-                  child: Text(_isFollowing ? 'Unfollow' : 'Follow'),
+                  style: _isFollowing
+                     ? AppThemes.secondaryTextButtonStyle(context)
+                     : null,
+                     child: Text(
+                        _isFollowing ? "Unfollow" : "Follow"),
                 ),
-
+                if (_isUpdatingFollow && !isViewingOwnProfile())
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ),
+                    child: const SizedBox(
+                      height: 10.0,
+                      width: 10.0,
+                      child: CircularProgressIndicator(
+                        valueColor:
+                           AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                    ),
+                  ),
               const SizedBox(height: 20.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,

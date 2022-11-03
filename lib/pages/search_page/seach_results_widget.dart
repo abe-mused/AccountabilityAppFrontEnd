@@ -20,14 +20,14 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
   TextEditingController userInput = TextEditingController();
   Community _community =
       Community(communityName: '', creationDate: 1, creator: '', members: []);
-  User _user = User(username: '', name: '', communities: []);
+  User _user = User(username: '', name: '', communities: [], followers: [], following: []);
   bool _isLoading = false;
   bool _initialize = true;
 
   getSearchResults() {
     _community =
         Community(communityName: '', creationDate: 1, creator: '', members: []);
-    _user = User(username: '', name: '', communities: []);
+    _user = User(username: '', name: '', communities: [], followers: [], following: []);
     final Future<Map<String, dynamic>> apiResponse =
         API.getSearchResults(userInput.text, widget.token);
     apiResponse.then((response) {
