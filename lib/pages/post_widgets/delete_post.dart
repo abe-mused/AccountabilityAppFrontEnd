@@ -61,7 +61,55 @@ class _DeletePostWidget extends State<DeletePostWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    if (widget.postId == '') {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return Container(
+      margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+      width: MediaQuery.of(context).size.width * 0.9,
+      child: Card(
+        margin: const EdgeInsets.only(top: 20.0),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget>[
+              if (widget.postId == '') ...[
+                PopupMenuButton(itemBuilder: (context) {
+                  return [
+                    const PopupMenuItem<int>(
+                      value: 0,
+                      child: Text("Delete"),
+                    ),
+                  ];
+                }, onSelected: (value) {
+                  if (value == 0) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Delete'),
+                        content: const Text(
+                            'Are you sure you want to delete the post?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Cancel'),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              doDeletePost();
+                            },
+                            child: const Text('Ok'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                }),
+              ]
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
