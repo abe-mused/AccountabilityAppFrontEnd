@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:linear/model/community.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/post_page/create_comment_widget.dart';
-import 'package:linear/pages/post_widgets/create_post.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
+import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:linear/util/date_formatter.dart';
 import 'package:provider/provider.dart';
+import 'package:linear/pages/common_widgets/user_icon.dart';
 
 class PostPage extends StatefulWidget {
   PostPage({super.key, required this.postId, required this.token});
@@ -45,9 +45,9 @@ class PostPageState extends State<PostPage> {
   }
 
   doGetPost() {
-    final Future<Map<String, dynamic>> successfulMessage =
+    final Future<Map<String, dynamic>> responseMessage =
         getPostWithComments(widget.postId, widget.token);
-    successfulMessage.then((response) {
+    responseMessage.then((response) {
       if (response['status'] == true) {
         response['post']['creationDate'] =
             int.parse(response['post']['creationDate']);
@@ -123,29 +123,81 @@ class PostPageState extends State<PostPage> {
                 return SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: Card(
-                    margin: const EdgeInsets.only(top: 10.0),
+                    margin: const EdgeInsets.only(top: 20.0),
                     child: Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: <Widget>[
-                          Text(
-                            "u/${_comments[index]['creator']}",
-                            style: const TextStyle(fontSize: 16),
-                            textAlign: TextAlign.left,
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: 60,
+                                  height: 60,
+                                  child: RawMaterialButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProfilePage(
+                                            username: _comments[index]
+                                                ['creator'],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: UserIcon(
+                                      username: _comments[index]['creator'],
+                                      radius: 45,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "u/${_comments[index]['creator']}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 22),
+                                      ),
+                                      Text(
+                                        getFormattedDate(int.parse(
+                                            _comments[index]['creationDate']
+                                                .toString())),
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          Text(
-                            getFormattedDate(int.parse(
-                                _comments[index]['creationDate'].toString())),
-                            style: const TextStyle(fontSize: 12),
-                            textAlign: TextAlign.center,
+                          const Divider(
+                            height: 10,
+                            thickness: 0.6,
+                            indent: 0,
+                            endIndent: 0,
                           ),
-                          const SizedBox(height: 10),
-                          Text(
-                            _comments[index]['body'],
-                            style: const TextStyle(fontSize: 16),
-                            textAlign: TextAlign.left,
+                          Row(
+                            children: [
+                              Text(
+                                _comments[index]['body'],
+                                style: const TextStyle(fontSize: 18),
+                                textAlign: TextAlign.left,
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(
+                            height: 20,
+                          ),
                         ],
                       ),
                     ),
