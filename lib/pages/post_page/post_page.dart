@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:linear/model/community.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/post_page/create_comment_widget.dart';
-import 'package:linear/pages/post_widgets/create_post.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/util/cognito/user.dart';
