@@ -22,7 +22,7 @@ class _DeletePostWidget extends State<DeletePostWidget> {
     });
 
     final Future<Map<String, dynamic>> successfulMessage =
-        deletePost(postId.text, widget.token);
+        deletePost(widget.postId, widget.token);
 
     successfulMessage.then((response) {
       if (response['status'] == true) {
@@ -95,8 +95,8 @@ class _DeletePostWidget extends State<DeletePostWidget> {
                       TextButton(
                         onPressed: () {
                           DeletePostWidget(
-                            postId: 'postId',
-                            token: 'token',
+                            postId: '',
+                            token: widget.token,
                           );
                         },
                         child: const Text('Yes'),
