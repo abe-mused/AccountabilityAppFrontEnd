@@ -120,7 +120,7 @@ class PostWidget extends StatelessWidget {
                                     token: token,
                                   );
                                 },
-                                child: const Text('Ok'),
+                                child: const Text('Yes'),
                               ),
                             ],
                           ),
