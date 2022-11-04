@@ -71,43 +71,42 @@ class _DeletePostWidget extends State<DeletePostWidget> {
         margin: const EdgeInsets.only(top: 20.0),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              if (widget.postId == '') ...[
-                PopupMenuButton(itemBuilder: (context) {
-                  return [
-                    const PopupMenuItem<int>(
-                      value: 0,
-                      child: Text("Delete"),
-                    ),
-                  ];
-                }, onSelected: (value) {
-                  if (value == 0) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Delete'),
-                        content: const Text(
-                            'Are you sure you want to delete the post?'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Cancel'),
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              doDeletePost();
-                            },
-                            child: const Text('Ok'),
-                          ),
-                        ],
+          child: Column(children: [
+            PopupMenuButton(itemBuilder: (context) {
+              return [
+                const PopupMenuItem<int>(
+                  value: 0,
+                  child: Text("Delete"),
+                ),
+              ];
+            }, onSelected: (value) {
+              if (value == 0) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text('Delete'),
+                    content: const Text(
+                        'Are you sure you want to delete this post?'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, 'Cancel'),
+                        child: const Text('Cancel'),
                       ),
-                    );
-                  }
-                }),
-              ]
-            ],
-          ),
+                      TextButton(
+                        onPressed: () {
+                          DeletePostWidget(
+                            postId: 'postId',
+                            token: 'token',
+                          );
+                        },
+                        child: const Text('Yes'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            }),
+          ]),
         ),
       ),
     );

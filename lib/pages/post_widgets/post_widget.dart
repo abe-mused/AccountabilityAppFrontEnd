@@ -116,7 +116,7 @@ class PostWidget extends StatelessWidget {
                               TextButton(
                                 onPressed: () {
                                   DeletePostWidget(
-                                    postId: post.body,
+                                    postId: post.title,
                                     token: token,
                                   );
                                 },
