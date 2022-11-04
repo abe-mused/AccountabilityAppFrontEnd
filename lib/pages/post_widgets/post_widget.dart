@@ -5,6 +5,7 @@ import 'package:linear/util/date_formatter.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
+import 'package:linear/pages/post_widgets/delete_post.dart';
 import 'package:linear/constants/themeSettings.dart';
 
 class PostWidget extends StatelessWidget {
@@ -46,24 +47,25 @@ class PostWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: RawMaterialButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProfilePage(
-                                  username: post.creator,
-                                ),
+                      width: 60,
+                      height: 60,
+                      child: RawMaterialButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfilePage(
+                                username: post.creator,
                               ),
-                            );
-                          },
-                          child: UserIcon(
-                            username: post.creator,
-                            radius: 45,
-                          ),
-                        )),
+                            ),
+                          );
+                        },
+                        child: UserIcon(
+                          username: post.creator,
+                          radius: 45,
+                        ),
+                      ),
+                    ),
                     const SizedBox(
                       width: 20,
                     ),
@@ -88,6 +90,19 @@ class PostWidget extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                         ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        DeletePostWidget(
+                          token: token,
+                          postId: post.postId,
+                        );
+                      },
+                      icon: const Icon(
+                        Icons
+                            .more_horiz, // when user clicks, a dialog will appear asking to delete post
+                        size: 30.0,
                       ),
                     ),
                   ],

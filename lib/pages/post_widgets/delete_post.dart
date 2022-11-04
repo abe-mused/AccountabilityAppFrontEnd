@@ -61,7 +61,7 @@ class _DeletePostWidget extends State<DeletePostWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.postId == '') {
+    if (_isDeletingPost) {
       return const Center(child: CircularProgressIndicator());
     }
     return Container(
@@ -72,7 +72,7 @@ class _DeletePostWidget extends State<DeletePostWidget> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
-            children: <Widget>[
+            children: [
               if (widget.postId == '') ...[
                 PopupMenuButton(itemBuilder: (context) {
                   return [
