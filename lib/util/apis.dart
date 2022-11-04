@@ -150,7 +150,7 @@ Future<Map<String, dynamic>> deletePost(String postId, String token) async {
   ).then(
     (response) {
       developer.log("Response status: ${response.statusCode}");
-      print("Response body create post: ${response.body}");
+      print("Response body delete post: ${response.body}");
       if (response.statusCode == 200) {
         print("Success!");
         return {'status': true, 'message': 'Post Succesfully Deleted.'};

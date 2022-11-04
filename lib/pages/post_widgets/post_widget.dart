@@ -87,24 +87,46 @@ class PostWidget extends StatelessWidget {
                           Text(
                             getFormattedDate(post.creationDate),
                             style: const TextStyle(fontSize: 12),
-                            textAlign: TextAlign.center,
+                            textAlign: TextAlign.left,
                           ),
                         ],
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        DeletePostWidget(
-                          token: token,
-                          postId: post.postId,
+                    PopupMenuButton(itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem<int>(
+                          value: 0,
+                          child: Text("Delete"),
+                        ),
+                      ];
+                    }, onSelected: (value) {
+                      if (value == 0) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Delete'),
+                            content: const Text(
+                                'Are you sure you want to delete this post?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  DeletePostWidget(
+                                    postId: post.body,
+                                    token: token,
+                                  );
+                                },
+                                child: const Text('Ok'),
+                              ),
+                            ],
+                          ),
                         );
-                      },
-                      icon: const Icon(
-                        Icons
-                            .more_horiz, // when user clicks, a dialog will appear asking to delete post
-                        size: 30.0,
-                      ),
-                    ),
+                      }
+                    }),
                   ],
                 ),
               ),
