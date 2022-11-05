@@ -9,6 +9,7 @@ import 'package:linear/model/post.dart';
 import 'package:linear/pages/profile_page/community_list.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:linear/pages/profile_page/follows_page/view_follows.dart';
 import 'package:linear/util/cognito/user.dart' as cognito_user;
 
 // ignore: must_be_immutable
@@ -116,8 +117,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                     ),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        //crossAxisAlignment: CrossAxisAlignment.start,
+                        //mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             "${_viewUser.followers?.length ?? 0}",
@@ -125,18 +126,29 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                 fontSize: 24, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
-                          const Text(
-                            "Followers",
-                            style: TextStyle(fontSize: 16),
-                            textAlign: TextAlign.left,
+                          TextButton(
+                           onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ViewFollowsPage(
+                                token: widget.token, username: _viewUser.username, user: _viewUser, type: "followers"
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "Followers", textAlign: TextAlign.left,
+                              style: TextStyle(fontSize: 16),    
+                            ),
                           ),
                         ],
                       ),
                     ),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        //crossAxisAlignment: CrossAxisAlignment.start,
+                        //mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             "${_viewUser.following?.length ?? 0}",
@@ -144,10 +156,21 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                 fontSize: 24, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
-                          const Text(
-                            "Following",
-                            style: TextStyle(fontSize: 16),
-                            textAlign: TextAlign.left,
+                          TextButton(
+                           onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ViewFollowsPage(
+                                token: widget.token, username: _viewUser.username, user: _viewUser, type: "following"
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "Following", textAlign: TextAlign.left,
+                              style: TextStyle(fontSize: 16),    
+                            ),
                           ),
                         ],
                       ),
