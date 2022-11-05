@@ -115,10 +115,8 @@ class PostWidget extends StatelessWidget {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  DeletePostWidget(
-                                    postId: post.postId,
-                                    token: token,
-                                  );
+                                  deletePost(post.postId, token);
+                                  Navigator.pop(context);
                                 },
                                 child: const Text('Yes'),
                               ),

@@ -95,7 +95,7 @@ class _DeletePostWidget extends State<DeletePostWidget> {
                       TextButton(
                         onPressed: () {
                           DeletePostWidget(
-                            postId: '',
+                            postId: widget.postId,
                             token: widget.token,
                           );
                         },
