@@ -8,14 +8,20 @@ import 'package:linear/util/apis.dart';
 import 'package:linear/constants/themeSettings.dart';
 
 class PostWidget extends StatelessWidget {
-  const PostWidget({super.key, required this.post, required this.liked, required this.onLike, required this.token});
+  const PostWidget(
+      {super.key,
+      required this.post,
+      required this.liked,
+      required this.onLike,
+      required this.token});
   final Post post;
   final String token;
   final bool liked;
   final VoidCallback onLike;
 
   likeUnlikePost() {
-    final Future<Map<String, dynamic>> successfulMessage = likePost(post.postId, token);
+    final Future<Map<String, dynamic>> successfulMessage =
+        likePost(post.postId, token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         onLike();
@@ -40,24 +46,25 @@ class PostWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: RawMaterialButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProfilePage(
-                                  username: post.creator,
-                                ),
+                      width: 60,
+                      height: 60,
+                      child: RawMaterialButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfilePage(
+                                username: post.creator,
                               ),
-                            );
-                          },
-                          child: UserIcon(
-                            username: post.creator,
-                            radius: 45,
-                          ),
-                        )),
+                            ),
+                          );
+                        },
+                        child: UserIcon(
+                          username: post.creator,
+                          radius: 45,
+                        ),
+                      ),
+                    ),
                     const SizedBox(
                       width: 20,
                     ),
@@ -67,24 +74,56 @@ class PostWidget extends StatelessWidget {
                         children: [
                           Text(
                             "c/${post.communityName}",
-                            style: const TextStyle(
-                            fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                             textAlign: TextAlign.left,
                           ),
                           Text(
                             "u/${post.creator}",
                             style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
+                                fontSize: 24, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.left,
                           ),
                           Text(
                             getFormattedDate(post.creationDate),
                             style: const TextStyle(fontSize: 12),
-                            textAlign: TextAlign.center,
+                            textAlign: TextAlign.left,
                           ),
                         ],
                       ),
                     ),
+                    PopupMenuButton(itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem<int>(
+                          value: 0,
+                          child: Text("Delete"),
+                        ),
+                      ];
+                    }, onSelected: (value) {
+                      if (value == 0) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Delete'),
+                            content: const Text(
+                                'Are you sure you want to delete this post?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  deletePost(post.postId, token);
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Yes'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    }),
                   ],
                 ),
               ),
@@ -110,7 +149,9 @@ class PostWidget extends StatelessWidget {
                               children: [
                                 Text(
                                   post.title,
-                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 5),
@@ -125,7 +166,8 @@ class PostWidget extends StatelessWidget {
                                           controller: scrollController,
                                           child: Text(
                                             post.body,
-                                            style: const TextStyle(fontSize: 16),
+                                            style:
+                                                const TextStyle(fontSize: 16),
                                             textAlign: TextAlign.left,
                                           ),
                                         ),
