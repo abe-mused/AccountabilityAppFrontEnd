@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:linear/model/community.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
+import 'package:linear/pages/goal_widgets/create_goal_widget.dart';
 import 'package:linear/pages/post_widgets/create_post.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/util/apis.dart';
@@ -170,6 +171,8 @@ class CommunityPageState extends State<CommunityPage> {
                 ),
               ),
             ),
+            const SizedBox(height: 10),
+            CreateGoalWidget(token: widget.token, communityName: widget.communityName),
             const SizedBox(height: 10),
             CreatePostWidget(
                 token: widget.token, communityName: widget.communityName),

@@ -6,38 +6,28 @@ import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:linear/pages/goal_widgets/goal_widget.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class GoalPage extends StatefulWidget {
+  const GoalPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<GoalPage> createState() => _GoalPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _GoalPageState extends State<GoalPage> {
   // int selected_icon = 0;
 
   @override
   Widget build(BuildContext context) {
     User? user = Provider.of<UserProvider>(context).user;
 
-    if (user == null || user.username == null) {
-      print("User is null in the homePage, redirecting to sign in");
-      Navigator.pushReplacementNamed(context, '/login');
-    } else {
-      print("User is not null in the homePage");
-      print("name is ${user.username} email is ${user.email} name is ${user.name}");
-    }
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Linear Home Page!"),
+        title: const Text("Linear Goal Page!"),
         elevation: 0.1,
         automaticallyImplyLeading: false,
+       
       ),
       body: Center(
-        child: HomePageContent(
-          token: user!.idToken,
-          username: user.username,
-        ),
       ),
       bottomNavigationBar: const LinearNavBar(),
     );
