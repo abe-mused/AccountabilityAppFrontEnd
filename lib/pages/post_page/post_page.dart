@@ -22,15 +22,7 @@ class PostPage extends StatefulWidget {
 }
 
 class PostPageState extends State<PostPage> {
-  Post _post = Post(
-      title: '',
-      body: '',
-      communityName: '',
-      postId: '',
-      creationDate: 1,
-      creator: '',
-      likes: [],
-      comments: []);
+  Post _post = Post(title: '', body: '', communityName: '', postId: '', creationDate: 1, creator: '', likes: [], comments: []);
   List<dynamic> _comments = [];
 
   User? user = UserProvider().user;
@@ -45,12 +37,10 @@ class PostPageState extends State<PostPage> {
   }
 
   doGetPost() {
-    final Future<Map<String, dynamic>> responseMessage =
-        getPostWithComments(widget.postId, widget.token);
+    final Future<Map<String, dynamic>> responseMessage = getPostWithComments(widget.postId, widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
-        response['post']['creationDate'] =
-            int.parse(response['post']['creationDate']);
+        response['post']['creationDate'] = int.parse(response['post']['creationDate']);
         Post post = Post.fromJson(response['post']);
         print("ABE SAYS" + post.toString());
         List<dynamic> likedPosts = [];
@@ -92,121 +82,123 @@ class PostPageState extends State<PostPage> {
       appBar: AppBar(
         title: const Text("Post"),
       ),
-      body: SingleChildScrollView(
-        // removes bottom overflow pixel error
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.height,
-              child: PostWidget(
-                liked: _likedPosts[0],
-                onLike: () {
-                  setState(() {
-                    _likedPosts[0] = !_likedPosts[0];
-                  });
-                },
-                token: widget.token,
-                post: _post,
+      body: RefreshIndicator(
+        child: SingleChildScrollView(
+          // removes bottom overflow pixel error
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.height,
+                child: PostWidget(
+                  liked: _likedPosts[0],
+                  onLike: () {
+                    setState(() {
+                      _likedPosts[0] = !_likedPosts[0];
+                    });
+                  },
+                  token: widget.token,
+                  post: _post,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            CreateCommentWidget(
-              token: widget.token,
-              postId: widget.postId,
-            ),
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: _comments.length,
-              itemBuilder: (context, index) {
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Card(
-                    margin: const EdgeInsets.only(top: 20.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: 60,
-                                  height: 60,
-                                  child: RawMaterialButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ProfilePage(
-                                            username: _comments[index]
-                                                ['creator'],
+              const SizedBox(height: 10),
+              CreateCommentWidget(
+                token: widget.token,
+                postId: widget.postId,
+              ),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: _comments.length,
+                itemBuilder: (context, index) {
+                  return SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Card(
+                      margin: const EdgeInsets.only(top: 20.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: 60,
+                                    height: 60,
+                                    child: RawMaterialButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ProfilePage(
+                                              username: _comments[index]['creator'],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                    child: UserIcon(
-                                      username: _comments[index]['creator'],
-                                      radius: 45,
+                                        );
+                                      },
+                                      child: UserIcon(
+                                        username: _comments[index]['creator'],
+                                        radius: 45,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "u/${_comments[index]['creator']}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 22),
-                                      ),
-                                      Text(
-                                        getFormattedDate(int.parse(
-                                            _comments[index]['creationDate']
-                                                .toString())),
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                    ],
+                                  const SizedBox(
+                                    width: 20,
                                   ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "u/${_comments[index]['creator']}",
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                                        ),
+                                        Text(
+                                          getFormattedDate(int.parse(_comments[index]['creationDate'].toString())),
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider(
+                              height: 10,
+                              thickness: 0.6,
+                              indent: 0,
+                              endIndent: 0,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  _comments[index]['body'],
+                                  style: const TextStyle(fontSize: 18),
+                                  textAlign: TextAlign.left,
                                 ),
                               ],
                             ),
-                          ),
-                          const Divider(
-                            height: 10,
-                            thickness: 0.6,
-                            indent: 0,
-                            endIndent: 0,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                _comments[index]['body'],
-                                style: const TextStyle(fontSize: 18),
-                                textAlign: TextAlign.left,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                        ],
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
+        onRefresh: () async {
+          setState(() {
+            _isloading = true;
+          });
+          doGetPost();
+        },
       ),
       bottomNavigationBar: const LinearNavBar(),
     );
