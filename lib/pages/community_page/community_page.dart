@@ -22,8 +22,7 @@ class CommunityPage extends StatefulWidget {
 }
 
 class CommunityPageState extends State<CommunityPage> {
-  Community _community =
-      Community(communityName: '', creationDate: 1, creator: '', members: []);
+  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
   List<dynamic> _posts = [];
 
   User? user = UserProvider().user;
@@ -40,8 +39,7 @@ class CommunityPageState extends State<CommunityPage> {
   }
 
   doGetCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage =
-        getPostsForCommunity(widget.communityName, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage = getPostsForCommunity(widget.communityName, widget.token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         Community community = Community.fromJson(response['community']);
@@ -91,127 +89,127 @@ class CommunityPageState extends State<CommunityPage> {
       appBar: AppBar(
         title: const Text("Community"),
       ),
-      body: SingleChildScrollView(
-        // removes bottom overflow pixel error
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.3,
-              width: MediaQuery.of(context).size.width,
-              child: Card(
-                margin: const EdgeInsets.only(top: 20.0),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      "c/${_community.communityName}",
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Created on ${getFormattedDate(_community.creationDate)}",
-                      style: const TextStyle(fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      // ignore: unrelated_type_equality_checks
-                      "${_community.members.length} members",
-                      style: const TextStyle(fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
-                    if (!_isUpdatingMembership)
-                      ElevatedButton(
-                        onPressed: () async {
-                          setState(() {
-                            _isUpdatingMembership = true;
-                          });
-                          await joinAndLeave(
-                              widget.communityName, widget.token);
+      body: RefreshIndicator(
+        child: SingleChildScrollView(
+          // removes bottom overflow pixel error
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.3,
+                width: MediaQuery.of(context).size.width,
+                child: Card(
+                  margin: const EdgeInsets.only(top: 20.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        "c/${_community.communityName}",
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        "Created on ${getFormattedDate(_community.creationDate)}",
+                        style: const TextStyle(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        // ignore: unrelated_type_equality_checks
+                        "${_community.members.length} members",
+                        style: const TextStyle(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      if (!_isUpdatingMembership)
+                        ElevatedButton(
+                          onPressed: () async {
+                            setState(() {
+                              _isUpdatingMembership = true;
+                            });
+                            await joinAndLeave(widget.communityName, widget.token);
 
+                            setState(() {
+                              if (_isMember) {
+                                _community.members.remove(user!.username);
+                                _community = _community;
+                              } else {
+                                _community.members.add(user!.username);
+                                _community = _community;
+                              }
+                              _isMember = !_isMember;
+                              _isUpdatingMembership = false;
+                            });
+                          },
+                          style: _isMember ? AppThemes.secondaryTextButtonStyle(context) : null,
+                          child: Text(_isMember ? "Leave community" : "Join community"),
+                        ),
+                      if (_isUpdatingMembership)
+                        ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
+                          ),
+                          child: const SizedBox(
+                            height: 10.0,
+                            width: 10.0,
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              CreatePostWidget(token: widget.token, communityName: widget.communityName),
+              const SizedBox(height: 10),
+              // ignore: prefer_is_empty
+              if ((_posts.length) > 0) ...[
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                  child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _posts.length,
+                    itemBuilder: (context, index) {
+                      return PostWidget(
+                        liked: _likedPosts[index],
+                        onLike: () {
                           setState(() {
-                            if (_isMember) {
-                              _community.members.remove(user!.username);
-                              _community = _community;
-                            } else {
-                              _community.members.add(user!.username);
-                              _community = _community;
-                            }
-                            _isMember = !_isMember;
-                            _isUpdatingMembership = false;
+                            _likedPosts[index] = !_likedPosts[index];
                           });
                         },
-                        style: _isMember
-                            ? AppThemes.secondaryTextButtonStyle(context)
-                            : null,
-                        child: Text(
-                            _isMember ? "Leave community" : "Join community"),
-                      ),
-                    if (_isUpdatingMembership)
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
+                        token: widget.token,
+                        post: Post(
+                          communityName: _posts[index]['community'],
+                          postId: _posts[index]['postId'],
+                          creator: _posts[index]['creator'],
+                          creationDate: int.parse(_posts[index]['creationDate']),
+                          title: _posts[index]['title'],
+                          body: _posts[index]['body'],
+                          likes: _posts[index]['likes'],
                         ),
-                        child: const SizedBox(
-                          height: 10.0,
-                          width: 10.0,
-                          child: CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        ),
-                      ),
-                  ],
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            CreatePostWidget(
-                token: widget.token, communityName: widget.communityName),
-            const SizedBox(height: 10),
-            // ignore: prefer_is_empty
-            if ((_posts.length) > 0) ...[
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: _posts.length,
-                  itemBuilder: (context, index) {
-                    return PostWidget(
-                      liked: _likedPosts[index],
-                      onLike: () {
-                        setState(() {
-                          _likedPosts[index] = !_likedPosts[index];
-                        });
-                      },
-                      token: widget.token,
-                      post: Post(
-                        communityName: _posts[index]['community'],
-                        postId: _posts[index]['postId'],
-                        creator: _posts[index]['creator'],
-                        creationDate: int.parse(_posts[index]['creationDate']),
-                        title: _posts[index]['title'],
-                        body: _posts[index]['body'],
-                        likes: _posts[index]['likes'],
-                      ),
-                    );
-                  },
+              ] else ...[
+                const Center(
+                  child: Text("No posts yet"),
                 ),
-              ),
-            ] else ...[
-              const Center(
-                child: Text("No posts yet"),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
+        onRefresh: () async {
+          setState(() {
+            _isloading = true;
+          });
+          doGetCommunity();
+        },
       ),
       bottomNavigationBar: const LinearNavBar(),
     );
