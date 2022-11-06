@@ -20,9 +20,8 @@ class PostWidget extends StatelessWidget {
   final VoidCallback onLike;
 
   likeUnlikePost() {
-    final Future<Map<String, dynamic>> successfulMessage =
-        likePost(post.postId, token);
-    successfulMessage.then((response) {
+    final Future<Map<String, dynamic>> responseMessage = likePost(post.postId, token);
+    responseMessage.then((response) {
       if (response['status'] == true) {
         onLike();
       } else {}
@@ -54,7 +53,7 @@ class PostWidget extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ProfilePage(
-                                username: post.creator,
+                              username: post.creator,
                               ),
                             ),
                           );
@@ -73,20 +72,16 @@ class PostWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "c/${post.communityName}",
-                            style: const TextStyle(fontSize: 16),
-                            textAlign: TextAlign.left,
+                            "c/${post.communityName}", 
+                            style: const TextStyle(fontSize: 16), textAlign: TextAlign.left,
                           ),
                           Text(
-                            "u/${post.creator}",
-                            style: const TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left,
+                            "u/${post.creator}", 
+                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.left,
                           ),
                           Text(
                             getFormattedDate(post.creationDate),
-                            style: const TextStyle(fontSize: 12),
-                            textAlign: TextAlign.left,
+                            style: const TextStyle(fontSize: 12), textAlign: TextAlign.left,
                           ),
                         ],
                       ),
@@ -104,13 +99,12 @@ class PostWidget extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
                             title: const Text('Delete'),
-                            content: const Text(
-                                'Are you sure you want to delete this post?'),
+                            content: const Text('Are you sure you want to delete this post?'),
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () =>
-                                    Navigator.pop(context, 'Cancel'),
-                                child: const Text('Cancel'),
+                                  Navigator.pop(context, 'Cancel'),
+                                  child: const Text('Cancel'),
                               ),
                               TextButton(
                                 onPressed: () {
@@ -150,8 +144,7 @@ class PostWidget extends StatelessWidget {
                                 Text(
                                   post.title,
                                   style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
+                                  fontSize: 20, fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 5),
@@ -167,7 +160,7 @@ class PostWidget extends StatelessWidget {
                                           child: Text(
                                             post.body,
                                             style:
-                                                const TextStyle(fontSize: 16),
+                                            const TextStyle(fontSize: 16),
                                             textAlign: TextAlign.left,
                                           ),
                                         ),
