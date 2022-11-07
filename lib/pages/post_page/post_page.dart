@@ -212,3 +212,44 @@ class PostPageState extends State<PostPage> {
     );
   }
 }
+
+class DeletePost extends StatefulWidget {
+  @override
+  _DeletePostState createState() => _DeletePostState();
+}
+
+class _DeletePostState extends State<DeletePost> {
+  List<String> list = List.generate(100, (i) => i.toString());
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        return MyItem(list[index], onDelete: () => removeItem(index));
+      },
+    );
+  }
+
+  void removeItem(int index) {
+    setState(() {
+      list = List.from(list)
+        ..removeAt(index);
+    });
+  }
+}
+
+class MyItem extends StatelessWidget {
+  final String title;
+  final VoidCallback onDelete;
+
+  const MyItem(this.title, {required this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      onTap: onDelete,
+    );
+  }
+}
