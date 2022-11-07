@@ -10,6 +10,7 @@ import 'package:linear/util/cognito/user_provider.dart';
 import 'package:linear/util/date_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:linear/constants/themeSettings.dart';
+import 'package:intl/intl.dart';
 
 class CommunityPage extends StatefulWidget {
   CommunityPage({super.key, required this.communityName, required this.token});
@@ -22,7 +23,12 @@ class CommunityPage extends StatefulWidget {
 }
 
 class CommunityPageState extends State<CommunityPage> {
-  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+  Community _community = Community(
+      communityName: '',
+      creationDate: 1,
+      creator: '',
+      members: [],
+      checkIns: []);
   List<dynamic> _posts = [];
 
   User? user = UserProvider().user;
@@ -32,14 +38,63 @@ class CommunityPageState extends State<CommunityPage> {
   bool _isUpdatingMembership = false;
   bool _isloading = true;
 
+  final String _currentDate = DateFormat("dd/MM/yyyy").format(DateTime.now());
+  bool _currentDateExists = false;
+  bool _currentUserCheckedIn = false;
+
   @override
   void initState() {
     super.initState();
     doGetCommunity();
   }
 
+  updateCommunity(Post newPost) {
+    //update check in
+    if (_isMember == true &&
+        _currentUserCheckedIn == false &&
+        _currentDateExists == true) {
+      setState(() {
+        _community.checkIns[0][1]['usersCheckedIn']
+            .add(user!.username.toString());
+        _community = _community;
+        _currentUserCheckedIn = true;
+      });
+    } else if (_isMember == true &&
+        _currentUserCheckedIn == false &&
+        _currentDateExists == false) {
+      setState(() {
+        _community.checkIns.insert(0, [
+          {"date": _currentDate.toString()},
+          {
+            "usersCheckedIn": [user!.username.toString()]
+          }
+        ]);
+        _community = _community;
+        _currentDateExists = true;
+        _currentUserCheckedIn = true;
+      });
+    }
+    //update postList
+    setState(() {
+      _posts.add({
+        'postId': newPost.postId,
+        'title': newPost.title,
+        'body': newPost.body,
+        'creator': user!.username,
+        'creationDate': newPost.creationDate.toString(),
+        'community': widget.communityName,
+        'likes': [],
+        'comments': [],
+      });
+      _likedPosts.add(false);
+      _posts = _posts;
+      _likedPosts = _likedPosts;
+    });
+  }
+
   doGetCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage = getPostsForCommunity(widget.communityName, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage =
+        getPostsForCommunity(widget.communityName, widget.token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         Community community = Community.fromJson(response['community']);
@@ -52,6 +107,22 @@ class CommunityPageState extends State<CommunityPage> {
         setState(() {
           _posts = post;
         });
+        if (_community.checkIns.isNotEmpty &&
+            _community.checkIns[0][0]['date'] == _currentDate) {
+          setState(() {
+            _currentDateExists = true;
+          });
+          if (_community.checkIns[0][1]['usersCheckedIn']
+              .contains(user!.username)) {
+            setState(() {
+              _currentUserCheckedIn = true;
+            });
+          }
+        }
+        print('currenct checked in:' +
+            _currentUserCheckedIn.toString() +
+            'username is ' +
+            user!.username);
 
         if (_posts.isNotEmpty) {
           List<dynamic> likedPosts = [];
@@ -104,7 +175,8 @@ class CommunityPageState extends State<CommunityPage> {
                     children: <Widget>[
                       Text(
                         "c/${_community.communityName}",
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 10),
                       Text(
@@ -120,13 +192,29 @@ class CommunityPageState extends State<CommunityPage> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 10),
+                      if (_currentDateExists) ...[
+                        Text(
+                          // ignore: unrelated_type_equality_checks
+                          "${_community.checkIns[0][1]['usersCheckedIn'].length} check-ins today",
+                          style: const TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      ] else ...[
+                        const Text(
+                          "0 check-ins today",
+                          style: TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                      const SizedBox(height: 10),
                       if (!_isUpdatingMembership)
                         ElevatedButton(
                           onPressed: () async {
                             setState(() {
                               _isUpdatingMembership = true;
                             });
-                            await joinAndLeave(widget.communityName, widget.token);
+                            await joinAndLeave(
+                                widget.communityName, widget.token);
 
                             setState(() {
                               if (_isMember) {
@@ -140,22 +228,27 @@ class CommunityPageState extends State<CommunityPage> {
                               _isUpdatingMembership = false;
                             });
                           },
-                          style: _isMember ? AppThemes.secondaryTextButtonStyle(context) : null,
-                          child: Text(_isMember ? "Leave community" : "Join community"),
+                          style: _isMember
+                              ? AppThemes.secondaryTextButtonStyle(context)
+                              : null,
+                          child: Text(
+                              _isMember ? "Leave community" : "Join community"),
                         ),
                       if (_isUpdatingMembership)
                         ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
                             shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
                             ),
                           ),
                           child: const SizedBox(
                             height: 10.0,
                             width: 10.0,
                             child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           ),
                         ),
@@ -164,12 +257,16 @@ class CommunityPageState extends State<CommunityPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              CreatePostWidget(token: widget.token, communityName: widget.communityName),
+              CreatePostWidget(
+                  token: widget.token,
+                  communityName: widget.communityName,
+                  onSuccess: (newPost) => updateCommunity(newPost)),
               const SizedBox(height: 10),
               // ignore: prefer_is_empty
               if ((_posts.length) > 0) ...[
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                  padding:
+                      const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
                   child: ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -187,7 +284,8 @@ class CommunityPageState extends State<CommunityPage> {
                           communityName: _posts[index]['community'],
                           postId: _posts[index]['postId'],
                           creator: _posts[index]['creator'],
-                          creationDate: int.parse(_posts[index]['creationDate']),
+                          creationDate:
+                              int.parse(_posts[index]['creationDate']),
                           title: _posts[index]['title'],
                           body: _posts[index]['body'],
                           likes: _posts[index]['likes'],

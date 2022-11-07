@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/util/apis.dart';
+import 'package:linear/model/post.dart';
+import 'dart:math';
 
 class CreatePostWidget extends StatefulWidget {
-  CreatePostWidget({super.key, required this.token, required this.communityName});
+  CreatePostWidget(
+      {super.key,
+      required this.token,
+      required this.communityName,
+      required this.onSuccess});
   String token;
   String communityName;
+  final Function onSuccess;
 
   @override
   State<CreatePostWidget> createState() => _CreatePostWidgetState();
@@ -15,6 +21,15 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
   TextEditingController postBodyInput = TextEditingController();
   TextEditingController postTitleInput = TextEditingController();
 
+  Post _post = Post(
+    communityName: '',
+    postId: '',
+    creator: '',
+    creationDate: 0,
+    title: '',
+    body: '',
+  );
+
   bool _isCreatingPost = false;
 
   doCreatePost() {
@@ -22,19 +37,42 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
       _isCreatingPost = true;
     });
 
-    final Future<Map<String, dynamic>> successfulMessage =
-        createPost(postTitleInput.text, postBodyInput.text, widget.communityName, widget.token);
+    final Future<Map<String, dynamic>> responseMessage = createPost(
+        postTitleInput.text,
+        postBodyInput.text,
+        widget.communityName,
+        widget.token);
 
-    successfulMessage.then((response) {
+    responseMessage.then((response) {
       if (response['status'] == true) {
+        Post post = Post(
+            communityName: widget.communityName,
+            postId: response['postId'],
+            creator: '',
+            creationDate: int.parse(response['creationDate']),
+            title: postTitleInput.text,
+            body: postBodyInput.text);
+
+        setState(() {
+          _post = post;
+        });
+
+        doCheckIn();
         postBodyInput.clear();
         postTitleInput.clear();
         showDialog(
             context: context,
             builder: (context) {
-              return const AlertDialog(
-                title: Text("Success!"),
-                content: Text("Post succesfully Created."),
+              return AlertDialog(
+                title: const Text("Success!"),
+                content: const Text("Post succesfully Created."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
               );
             });
       } else {
@@ -43,7 +81,8 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: const Text("An error occured while attempting to create the post."),
+                content: const Text(
+                    "An error occured while attempting to create the post."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -57,6 +96,34 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
       setState(() {
         _isCreatingPost = false;
       });
+    });
+  }
+
+  doCheckIn() {
+    final Future<Map<String, dynamic>> responseMessage =
+        checkIn(widget.communityName, widget.token);
+
+    responseMessage.then((response) {
+      if (response['status'] == true) {
+        widget.onSuccess(_post);
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Error!"),
+                content: const Text(
+                    "An error occured while attempting to check-in."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+      }
     });
   }
 

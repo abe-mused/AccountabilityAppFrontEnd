@@ -8,11 +8,25 @@ class CommunityListWidget extends StatelessWidget {
       {super.key,
       required this.user,
       required this.communityLength,
-      required this.token});
+      required this.token,
+      required this.currentEpoch});
 
   final User user;
   final int? communityLength;
   final String token;
+  final int currentEpoch;
+
+  computeStreak(firstStreakEpoch, lastStreakEpoch) {
+    firstStreakEpoch = int.parse(firstStreakEpoch);
+    lastStreakEpoch = int.parse(lastStreakEpoch);
+    if (currentEpoch - 86400000 < lastStreakEpoch) {
+      int streak = (lastStreakEpoch - firstStreakEpoch) ~/ 86400000;
+      print('streak: $streak');
+      return streak;
+    } else {
+      return 0;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +66,38 @@ class CommunityListWidget extends StatelessWidget {
                             fontWeight: FontWeight.w800,
                           ),
                         )),
-                    if (user.username == user.communities![index][1]['creator'])
-                      Icon(
-                        Icons.admin_panel_settings,
-                        color: AppThemes.iconColor(context),
-                        size: 30.0,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (computeStreak(
+                                user.communities![index][1]
+                                    ['first_streak_date'],
+                                user.communities![index][1]
+                                    ['last_streak_date']) >=
+                            3) ...[
+                          Text(
+                            "${computeStreak(user.communities![index][1]['first_streak_date'], user.communities![index][1]['last_streak_date'])}",
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          Icon(
+                            Icons.local_fire_department,
+                            color: AppThemes.iconColor(context),
+                            size: 30.0,
+                          ),
+                        ],
+                        if (user.username ==
+                            user.communities![index][1]['creator']) ...[
+                          Icon(
+                            Icons.admin_panel_settings,
+                            color: AppThemes.iconColor(context),
+                            size: 30.0,
+                          ),
+                        ],
+                      ],
+                    ),
                   ],
                 ),
               ),

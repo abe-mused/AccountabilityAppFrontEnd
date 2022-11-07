@@ -102,7 +102,10 @@ Future<Map<String, dynamic>> createPost(String postTitle, String postBody, Strin
       print("Response body create post: ${response.body}");
       if (response.statusCode == 200) {
         print("Success!");
-        return {'status': true, 'message': 'Post Succesfully Created.'};
+        var jsonResponse = jsonDecode(response.body);
+        var postId = jsonResponse['postId'];
+        var creationDate = jsonResponse['creationDate'];
+        return {'status': true, 'message': 'Post Succesfully Created.', 'postId':postId, 'creationDate': creationDate};
       } else {
         return {'status': false, 'message': 'An error occurred while creating the post, please try again.'};
       }
@@ -277,6 +280,27 @@ Future<Map<String, dynamic>> followAndUnfollow(String otherUser, String token) a
         return {'status': true, 'message': 'User followed/unfollowed'};
       } else {
         return {'status': false, 'message': 'An error occurred while following/unfollowing, please try again.'};
+      }
+    },
+  );
+}
+
+Future<Map<String, dynamic>> checkIn(String communityName, String token) async {
+  var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/checkin?communityName=$communityName';
+  return await http.patch(
+    Uri.parse(url),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  ).then(
+    (response) {
+      developer.log("Response status: ${response.statusCode}");
+      print("Response body: ${response.body}");
+      if (response.statusCode == 200) {
+        return {'status': true, 'message': 'User checked in'};
+      } else {
+        return {'status': false, 'message': 'An error occurred while checking in, please try again.'};
       }
     },
   );
