@@ -5,6 +5,7 @@ import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:linear/pages/profile_page/get_profile.dart';
 import 'package:linear/util/cognito/user_preferences.dart';
+import 'package:linear/util/cognito/auth_util.dart' as authUtil;
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key, this.username = ''}) : super(key: key);
@@ -19,6 +20,19 @@ class ProfilePageState extends State<ProfilePage> {
     final UserPreferences userPreferences = UserPreferences();
     userPreferences.clearPreferences();
     Navigator.pushReplacementNamed(context, '/login');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    authUtil.refreshTokenIfExpired().then((response) => {
+          if (response['refreshed'] == true)
+            {
+              Provider.of<UserProvider>(context, listen: false).setUser(response['user']),
+            }
+        },
+      );
   }
 
   @override
@@ -64,10 +78,7 @@ class ProfilePageState extends State<ProfilePage> {
             ]
           ],
         ),
-        body: Center(
-            child: GetProfileWidget(
-                token: user?.idToken ?? "INVALID TOKEN",
-                username: user?.username ?? "INVALID USERNAME")),
+        body: Center(child: GetProfileWidget(token: user?.idToken ?? "INVALID TOKEN", username: user?.username ?? "INVALID USERNAME")),
         bottomNavigationBar: const LinearNavBar(),
       );
     } else {
@@ -76,10 +87,7 @@ class ProfilePageState extends State<ProfilePage> {
           title: const Text("Profile"),
           automaticallyImplyLeading: true,
         ),
-        body: Center(
-            child: GetProfileWidget(
-                token: user?.idToken ?? "INVALID TOKEN",
-                username: widget.username)),
+        body: Center(child: GetProfileWidget(token: user?.idToken ?? "INVALID TOKEN", username: widget.username)),
         bottomNavigationBar: const LinearNavBar(),
       );
     }

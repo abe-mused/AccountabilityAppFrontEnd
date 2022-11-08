@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/reset_password_code.dart';
 import 'package:linear/auth_pages/sign_in.dart';
-import 'package:linear/util/cognito/auth_util.dart';
+import 'package:linear/util/cognito/auth_util.dart' as authUtil;
 import 'package:linear/constants/themeSettings.dart';
 
 class ResetPasswordPage extends StatefulWidget {
@@ -18,27 +18,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   final email = TextEditingController();
 
-  AuthUtility auth = AuthUtility();
-
   doSendResetCode() {
-    final Future<Map<String, dynamic>> successfulMessage =
-        auth.passwordResetCode(email: email.text);
+    final Future<Map<String, dynamic>> successfulMessage = authUtil.passwordResetCode(email: email.text);
 
     successfulMessage.then((response) {
       if (response['status'] == true) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    ResetPasswordCodePage(email: email.text)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPasswordCodePage(email: email.text)));
       } else {
         showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: const Text(
-                    "An error occured while sending the password reset code. Please try again later."),
+                content: const Text("An error occured while sending the password reset code. Please try again later."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -55,10 +47,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          MediaQuery.of(context).platformBrightness == Brightness.dark
-              ? AppThemes.darkTheme.primaryColor
-              : AppThemes.lightTheme.primaryColor,
+      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark
+          ? AppThemes.darkTheme.primaryColor
+          : AppThemes.lightTheme.primaryColor,
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -66,26 +57,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               padding: EdgeInsets.only(top: 50, left: 50),
               child: Text(
                 "Reset Your \nPassword",
-                style: TextStyle(
-                    fontSize: 50,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w300),
+                style: TextStyle(fontSize: 50, color: Colors.white, fontWeight: FontWeight.w300),
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-              margin: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.45),
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.45),
               width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.65,
               decoration: BoxDecoration(
-                  color: MediaQuery.of(context).platformBrightness ==
-                          Brightness.dark
-                      ? ThemeData.dark().primaryColor
-                      : Colors.white,
-                  borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      topLeft: Radius.circular(50))),
+                  color: MediaQuery.of(context).platformBrightness == Brightness.dark ? ThemeData.dark().primaryColor : Colors.white,
+                  borderRadius: const BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -107,20 +89,16 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   ),
                   Center(
                     child: ElevatedButton(
-                        style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 60)),
+                        style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
                         onPressed: () {
-                          RegExp emailValidation = RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+                          RegExp emailValidation = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
                           if (!emailValidation.hasMatch(email.text)) {
                             showDialog(
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
                                     title: Text("ERROR"),
-                                    content: const Text(
-                                        "Invalid email! please try again."),
+                                    content: const Text("Invalid email! please try again."),
                                     actions: [
                                       TextButton(
                                           onPressed: () {
@@ -141,10 +119,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     children: [
                       TextButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginPage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
                           },
                           child: const Text("Login instead?"))
                     ],
