@@ -22,7 +22,7 @@ class UserProvider with ChangeNotifier {
   Future<void> loadUserFromPreferences() async {
     User? user = await UserPreferences().getUser();
 
-    print("User loaded fomr preferences: ${user?.email} - ${user?.name} - ${user?.username} - ${user?.idToken}");
+    print("User loaded from preferences: username: ${user?.username}");
 
     if (user != null) {
       _user = user;

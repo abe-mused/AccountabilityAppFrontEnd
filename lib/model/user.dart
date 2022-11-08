@@ -10,12 +10,10 @@ class User {
     required this.name,
     required this.communities,
     required this.followers,
-    required this.following
+    required this.following,
   });
 
   factory User.fromJson(Map<String, dynamic> item) {
-    print("item followers is ${item['followers']}");
-    print("item following is ${item['following']}");
     User user = User(
       username: item['username'],
       name: item['name'],

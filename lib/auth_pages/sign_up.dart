@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_in.dart';
-import 'package:linear/util/cognito/auth_util.dart';
+import 'package:linear/util/cognito/auth_util.dart' as authUtil;
 import 'package:linear/constants/themeSettings.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -20,25 +20,20 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController name = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
-  AuthUtility auth = AuthUtility();
 
   // check for sign up through cognito
   doSignUp() {
-    final Future<Map<String, dynamic>> successfulMessage = auth.signUp(
-        email: email.text,
-        password: password.text,
-        username: username.text,
-        fullName: name.text);
+    final Future<Map<String, dynamic>> responseMessage =
+        authUtil.signUp(email: email.text, password: password.text, username: username.text, fullName: name.text);
 
-    successfulMessage.then((response) {
+    responseMessage.then((response) {
       if (response['status'] == true) {
         showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
                 title: const Text("Success!"),
-                content:
-                    const Text("You have successfully created an account!"),
+                content: const Text("You have successfully created an account!"),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -54,8 +49,7 @@ class _SignUpPageState extends State<SignUpPage> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: const Text(
-                    "An error occured while creating your account. Please try again later."),
+                content: const Text("An error occured while creating your account. Please try again later."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -72,31 +66,23 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? AppThemes.darkTheme.primaryColor : AppThemes.lightTheme.primaryColor,
+      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark
+          ? AppThemes.darkTheme.primaryColor
+          : AppThemes.lightTheme.primaryColor,
       body: Stack(
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 40, left: 40),
-            child: Text("Create Your Account",
-                style: TextStyle(
-                    fontSize: 50,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w300)),
+            child: Text("Create Your Account", style: TextStyle(fontSize: 50, color: Colors.white, fontWeight: FontWeight.w300)),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-            margin:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
+            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.7,
             decoration: BoxDecoration(
-                color:
-                    MediaQuery.of(context).platformBrightness == Brightness.dark
-                        ? ThemeData.dark().primaryColor
-                        : Colors.white,
-                borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(50),
-                    topLeft: Radius.circular(50))),
+                color: MediaQuery.of(context).platformBrightness == Brightness.dark ? ThemeData.dark().primaryColor : Colors.white,
+                borderRadius: const BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
             child: SingleChildScrollView(
               // removes bottom overflow pixel error
               physics: BouncingScrollPhysics(),
@@ -144,9 +130,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               hide = !hide;
                             });
                           },
-                          icon: hide
-                              ? const Icon(Icons.visibility_off)
-                              : const Icon(Icons.visibility),
+                          icon: hide ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
                         )),
                   ),
                   const SizedBox(
@@ -163,9 +147,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               hide = !hide;
                             });
                           },
-                          icon: hide
-                              ? const Icon(Icons.visibility_off)
-                              : const Icon(Icons.visibility),
+                          icon: hide ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
                         )),
                   ),
                   const SizedBox(
@@ -173,9 +155,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   Center(
                     child: ElevatedButton(
-                        style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 60)),
+                        style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
                         onPressed: () {
                           handleSignUpPress(context);
                         },
@@ -189,8 +169,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginPage()),
+                              MaterialPageRoute(builder: (context) => const LoginPage()),
                             );
                           },
                           child: const Text("Sign In?"))
@@ -207,15 +186,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void handleSignUpPress(BuildContext context) {
     RegExp usernameValidation = RegExp(r"^[A-Za-z][A-Za-z0-9_]{5,30}$");
-    RegExp emailValidation = RegExp(
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-    RegExp passwordValidation = RegExp(
-        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,20}$');
-    if (password.text.isEmpty ||
-        confirmPassword.text.isEmpty ||
-        email.text.isEmpty ||
-        username.text.isEmpty ||
-        name.text.isEmpty) {
+    RegExp emailValidation = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    RegExp passwordValidation = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,20}$');
+    if (password.text.isEmpty || confirmPassword.text.isEmpty || email.text.isEmpty || username.text.isEmpty || name.text.isEmpty) {
       showErrorDialog(context, "Please fill out all fields!");
     } else if (!emailValidation.hasMatch(email.text)) {
       showErrorDialog(context, "Invalid email! please try again.");
@@ -228,7 +201,7 @@ class _SignUpPageState extends State<SignUpPage> {
     } else if (password.text != confirmPassword.text) {
       showErrorDialog(context, "Passwords do not match!");
     } else {
-      doSignUp(); // calls cognito authentication
+      doSignUp();
     }
   }
 
