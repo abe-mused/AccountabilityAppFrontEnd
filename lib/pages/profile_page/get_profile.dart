@@ -11,6 +11,7 @@ import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:linear/pages/profile_page/follows_page/view_follows.dart';
 import 'package:linear/util/cognito/user.dart' as cognito_user;
+import 'package:linear/util/date_formatter.dart';
 
 // ignore: must_be_immutable
 class GetProfileWidget extends StatefulWidget {
@@ -83,18 +84,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
         });
       }
     });
-  }
-
-  computeStreak(firstStreakEpoch, lastStreakEpoch) {
-    firstStreakEpoch = int.parse(firstStreakEpoch);
-    lastStreakEpoch = int.parse(lastStreakEpoch);
-    if (currentEpoch - 86400000 < lastStreakEpoch) {
-      int streak = (lastStreakEpoch - firstStreakEpoch) ~/ 86400000;
-      print('streak: $streak');
-      return streak;
-    } else {
-      return 0;
-    }
   }
 
   @override
@@ -373,10 +362,11 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                                                               [
                                                                               1]
                                                                           [
-                                                                          'last_streak_date']) >=
+                                                                          'last_streak_date'],
+                                                                      currentEpoch) >=
                                                                   3) ...[
                                                                 Text(
-                                                                  "${computeStreak(_viewUser.communities![index][1]['first_streak_date'], _viewUser.communities![index][1]['last_streak_date'])}",
+                                                                  "${computeStreak(_viewUser.communities![index][1]['first_streak_date'], _viewUser.communities![index][1]['last_streak_date'], currentEpoch)}",
                                                                   style:
                                                                       const TextStyle(
                                                                     fontSize:

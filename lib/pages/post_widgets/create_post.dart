@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/model/post.dart';
-import 'dart:math';
 
 class CreatePostWidget extends StatefulWidget {
   CreatePostWidget(

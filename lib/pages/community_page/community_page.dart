@@ -50,30 +50,29 @@ class CommunityPageState extends State<CommunityPage> {
 
   updateCommunity(Post newPost) {
     //update check in
-    if (_isMember == true &&
-        _currentUserCheckedIn == false &&
-        _currentDateExists == true) {
-      setState(() {
-        _community.checkIns[0][1]['usersCheckedIn']
-            .add(user!.username.toString());
-        _community = _community;
-        _currentUserCheckedIn = true;
-      });
-    } else if (_isMember == true &&
-        _currentUserCheckedIn == false &&
-        _currentDateExists == false) {
-      setState(() {
-        _community.checkIns.insert(0, [
-          {"date": _currentDate.toString()},
-          {
-            "usersCheckedIn": [user!.username.toString()]
-          }
-        ]);
-        _community = _community;
-        _currentDateExists = true;
-        _currentUserCheckedIn = true;
-      });
+    if (_isMember && !_currentUserCheckedIn) {
+      if (_currentDateExists) {
+        setState(() {
+          _community.checkIns[0][1]['usersCheckedIn']
+              .add(user!.username.toString());
+          _community = _community;
+          _currentUserCheckedIn = true;
+        });
+      } else {
+        setState(() {
+          _community.checkIns.insert(0, [
+            {"date": _currentDate.toString()},
+            {
+              "usersCheckedIn": [user!.username.toString()]
+            }
+          ]);
+          _community = _community;
+          _currentDateExists = true;
+          _currentUserCheckedIn = true;
+        });
+      }
     }
+
     //update postList
     setState(() {
       _posts.add({
@@ -119,10 +118,6 @@ class CommunityPageState extends State<CommunityPage> {
             });
           }
         }
-        print('currenct checked in:' +
-            _currentUserCheckedIn.toString() +
-            'username is ' +
-            user!.username);
 
         if (_posts.isNotEmpty) {
           List<dynamic> likedPosts = [];
