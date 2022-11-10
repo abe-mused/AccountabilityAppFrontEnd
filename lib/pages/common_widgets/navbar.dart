@@ -20,6 +20,9 @@ class _LinearNavBarState extends State<LinearNavBar> {
       Navigator.pushReplacementNamed(context, '/search');
     }
     if (index == 2) {
+      Navigator.pushReplacementNamed(context, '/goals');
+    }
+    if (index == 3) {
       Navigator.pushReplacementNamed(context, '/profile');
     }
     setState(() {
@@ -33,6 +36,7 @@ class _LinearNavBarState extends State<LinearNavBar> {
     selected_icon = Provider.of<UserProvider>(context).selectedTab;
 
     return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
@@ -41,6 +45,10 @@ class _LinearNavBarState extends State<LinearNavBar> {
         BottomNavigationBarItem(
           icon: Icon(Icons.search),
           label: 'Search',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.track_changes_outlined),
+          label: 'Goals',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.account_circle_rounded),
