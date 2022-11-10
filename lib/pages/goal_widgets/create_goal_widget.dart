@@ -101,6 +101,7 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
                 margin: const EdgeInsets.all(10),
                 child: TextFormField(
                   controller: checkInGoalInput,
+                  keyboardType: TextInputType.number,
                   style: const TextStyle(
                     fontSize: 20,
                   ),
