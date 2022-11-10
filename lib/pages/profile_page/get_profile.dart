@@ -55,8 +55,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
           _viewUser = user;
         });
 
-        print("_viewUser.followers is ${_viewUser.followers}");
-
         List<dynamic> post = (response['posts']);
         setState(() {
           _post = post;

@@ -10,6 +10,7 @@ import 'package:linear/util/cognito/user_provider.dart';
 import 'package:linear/util/date_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:linear/constants/themeSettings.dart';
+import 'package:linear/util/cognito/auth_util.dart' as authUtil;
 
 class CommunityPage extends StatefulWidget {
   CommunityPage({super.key, required this.communityName, required this.token});
@@ -35,6 +36,15 @@ class CommunityPageState extends State<CommunityPage> {
   @override
   void initState() {
     super.initState();
+
+    authUtil.refreshTokenIfExpired().then((response) => {
+          if (response['refreshed'] == true)
+            {
+              Provider.of<UserProvider>(context, listen: false).setUser(response['user']),
+            }
+        },
+      );
+
     doGetCommunity();
   }
 
@@ -43,7 +53,7 @@ class CommunityPageState extends State<CommunityPage> {
     successfulMessage.then((response) {
       if (response['status'] == true) {
         Community community = Community.fromJson(response['community']);
-        print("ABE SAYS" + community.toString());
+
         setState(() {
           _community = community;
         });

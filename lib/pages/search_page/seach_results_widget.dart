@@ -18,27 +18,19 @@ class SearchResultWidget extends StatefulWidget {
 
 class _SearchResultWidgetState extends State<SearchResultWidget> {
   TextEditingController userInput = TextEditingController();
-  Community _community =
-      Community(communityName: '', creationDate: 1, creator: '', members: []);
+  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
   User _user = User(username: '', name: '', communities: [], followers: [], following: []);
   bool _isLoading = false;
   bool _initialize = true;
 
   getSearchResults() {
-    _community =
-        Community(communityName: '', creationDate: 1, creator: '', members: []);
+    _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
     _user = User(username: '', name: '', communities: [], followers: [], following: []);
-    final Future<Map<String, dynamic>> apiResponse =
-        API.getSearchResults(userInput.text, widget.token);
+    final Future<Map<String, dynamic>> apiResponse = API.getSearchResults(userInput.text, widget.token);
     apiResponse.then((response) {
       if (response['status'] == true) {
         if (!response['searchResults']['communities'].isEmpty) {
-          print("COMMUNITY IS: " +
-              response['searchResults']['communities'][0].toString());
-
-          Community community =
-              Community.fromJson(response['searchResults']['communities'][0]);
-          print("objectobjectobject");
+          Community community = Community.fromJson(response['searchResults']['communities'][0]);
           setState(() {
             _community = community;
             _isLoading = false;
@@ -52,8 +44,7 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
             _isLoading = false;
             _initialize = false;
           });
-        }
-        else{
+        } else {
           setState(() {
             _isLoading = false;
             _initialize = false;
@@ -65,14 +56,13 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: Text(
-                    "No results found. Try searching again."),
+                content: const Text("No results found. Try searching again."),
                 actions: [
                   TextButton(
                       onPressed: () {
-                         setState(() {
-                           _isLoading = false;
-                           _initialize = false;
+                        setState(() {
+                          _isLoading = false;
+                          _initialize = false;
                         });
                         Navigator.pop(context);
                       },
@@ -84,15 +74,12 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
     });
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-         const Align(
-                  alignment: Alignment.centerLeft,
-              ),
+    return Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Align(
+        alignment: Alignment.centerLeft,
+      ),
       Container(
         margin: const EdgeInsets.all(10),
         child: TextFormField(
@@ -111,10 +98,10 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
               onPressed: () async {
-                 setState(() {
+                setState(() {
                   _isLoading = true;
                   _initialize = false;
-                 });
+                });
                 getSearchResults();
               },
               style: IconButton.styleFrom(
@@ -125,85 +112,91 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
         ),
       ),
       if (_isLoading)
-       Container( 
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(3.0),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.all(3.0),
           child: Card(
             margin: EdgeInsets.symmetric(horizontal: 10),
             child: Container(
               padding: const EdgeInsets.all(10.0),
-              alignment: Alignment.center, 
+              alignment: Alignment.center,
               child: CircularProgressIndicator(),
             ),
           ),
         ),
       if (_community.communityName == '' && _user.username == '' && !_isLoading && !_initialize)
-       Container( 
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(3.0),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.all(3.0),
           child: Card(
             margin: EdgeInsets.symmetric(horizontal: 10),
             child: Container(
-              padding: const EdgeInsets.all(10.0),
-              alignment: Alignment.centerLeft, 
-              child: Text("No results found",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),)
+                padding: const EdgeInsets.all(10.0),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "No results found",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+                )),
           ),
         ),
-      ),
       if (_community.communityName != '')
-      Container( 
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(3.0),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.all(3.0),
           child: Card(
             margin: EdgeInsets.symmetric(horizontal: 10),
             child: Container(
-              alignment: Alignment.centerLeft, 
+              alignment: Alignment.centerLeft,
               child: TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CommunityPage(
-                          communityName: _community.communityName,
-                          token: widget.token,
-                        ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CommunityPage(
+                        communityName: _community.communityName,
+                        token: widget.token,
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  "c/${_community.communityName}",
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
                   ),
-                );
-              },
-              child: Text(
-                "c/${_community.communityName}", textAlign: TextAlign.left,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500,),
+                ),
               ),
             ),
           ),
         ),
-      ),
       if (_user.username != '')
         Container(
           padding: const EdgeInsets.all(3.0),
           width: MediaQuery.of(context).size.width,
-         child: Card(
+          child: Card(
             margin: EdgeInsets.symmetric(horizontal: 10),
             child: Container(
-              alignment: Alignment.centerLeft, 
+              alignment: Alignment.centerLeft,
               child: TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(
-                      username: _user.username,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                        username: _user.username,
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: Text(
-                "u/${_user.username}", textAlign: TextAlign.left,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+                  );
+                },
+                child: Text(
+                  "u/${_user.username}",
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+                ),
               ),
             ),
-          ),
           ),
         ),
       const SizedBox(height: 10),

@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -15,14 +14,11 @@ Future<Map<String, dynamic>> postCommunity(String communityName, String token) a
     },
   ).then(
     (response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}");
       if (response.statusCode == 200) {
-        print("Success!");
         return {'status': true, 'message': 'Community Succesfully Created.'};
-      } else if('${response.body}' == '{"message":"The community already exists!"}'){
-         return {'status': false, 'message': 'The community already exists!'};
-      }else {
+      } else if (response.body == '{"message":"The community already exists!"}') {
+        return {'status': false, 'message': 'The community already exists!'};
+      } else {
         return {'status': false, 'message': 'An error occurred while creating the community, please try again.'};
       }
     },
@@ -39,8 +35,6 @@ Future<Map<String, dynamic>> getSearchResults(String searchTerm, String token) a
         "Content-Type": "application/json",
       },
     ).then((response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}");
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         return {'status': true, 'message': 'results returned', 'searchResults': jsonResponse};
@@ -63,14 +57,11 @@ Future<Map<String, dynamic>> getProfile(String username, String token) async {
         "Content-Type": "application/json",
       },
     ).then((response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}");
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         var user = jsonResponse['user'];
         var posts = jsonResponse['posts'];
         if (user != null) {
-          print("Success!: $user");
           return {'status': true, 'message': 'User Succesfully Found.', 'user': user, 'posts': posts};
         }
       }
@@ -78,7 +69,6 @@ Future<Map<String, dynamic>> getProfile(String username, String token) async {
     });
   } catch (e) {
     print(e);
-    print('User[] is null');
     return {'status': false, 'message': 'User not found.'};
   }
 }
@@ -98,10 +88,7 @@ Future<Map<String, dynamic>> createPost(String postTitle, String postBody, Strin
     },
   ).then(
     (response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body create post: ${response.body}");
       if (response.statusCode == 200) {
-        print("Success!");
         return {'status': true, 'message': 'Post Succesfully Created.'};
       } else {
         return {'status': false, 'message': 'An error occurred while creating the post, please try again.'};
@@ -120,8 +107,6 @@ Future<Map<String, dynamic>> likePost(String postId, String token) async {
         "Content-Type": "application/json",
       },
     ).then((response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body likeUnlike: ${response.body}");
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         var liked = jsonResponse['liked'];
@@ -139,7 +124,6 @@ Future<Map<String, dynamic>> likePost(String postId, String token) async {
 }
 
 Future<Map<String, dynamic>> getPostsForCommunity(String communityName, String token) async {
-  print("communityName is " + communityName);
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community?communityName=$communityName';
   try {
     return await http.get(
@@ -149,8 +133,6 @@ Future<Map<String, dynamic>> getPostsForCommunity(String communityName, String t
         "Content-Type": "application/json",
       },
     ).then((response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body postsForCommunity: ${response.body}");
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         var community = jsonResponse['community'];
@@ -166,13 +148,11 @@ Future<Map<String, dynamic>> getPostsForCommunity(String communityName, String t
     });
   } catch (e) {
     print(e);
-    print('Communuity[] is null');
     return {'status': false, 'message': 'Community not found.'};
   }
 }
 
 Future<Map<String, dynamic>> getPostWithComments(String postId, String token) async {
-  print("postId is " + postId);
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post?postId=$postId';
   try {
     return await http.get(
@@ -182,8 +162,6 @@ Future<Map<String, dynamic>> getPostWithComments(String postId, String token) as
         "Content-Type": "application/json",
       },
     ).then((response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body getPostWithComments: ${response.body}");
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         var comments = jsonResponse['comments'];
@@ -199,7 +177,6 @@ Future<Map<String, dynamic>> getPostWithComments(String postId, String token) as
     });
   } catch (e) {
     print(e);
-    print('Communuity[] is null');
     return {'status': false, 'message': 'Community not found.'};
   }
 }
@@ -218,10 +195,7 @@ Future<Map<String, dynamic>> createComment(String commentBody, String postId, St
     },
   ).then(
     (response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body create comment: ${response.body}");
       if (response.statusCode == 200) {
-        print("Success!");
         return {'status': true, 'message': 'comment Succesfully Created.'};
       } else {
         return {'status': false, 'message': 'An error occurred while creating the comment, please try again.'};
@@ -231,7 +205,6 @@ Future<Map<String, dynamic>> createComment(String commentBody, String postId, St
 }
 
 Future<Map<String, dynamic>> joinAndLeave(String communityName, String token) async {
-  print("Anabelle says communityName is " + communityName);
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/join?communityName=$communityName';
   return await http.patch(
     Uri.parse(url),
@@ -244,10 +217,7 @@ Future<Map<String, dynamic>> joinAndLeave(String communityName, String token) as
     },
   ).then(
     (response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}");
       if (response.statusCode == 200) {
-        print("Success!");
         return {'status': true, 'message': 'Community joined/left'};
       } else {
         return {'status': false, 'message': 'An error occurred while joining/leaving, please try again.'};
@@ -257,7 +227,6 @@ Future<Map<String, dynamic>> joinAndLeave(String communityName, String token) as
 }
 
 Future<Map<String, dynamic>> followAndUnfollow(String otherUser, String token) async {
-  print("Anabelle says otherUser is " + otherUser);
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/follow?otherUser=$otherUser';
   return await http.patch(
     Uri.parse(url),
@@ -270,10 +239,7 @@ Future<Map<String, dynamic>> followAndUnfollow(String otherUser, String token) a
     },
   ).then(
     (response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}");
       if (response.statusCode == 200) {
-        print("Success!");
         return {'status': true, 'message': 'User followed/unfollowed'};
       } else {
         return {'status': false, 'message': 'An error occurred while following/unfollowing, please try again.'};
