@@ -89,7 +89,10 @@ Future<Map<String, dynamic>> createPost(String postTitle, String postBody, Strin
   ).then(
     (response) {
       if (response.statusCode == 200) {
-        return {'status': true, 'message': 'Post Succesfully Created.'};
+        var jsonResponse = jsonDecode(response.body);
+        var postId = jsonResponse['postId'];
+        var creationDate = jsonResponse['creationDate'];
+        return {'status': true, 'message': 'Post Succesfully Created.', 'postId':postId, 'creationDate': creationDate};
       } else {
         return {'status': false, 'message': 'An error occurred while creating the post, please try again.'};
       }

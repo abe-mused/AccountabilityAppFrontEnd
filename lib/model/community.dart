@@ -1,11 +1,11 @@
 class Community {
   String communityName;
-  Map<int, int>? dailyCheckIns;
   String creator;
   int creationDate;
   List<dynamic> members;
+  List<dynamic> checkIns;
 
-  Community({required this.communityName, required this.creator, required this.creationDate, required this.members});
+  Community({required this.communityName, required this.creator, required this.creationDate, required this.members, required this.checkIns});
 
   factory Community.fromJson(Map<String, dynamic> item) {
     Community community = Community(
@@ -13,10 +13,8 @@ class Community {
       creator: item['creator'],
       creationDate: item['creationDate'],
       members: item['members'] ?? [],
+      checkIns: item['checkIns'] ?? [],
     );
-    if (item['dailyCheckIns'] != null) {
-      community.dailyCheckIns = item['dailyCheckIns'];
-    }
     return community;
   }
 }

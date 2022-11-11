@@ -11,6 +11,7 @@ import 'package:linear/util/date_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/util/cognito/auth_util.dart' as authUtil;
+import 'package:intl/intl.dart';
 
 class CommunityPage extends StatefulWidget {
   CommunityPage({super.key, required this.communityName, required this.token});
@@ -23,7 +24,7 @@ class CommunityPage extends StatefulWidget {
 }
 
 class CommunityPageState extends State<CommunityPage> {
-  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: [], checkIns: []);
   List<dynamic> _posts = [];
 
   User? user = UserProvider().user;
@@ -32,6 +33,9 @@ class CommunityPageState extends State<CommunityPage> {
 
   bool _isUpdatingMembership = false;
   bool _isloading = true;
+  final String _currentDate = DateFormat("dd/MM/yyyy").format(DateTime.now());
+  bool _currentDateExists = false;
+  bool _currentUserCheckedIn = false;
 
   @override
   void initState() {
@@ -48,6 +52,49 @@ class CommunityPageState extends State<CommunityPage> {
     doGetCommunity();
   }
 
+  updateCommunity(Post newPost) {
+    //update check in
+    if (_isMember && !_currentUserCheckedIn) {
+      if (_currentDateExists) {
+        setState(() {
+          _community.checkIns[0][1]['usersCheckedIn']
+              .add(user!.username.toString());
+          _community = _community;
+          _currentUserCheckedIn = true;
+        });
+      } else {
+        setState(() {
+          _community.checkIns.insert(0, [
+            {"date": _currentDate.toString()},
+            {
+              "usersCheckedIn": [user!.username.toString()]
+            }
+          ]);
+          _community = _community;
+          _currentDateExists = true;
+          _currentUserCheckedIn = true;
+        });
+      }
+    }
+
+    //update postList
+    setState(() {
+      _posts.add({
+        'postId': newPost.postId,
+        'title': newPost.title,
+        'body': newPost.body,
+        'creator': user!.username,
+        'creationDate': newPost.creationDate.toString(),
+        'community': widget.communityName,
+        'likes': [],
+        'comments': [],
+      });
+      _likedPosts.add(false);
+      _posts = _posts;
+      _likedPosts = _likedPosts;
+    });
+  }
+
   doGetCommunity() {
     final Future<Map<String, dynamic>> successfulMessage = getPostsForCommunity(widget.communityName, widget.token);
     successfulMessage.then((response) {
@@ -62,6 +109,18 @@ class CommunityPageState extends State<CommunityPage> {
         setState(() {
           _posts = post;
         });
+        if (_community.checkIns.isNotEmpty &&
+            _community.checkIns[0][0]['date'] == _currentDate) {
+          setState(() {
+            _currentDateExists = true;
+          });
+          if (_community.checkIns[0][1]['usersCheckedIn']
+              .contains(user!.username)) {
+            setState(() {
+              _currentUserCheckedIn = true;
+            });
+          }
+        }
 
         if (_posts.isNotEmpty) {
           List<dynamic> likedPosts = [];
@@ -130,6 +189,21 @@ class CommunityPageState extends State<CommunityPage> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 10),
+                      if (_currentDateExists) ...[
+                        Text(
+                          // ignore: unrelated_type_equality_checks
+                          "${_community.checkIns[0][1]['usersCheckedIn'].length} check-ins today",
+                          style: const TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      ] else ...[
+                        const Text(
+                          "0 check-ins today",
+                          style: TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                      const SizedBox(height: 10),
                       if (!_isUpdatingMembership)
                         ElevatedButton(
                           onPressed: () async {
@@ -174,7 +248,7 @@ class CommunityPageState extends State<CommunityPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              CreatePostWidget(token: widget.token, communityName: widget.communityName),
+              CreatePostWidget(token: widget.token, communityName: widget.communityName, onSuccess: (newPost) => updateCommunity(newPost)),
               const SizedBox(height: 10),
               // ignore: prefer_is_empty
               if ((_posts.length) > 0) ...[
