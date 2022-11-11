@@ -37,9 +37,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 actions: [
                   TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
                       },
-                      child: const Text("Ok"))
+                      child: const Text("Login"))
                 ],
               );
             });
