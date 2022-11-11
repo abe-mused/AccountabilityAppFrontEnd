@@ -63,7 +63,11 @@ Future<Map<String, dynamic>> signUp({
       password,
       userAttributes: userAttributes,
     );
-    //TODO: add exception handling for user already exists
+  } on CognitoClientException catch (e) {
+    print("An error occurred while creating the user's account:  $e");
+    if(e.message == 'User already exists') {
+      return {'status': false, 'message': 'An account with the provided username already exists, please use a different username or login.'};
+    }
   } catch (e) {
     print("An error occurred while creating the user's account:  $e");
     return {'status': false, 'message': 'An error occurred while creating the account, please try again.'};
