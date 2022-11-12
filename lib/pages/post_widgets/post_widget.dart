@@ -17,12 +17,15 @@ class PostWidget extends StatefulWidget {
       required this.liked,
       required this.onLike,
       required this.token,
-      required this.onDelete});
+      required this.onDelete,
+      required this.route
+      });
   final Post post;
   final String token;
   final bool liked;
   final VoidCallback onLike;
   final VoidCallback onDelete;
+  final Widget route;
 
   @override
   State<StatefulWidget> createState() => _PostWidget();
@@ -226,6 +229,7 @@ cognito_user.User? user = UserProvider().user;
                                   builder: (context) => PostPage(
                                     postId: widget.post.postId,
                                     token: widget.token,
+                                    route: widget.route,
                                   ),
                                 ),
                               );

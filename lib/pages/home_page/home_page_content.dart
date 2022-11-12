@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linear/pages/home_page/home_page.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/model/post.dart';
@@ -105,7 +106,7 @@ class _HomePageContentState extends State<HomePageContent> {
                               setState(() {
                                 _post.removeAt(index);
                               });
-                            },
+                            }, route: const HomePage(),
                             );
                           },
                         ),

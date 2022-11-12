@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/model/user.dart';
+import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 import 'package:linear/pages/community_page/community_page.dart';
@@ -500,7 +501,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                               setState(() {
                                 _post.removeAt(index);
                               });
-                             },
+                             }, route: const ProfilePage(),
                             );
                           },
                         ),
