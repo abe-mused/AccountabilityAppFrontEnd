@@ -115,7 +115,7 @@ class PostPageState extends State<PostPage> {
                   post: _post,
                   onDelete: () {
                     delete(context);
-                  }, route: const HomePage(),
+                  }, route: widget.route,
                 ),
               ),
               const SizedBox(height: 10),
