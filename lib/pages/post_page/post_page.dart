@@ -36,6 +36,10 @@ class PostPageState extends State<PostPage> {
     doGetPost();
   }
 
+  delete() {
+    Navigator.pop(context);
+  }
+
   doGetPost() {
     final Future<Map<String, dynamic>> responseMessage = getPostWithComments(widget.postId, widget.token);
     responseMessage.then((response) {
@@ -98,7 +102,10 @@ class PostPageState extends State<PostPage> {
                     });
                   },
                   token: widget.token,
-                  post: _post,
+                  post: _post, 
+                  onDelete: () {
+                    delete();
+                    },
                 ),
               ),
               const SizedBox(height: 10),

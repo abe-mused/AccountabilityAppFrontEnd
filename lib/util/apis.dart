@@ -100,6 +100,33 @@ Future<Map<String, dynamic>> createPost(String postTitle, String postBody, Strin
   );
 }
 
+Future<Map<String, dynamic>> deletePost(String postId, String token) async {
+  const url ='https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post';
+  return await http.delete(
+    Uri.parse(url),
+    body: jsonEncode({
+      "postId": postId,
+    }),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  ).then(
+    (response) {
+      if (response.statusCode == 200) {
+        print("Success!");
+        return {'status': true, 'message': 'Post Succesfully Deleted.'};
+      } else {
+        return {
+          'status': false,
+          'message':
+              'An error occurred while deleting the post, please try again.'
+        };
+      }
+    },
+  );
+}
+
 Future<Map<String, dynamic>> likePost(String postId, String token) async {
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/like?postId=$postId';
   try {

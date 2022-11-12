@@ -5,26 +5,54 @@ import 'package:linear/util/date_formatter.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
+import 'package:linear/util/cognito/user_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:linear/util/cognito/user.dart' as cognito_user;
 import 'package:linear/constants/themeSettings.dart';
 
-class PostWidget extends StatelessWidget {
-  const PostWidget({super.key, required this.post, required this.liked, required this.onLike, required this.token});
+class PostWidget extends StatefulWidget {
+  const PostWidget(
+      {super.key,
+      required this.post,
+      required this.liked,
+      required this.onLike,
+      required this.token,
+      required this.onDelete});
   final Post post;
   final String token;
   final bool liked;
   final VoidCallback onLike;
+  final VoidCallback onDelete;
+
+  @override
+  State<StatefulWidget> createState() => _PostWidget();
+}
+
+class _PostWidget extends State<PostWidget> {
+cognito_user.User? user = UserProvider().user;
 
   likeUnlikePost() {
-    final Future<Map<String, dynamic>> successfulMessage = likePost(post.postId, token);
-    successfulMessage.then((response) {
+    final Future<Map<String, dynamic>> responseMessage = likePost(widget.post.postId, widget.token);
+    responseMessage.then((response) {
       if (response['status'] == true) {
-        onLike();
+        widget.onLike();
+      } else {}
+    });
+  }
+
+   doDeletePost() {
+    final Future<Map<String, dynamic>> responseMessage = deletePost(widget.post.postId, widget.token);
+    responseMessage.then((response) {
+      if (response['status'] == true) {
+        widget.onDelete();
       } else {}
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<UserProvider>(context).user;
+
     final ScrollController scrollController = ScrollController();
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.9,
@@ -48,13 +76,13 @@ class PostWidget extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ProfilePage(
-                                  username: post.creator,
+                                  username: widget.post.creator,
                                 ),
                               ),
                             );
                           },
                           child: UserIcon(
-                            username: post.creator,
+                            username: widget.post.creator,
                             radius: 45,
                           ),
                         )),
@@ -66,25 +94,59 @@ class PostWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "c/${post.communityName}",
+                            "c/${widget.post.communityName}",
                             style: const TextStyle(
                             fontSize: 16),
                             textAlign: TextAlign.left,
                           ),
                           Text(
-                            "u/${post.creator}",
+                            "u/${widget.post.creator}",
                             style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.left,
                           ),
                           Text(
-                            getFormattedDate(post.creationDate),
+                            getFormattedDate(widget.post.creationDate),
                             style: const TextStyle(fontSize: 12),
                             textAlign: TextAlign.center,
                           ),
                         ],
                       ),
                     ),
+                    if (widget.post.creator == user!.username) ... [
+                      PopupMenuButton(itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem<int>(
+                          value: 0,
+                          child: Text("Delete"),
+                        ),
+                      ];
+                    }, onSelected: (value) {
+                      if (value == 0) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Delete'),
+                            content: const Text('Are you sure you want to delete this post?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                  Navigator.pop(context, 'Cancel'),
+                                  child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  doDeletePost();
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Yes'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    }),
+                    ]
                   ],
                 ),
               ),
@@ -109,12 +171,12 @@ class PostWidget extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  post.title,
+                                  widget.post.title,
                                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 5),
-                                if (post.body.length > 300) ...[
+                                if (widget.post.body.length > 300) ...[
                                   SizedBox(
                                     height: 200,
                                     child: Scrollbar(
@@ -124,7 +186,7 @@ class PostWidget extends StatelessWidget {
                                         child: SingleChildScrollView(
                                           controller: scrollController,
                                           child: Text(
-                                            post.body,
+                                            widget.post.body,
                                             style: const TextStyle(fontSize: 16),
                                             textAlign: TextAlign.left,
                                           ),
@@ -134,7 +196,7 @@ class PostWidget extends StatelessWidget {
                                   )
                                 ] else ...[
                                   Text(
-                                    post.body,
+                                    widget.post.body,
                                     style: const TextStyle(fontSize: 16),
                                     textAlign: TextAlign.left,
                                   ),
@@ -162,8 +224,8 @@ class PostWidget extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PostPage(
-                                    postId: post.postId,
-                                    token: token,
+                                    postId: widget.post.postId,
+                                    token: widget.token,
                                   ),
                                 ),
                               );
@@ -173,7 +235,7 @@ class PostWidget extends StatelessWidget {
                               size: 34.0,
                             ),
                           ),
-                          if (liked) ...[
+                          if (widget.liked) ...[
                             IconButton(
                               onPressed: () {
                                 likeUnlikePost();
