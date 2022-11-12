@@ -241,9 +241,9 @@ class _PostWidget extends State<PostWidget> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          IconButton(
-                            onPressed: () {
-                              if (isNewRoute(context)) {
+                          if (isNewRoute(context))
+                            IconButton(
+                              onPressed: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -254,13 +254,12 @@ class _PostWidget extends State<PostWidget> {
                                     ),
                                   ),
                                 );
-                              }
-                            },
-                            icon: const Icon(
-                              Icons.comment,
-                              size: 34.0,
+                              },
+                              icon: const Icon(
+                                Icons.comment,
+                                size: 34.0,
+                              ),
                             ),
-                          ),
                           if (widget.liked) ...[
                             IconButton(
                               onPressed: () {
