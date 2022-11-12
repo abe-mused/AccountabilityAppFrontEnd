@@ -250,3 +250,30 @@ Future<Map<String, dynamic>> followAndUnfollow(String otherUser, String token) a
     },
   );
 }
+
+Future<Map<String, dynamic>> createGoal(int checkInGoal, String goalBody, String communityName, String token) async {
+  const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal';
+  return await http.post(
+    Uri.parse(url),
+    body: jsonEncode({
+      "checkInGoal": checkInGoal,
+      "goalBody": goalBody,
+      "communityName": communityName,
+    }),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  ).then(
+    (response) {
+      developer.log("Response status: ${response.statusCode}");
+      print("Response body create goal: ${response.body}");
+      if (response.statusCode == 200) {
+        print("Success!");
+        return {'status': true, 'message': 'Goal Succesfully Created.'};
+      } else {
+        return {'status': false, 'message': 'An error occurred while creating the post, please try again.'};
+      }
+    },
+  );
+}
