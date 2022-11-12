@@ -114,7 +114,6 @@ Future<Map<String, dynamic>> deletePost(String postId, String token) async {
   ).then(
     (response) {
       if (response.statusCode == 200) {
-        print("Success!");
         return {'status': true, 'message': 'Post Succesfully Deleted.'};
       } else {
         return {
@@ -294,10 +293,37 @@ Future<Map<String, dynamic>> createGoal(int checkInGoal, String goalBody, String
   ).then(
     (response) {
       if (response.statusCode == 200) {
-        print("Success!");
         return {'status': true, 'message': 'Goal Succesfully Created.'};
       } else {
         return {'status': false, 'message': 'An error occurred while creating the post, please try again.'};
+      }
+    },
+  );
+}
+
+Future<Map<String, dynamic>> getHomeFeed(String token, dynamic pageTokens) async {
+  const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/home';
+  return await http.post(
+    Uri.parse(url),
+    body: jsonEncode({
+      "tokens": pageTokens ?? {}
+    }),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  ).then(
+    (response) {
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body)['postsData'];
+        return {
+          'status': true,
+          'posts': jsonResponse['posts'],
+          'tokens': jsonResponse['tokens'],
+          'nextPageMightContainMorePosts': jsonResponse['nextPageMightContainMorePosts']
+        };
+      } else {
+        return {'status': false };
       }
     },
   );
