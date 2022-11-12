@@ -49,7 +49,6 @@ class _HomePageContentState extends State<HomePageContent> {
           List<dynamic> likedPosts = [];
           for (var i = 0; i < _post.length; i++) {
             likedPosts.add(_post[i]['likes'].contains(user?.username));
-            print(likedPosts[i]);
           }
           setState(() {
             _likedPosts = likedPosts;

@@ -2,17 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:linear/model/user.dart';
 import 'package:linear/pages/community_page/community_page.dart';
 import 'package:linear/constants/themeSettings.dart';
+import 'package:linear/util/date_formatter.dart';
 
 class CommunityListWidget extends StatelessWidget {
-  const CommunityListWidget(
+  CommunityListWidget(
       {super.key,
       required this.user,
       required this.communityLength,
-      required this.token});
+      required this.token,
+      required this.currentEpoch});
 
   final User user;
   final int? communityLength;
   final String token;
+  final int currentEpoch;
+
+  List _streak = [];
+
+  calculateStreak(index) {
+    _streak.add(computeStreak(user.communities![index][1]['first_streak_date'],
+        user.communities![index][1]['last_streak_date'], currentEpoch));
+    return _streak[index];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +63,33 @@ class CommunityListWidget extends StatelessWidget {
                             fontWeight: FontWeight.w800,
                           ),
                         )),
-                    if (user.username == user.communities![index][1]['creator'])
-                      Icon(
-                        Icons.admin_panel_settings,
-                        color: AppThemes.iconColor(context),
-                        size: 30.0,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (calculateStreak(index) >= 3) ...[
+                          Text(
+                            "${_streak[index]}",
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          Icon(
+                            Icons.local_fire_department,
+                            color: AppThemes.iconColor(context),
+                            size: 30.0,
+                          ),
+                        ],
+                        if (user.username ==
+                            user.communities![index][1]['creator']) ...[
+                          Icon(
+                            Icons.admin_panel_settings,
+                            color: AppThemes.iconColor(context),
+                            size: 30.0,
+                          ),
+                        ],
+                      ],
+                    ),
                   ],
                 ),
               ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_up.dart';
 import 'package:linear/auth_pages/reset_password.dart';
-import 'package:linear/util/cognito/auth_util.dart';
+import 'package:linear/util/cognito/auth_util.dart' as authUtil;
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
 import '../util/cognito/user.dart';
@@ -22,29 +22,39 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    AuthUtility auth = AuthUtility();
-
     doLogIn() {
-      final Future<Map<String, dynamic>> successfulMessage = auth.login(emailOrUsername.text, password.text);
+      final Future<Map<String, dynamic>> responseMessage = authUtil.login(emailOrUsername.text, password.text);
 
-      successfulMessage.then((response) {
-        if (response['status']) {
+      responseMessage.then((response) {
+        if (response['status'] == true) {
           User user = response['user'];
           Provider.of<UserProvider>(context, listen: false).setUser(user);
           Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text("Failed Login"),
+                  content: Text(response['message']),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Ok"),
+                    ),
+                  ],
+                );
+              });
         }
-        // else {
-        //   Flushbar(
-        //     title: "Failed Login",
-        //     message: response['message']['message'].toString(),
-        //     duration: Duration(seconds: 3),
-        //   ).show(context);
-        // }
       });
     }
-    
+
     return Scaffold(
-      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? AppThemes.darkTheme.primaryColor : AppThemes.lightTheme.primaryColor,
+      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark
+          ? AppThemes.darkTheme.primaryColor
+          : AppThemes.lightTheme.primaryColor,
       body: Stack(
         children: [
           const Padding(
@@ -65,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.65,
-            decoration:  BoxDecoration(
+            decoration: BoxDecoration(
               color: MediaQuery.of(context).platformBrightness == Brightness.dark ? ThemeData.dark().primaryColor : Colors.white,
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(50),

@@ -3,6 +3,7 @@ import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/home_page/home_page_content.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
+import 'package:linear/util/cognito/auth_util.dart' as authUtil;
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,19 +14,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // int selected_icon = 0;
+  @override
+  void initState() {
+    super.initState();
+
+    authUtil.refreshTokenIfExpired().then((response) => {
+          if (response['refreshed'] == true)
+            {
+              Provider.of<UserProvider>(context, listen: false).setUser(response['user']),
+            }
+        },
+      );
+  }
 
   @override
   Widget build(BuildContext context) {
     User? user = Provider.of<UserProvider>(context).user;
 
-    if (user == null || user.username == null) {
+    if (user == null) {
       print("User is null in the homePage, redirecting to sign in");
       Navigator.pushReplacementNamed(context, '/login');
-    } else {
-      print("User is not null in the homePage");
-      print("name is ${user.username} email is ${user.email} name is ${user.name}");
     }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Linear Home Page!"),
