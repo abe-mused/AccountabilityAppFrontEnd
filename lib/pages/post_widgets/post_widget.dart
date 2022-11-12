@@ -32,7 +32,7 @@ class PostWidget extends StatefulWidget {
 class _PostWidget extends State<PostWidget> {
   cognito_user.User? user = UserProvider().user;
 
-  isNewRouteCurrent(context) {
+  isNewRoute(context) {
     var route = ModalRoute.of(context);
 
     final newRoute = MaterialPageRoute(
@@ -43,7 +43,7 @@ class _PostWidget extends State<PostWidget> {
       ),
     );
     if (route != null) {
-      return route.settings == newRoute.settings;
+      return route.settings != newRoute.settings;
     } else {
       return false;
     }
@@ -243,8 +243,7 @@ class _PostWidget extends State<PostWidget> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              if (isNewRouteCurrent(context)) {
-                              } else {
+                              if (isNewRoute(context)) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
