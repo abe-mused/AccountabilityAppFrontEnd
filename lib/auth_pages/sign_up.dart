@@ -33,13 +33,13 @@ class _SignUpPageState extends State<SignUpPage> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Success!"),
-                content: const Text("You have successfully created an account!"),
+                content: Text(response['message']),
                 actions: [
                   TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
                       },
-                      child: const Text("Ok"))
+                      child: const Text("Login"))
                 ],
               );
             });
@@ -49,7 +49,7 @@ class _SignUpPageState extends State<SignUpPage> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Error!"),
-                content: const Text("An error occured while creating your account. Please try again later."),
+                content: Text(response['message']),
                 actions: [
                   TextButton(
                       onPressed: () {

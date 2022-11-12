@@ -39,7 +39,12 @@ Future<Map<String, dynamic>> login(String username, String password) async {
     return {'status': false, 'message': 'Please confirm your email address.'};
   } on CognitoClientException catch (e) {
     print("An error occurred while authenticating user:  $e");
-    return {'status': false, 'message': 'Please ensure you entered the correct credentials.'};
+    if (e.code == 'UserNotConfirmedException') {
+      await cognitoUser.resendConfirmationCode();
+      return {'status': false, 'message': 'Account is unverified, please click the verification link sent to your email address.'}; 
+    } else {
+      return {'status': false,'message': 'Please ensure you entered the correct credentials.'};
+    }
   } catch (e) {
     print("An error occurred while authenticating user:  $e");
     return {'status': false, 'message': 'Unsuccessful login, an unknown error occurred. Please try again.'};
@@ -63,14 +68,19 @@ Future<Map<String, dynamic>> signUp({
       password,
       userAttributes: userAttributes,
     );
-    //TODO: add exception handling for user already exists
+  } on CognitoClientException catch (e) {
+    print("An error occurred while creating the user's account:  $e");
+    if (e.message == 'User already exists') {
+      return {'status': false, 'message': 'An account with the provided username already exists, please use a different username or login.'
+      };
+    }
   } catch (e) {
     print("An error occurred while creating the user's account:  $e");
     return {'status': false, 'message': 'An error occurred while creating the account, please try again.'};
   }
   print("not bad news: $data");
 
-  return {'status': true, 'message': 'Account created successfully, please confirm your email address.'};
+  return {'status': true, 'message': 'Account created successfully, please click the verification link sent to your email address.'};
 }
 
 Future<Map<String, dynamic>> passwordResetCode({required String email}) async {
