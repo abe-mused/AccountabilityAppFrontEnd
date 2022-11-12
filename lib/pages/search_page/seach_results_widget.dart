@@ -4,8 +4,6 @@ import 'package:linear/model/user.dart';
 import 'package:linear/pages/community_page/community_page.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart' as API;
-import 'package:linear/util/date_formatter.dart';
-import 'package:linear/constants/themeSettings.dart';
 
 // ignore: must_be_immutable
 class SearchResultWidget extends StatefulWidget {
@@ -18,13 +16,13 @@ class SearchResultWidget extends StatefulWidget {
 
 class _SearchResultWidgetState extends State<SearchResultWidget> {
   TextEditingController userInput = TextEditingController();
-  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: [], checkIns: []);
   User _user = User(username: '', name: '', communities: [], followers: [], following: []);
   bool _isLoading = false;
   bool _initialize = true;
 
   getSearchResults() {
-    _community = Community(communityName: '', creationDate: 1, creator: '', members: []);
+    _community = Community(communityName: '', creationDate: 1, creator: '', members: [], checkIns: []);
     _user = User(username: '', name: '', communities: [], followers: [], following: []);
     final Future<Map<String, dynamic>> apiResponse = API.getSearchResults(userInput.text, widget.token);
     apiResponse.then((response) {
