@@ -293,8 +293,6 @@ Future<Map<String, dynamic>> createGoal(int checkInGoal, String goalBody, String
     },
   ).then(
     (response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body create goal: ${response.body}");
       if (response.statusCode == 200) {
         print("Success!");
         return {'status': true, 'message': 'Goal Succesfully Created.'};

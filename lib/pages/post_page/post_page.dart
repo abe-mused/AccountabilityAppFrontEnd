@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
+import 'package:linear/pages/home_page/home_page.dart';
 import 'package:linear/pages/post_page/create_comment_widget.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
@@ -12,17 +13,25 @@ import 'package:provider/provider.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 
 class PostPage extends StatefulWidget {
-  PostPage({super.key, required this.postId, required this.token});
+  PostPage({super.key, required this.postId, required this.token, required this.route});
 
   String postId;
   String token;
-
+  Widget route;
   @override
   State<PostPage> createState() => PostPageState();
 }
 
 class PostPageState extends State<PostPage> {
-  Post _post = Post(title: '', body: '', communityName: '', postId: '', creationDate: 1, creator: '', likes: [], comments: []);
+  Post _post = Post(
+      title: '',
+      body: '',
+      communityName: '',
+      postId: '',
+      creationDate: 1,
+      creator: '',
+      likes: [],
+      comments: []);
   List<dynamic> _comments = [];
 
   User? user = UserProvider().user;
@@ -36,17 +45,18 @@ class PostPageState extends State<PostPage> {
     doGetPost();
   }
 
-  delete() {
-    Navigator.pop(context);
+  delete(context) {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => widget.route));
   }
 
   doGetPost() {
-    final Future<Map<String, dynamic>> responseMessage = getPostWithComments(widget.postId, widget.token);
+    final Future<Map<String, dynamic>> responseMessage =
+        getPostWithComments(widget.postId, widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
-        response['post']['creationDate'] = int.parse(response['post']['creationDate']);
+        response['post']['creationDate'] =
+            int.parse(response['post']['creationDate']);
         Post post = Post.fromJson(response['post']);
-        print("ABE SAYS" + post.toString());
         List<dynamic> likedPosts = [];
 
         likedPosts.add(post.likes?.contains(user!.username));
@@ -102,10 +112,10 @@ class PostPageState extends State<PostPage> {
                     });
                   },
                   token: widget.token,
-                  post: _post, 
+                  post: _post,
                   onDelete: () {
-                    delete();
-                    },
+                    delete(context);
+                  }, route: const HomePage(),
                 ),
               ),
               const SizedBox(height: 10),
@@ -140,7 +150,8 @@ class PostPageState extends State<PostPage> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => ProfilePage(
-                                              username: _comments[index]['creator'],
+                                              username: _comments[index]
+                                                  ['creator'],
                                             ),
                                           ),
                                         );
@@ -156,14 +167,19 @@ class PostPageState extends State<PostPage> {
                                   ),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           "u/${_comments[index]['creator']}",
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 22),
                                         ),
                                         Text(
-                                          getFormattedDate(int.parse(_comments[index]['creationDate'].toString())),
+                                          getFormattedDate(int.parse(
+                                              _comments[index]['creationDate']
+                                                  .toString())),
                                           style: const TextStyle(fontSize: 16),
                                         ),
                                       ],

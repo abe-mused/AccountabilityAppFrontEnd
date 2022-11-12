@@ -251,7 +251,7 @@ class CommunityPageState extends State<CommunityPage> {
               const SizedBox(height: 10),
               CreateGoalWidget(token: widget.token, communityName: widget.communityName),
               const SizedBox(height: 10),
-              CreatePostWidget(token: widget.token, communityName: widget.communityName),
+              CreatePostWidget(token: widget.token, communityName: widget.communityName, onSuccess: updateCommunity),
               const SizedBox(height: 10),
               // ignore: prefer_is_empty
               if ((_posts.length) > 0) ...[
@@ -283,7 +283,7 @@ class CommunityPageState extends State<CommunityPage> {
                         setState(() {
                            _posts.removeAt(index);
                               });
-                        },
+                        }, route:  CommunityPage(communityName: _community.communityName,token: widget.token,),
                       );
                     },
                   ),
