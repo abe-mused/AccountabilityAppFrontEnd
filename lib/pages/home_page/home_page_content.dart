@@ -35,7 +35,7 @@ class _HomePageContentState extends State<HomePageContent> {
   }
 
   getUser() {
-    //TODO: use the homepage endpoitn once it up and running
+    //TODO: use the homepage endpoint once it up and running
     final Future<Map<String, dynamic>> responseMessage = getProfile(widget.username, widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
@@ -49,6 +49,7 @@ class _HomePageContentState extends State<HomePageContent> {
           List<dynamic> likedPosts = [];
           for (var i = 0; i < _post.length; i++) {
             likedPosts.add(_post[i]['likes'].contains(user?.username));
+            print(likedPosts[i]);
           }
           setState(() {
             _likedPosts = likedPosts;
@@ -68,62 +69,58 @@ class _HomePageContentState extends State<HomePageContent> {
     user = Provider.of<UserProvider>(context).user;
 
     if (isLoading == false && isErrorFetchingUser == false) {
-      return RefreshIndicator(
-        child: Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                Column(
-                  children: [
-                    // ignore: prefer_is_empty
-                    if (_post.length != 0) ...[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: _post.length,
-                          itemBuilder: (context, index) {
-                            return PostWidget(
-                              liked: _likedPosts[index],
-                              onLike: () {
-                                setState(() {
-                                  _likedPosts[index] = !_likedPosts[index];
-                                });
-                              },
-                              token: widget.token,
-                              post: Post(
-                                communityName: _post[index]['community'],
-                                postId: _post[index]['postId'],
-                                creator: _post[index]['creator'],
-                                creationDate: int.parse(_post[index]['creationDate']),
-                                title: _post[index]['title'],
-                                body: _post[index]['body'],
-                                likes: _post[index]['likes'],
-                              ),
-                            );
-                          },
-                        ),
+      return Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Column(
+                children: [
+                  // ignore: prefer_is_empty
+                  if (_post.length != 0) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                      child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: _post.length,
+                        itemBuilder: (context, index) {
+                          return PostWidget(
+                            liked: _likedPosts[index],
+                            onLike: () {
+                              setState(() {
+                                _likedPosts[index] = !_likedPosts[index];
+                              });
+                            },
+                            token: widget.token,
+                            post: Post(
+                              communityName: _post[index]['community'],
+                              postId: _post[index]['postId'],
+                              creator: _post[index]['creator'],
+                              creationDate: int.parse(_post[index]['creationDate']),
+                              title: _post[index]['title'],
+                              body: _post[index]['body'],
+                              likes: _post[index]['likes'],
+                            ), onDelete: () {  
+                              setState(() {
+                                _post.removeAt(index);
+                              });
+                            },
+                          );
+                        },
                       ),
-                    ] else ...[
-                      const Padding(
-                        padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-                        child: Text('No posts yet!'),
-                      ),
-                    ],
+                    ),
+                  ] else ...[
+                    const Padding(
+                      padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
+                      child: Text('No posts yet!'),
+                    ),
                   ],
-                ),
-                const SizedBox(height: 80.0),
-              ],
-            ),
+                ],
+              ),
+              const SizedBox(height: 80.0),
+            ],
           ),
         ),
-        onRefresh: () async {
-          setState(() {
-            isLoading = true;
-          });
-          getUser();
-        },
       );
     } else if (isLoading == false && isErrorFetchingUser == true) {
       return const Scaffold(
