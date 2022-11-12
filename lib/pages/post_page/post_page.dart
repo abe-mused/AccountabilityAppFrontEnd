@@ -46,7 +46,7 @@ class PostPageState extends State<PostPage> {
   }
 
   delete(context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => widget.route));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => widget.route));
   }
 
   doGetPost() {
