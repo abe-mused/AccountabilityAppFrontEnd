@@ -202,6 +202,11 @@ class CommunityPageState extends State<CommunityPage> {
                           body: _posts[index]['body'],
                           likes: _posts[index]['likes'],
                         ),
+                        onDelete: () {
+                        setState(() {
+                           _posts.removeAt(index);
+                              });
+                        },
                       );
                     },
                   ),

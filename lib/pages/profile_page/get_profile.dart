@@ -395,6 +395,11 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                 body: _post[index]['body'],
                                 likes: _post[index]['likes'],
                               ),
+                              onDelete: () { 
+                              setState(() {
+                                _post.removeAt(index);
+                              });
+                             },
                             );
                           },
                         ),
