@@ -100,7 +100,11 @@ class _HomePageContentState extends State<HomePageContent> {
                               title: _post[index]['title'],
                               body: _post[index]['body'],
                               likes: _post[index]['likes'],
-                            ),
+                            ), onDelete: () {  
+                              setState(() {
+                                _post.removeAt(index);
+                              });
+                            },
                           );
                         },
                       ),

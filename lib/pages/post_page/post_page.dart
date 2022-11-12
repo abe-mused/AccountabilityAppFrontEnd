@@ -44,6 +44,10 @@ class PostPageState extends State<PostPage> {
     doGetPost();
   }
 
+  delete() {
+    Navigator.pop(context);
+  }
+
   doGetPost() {
     final Future<Map<String, dynamic>> responseMessage =
         getPostWithComments(widget.postId, widget.token);
@@ -107,7 +111,10 @@ class PostPageState extends State<PostPage> {
                   });
                 },
                 token: widget.token,
-                post: _post,
+                post: _post, 
+                onDelete: () {
+                  delete();
+                  },
               ),
             ),
             const SizedBox(height: 10),
@@ -209,47 +216,6 @@ class PostPageState extends State<PostPage> {
         ),
       ),
       bottomNavigationBar: const LinearNavBar(),
-    );
-  }
-}
-
-class DeletePost extends StatefulWidget {
-  @override
-  _DeletePostState createState() => _DeletePostState();
-}
-
-class _DeletePostState extends State<DeletePost> {
-  List<String> list = List.generate(100, (i) => i.toString());
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: list.length,
-      itemBuilder: (context, index) {
-        return MyItem(list[index], onDelete: () => removeItem(index));
-      },
-    );
-  }
-
-  void removeItem(int index) {
-    setState(() {
-      list = List.from(list)
-        ..removeAt(index);
-    });
-  }
-}
-
-class MyItem extends StatelessWidget {
-  final String title;
-  final VoidCallback onDelete;
-
-  const MyItem(this.title, {required this.onDelete});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title),
-      onTap: onDelete,
     );
   }
 }
