@@ -234,6 +234,33 @@ Future<Map<String, dynamic>> createComment(String commentBody, String postId, St
   );
 }
 
+Future<Map<String, dynamic>> deleteComment(String commentId, String token) async {
+  const url ='https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/comment';
+  return await http.delete(
+    Uri.parse(url),
+    body: jsonEncode({
+      "commentId": commentId,
+    }),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  ).then(
+    (response) {
+      if (response.statusCode == 200) {
+        print("Success!");
+        return {'status': true, 'message': 'Comment Succesfully Deleted.'};
+      } else {
+        return {
+          'status': false,
+          'message':
+              'An error occurred while deleting the comment, please try again.'
+        };
+      }
+    },
+  );
+}
+
 Future<Map<String, dynamic>> joinAndLeave(String communityName, String token) async {
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/join?communityName=$communityName';
   return await http.patch(
@@ -293,8 +320,6 @@ Future<Map<String, dynamic>> createGoal(int checkInGoal, String goalBody, String
     },
   ).then(
     (response) {
-      developer.log("Response status: ${response.statusCode}");
-      print("Response body create goal: ${response.body}");
       if (response.statusCode == 200) {
         print("Success!");
         return {'status': true, 'message': 'Goal Succesfully Created.'};

@@ -226,6 +226,12 @@ cognito_user.User? user = UserProvider().user;
                                   builder: (context) => PostPage(
                                     postId: widget.post.postId,
                                     token: widget.token,
+                                    commentId: widget.post.creator,
+                                    onDelete: () { 
+                                      setState(() {
+                                        
+                                      });
+                                     },
                                   ),
                                 ),
                               );
