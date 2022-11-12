@@ -8,7 +8,6 @@ import 'package:linear/util/apis.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:linear/util/cognito/user.dart' as cognito_user;
-import 'package:linear/constants/themeSettings.dart';
 
 class PostWidget extends StatefulWidget {
   const PostWidget(
@@ -18,8 +17,7 @@ class PostWidget extends StatefulWidget {
       required this.onLike,
       required this.token,
       required this.onDelete,
-      required this.route
-      });
+      required this.route});
   final Post post;
   final String token;
   final bool liked;
@@ -32,10 +30,28 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidget extends State<PostWidget> {
-cognito_user.User? user = UserProvider().user;
+  cognito_user.User? user = UserProvider().user;
+
+  isNewRouteCurrent(context) {
+    var route = ModalRoute.of(context);
+
+    final newRoute = MaterialPageRoute(
+      builder: (context) => PostPage(
+        postId: widget.post.postId,
+        token: widget.token,
+        route: widget.route,
+      ),
+    );
+    if (route != null) {
+      return route.settings == newRoute.settings;
+    } else {
+      return false;
+    }
+  }
 
   likeUnlikePost() {
-    final Future<Map<String, dynamic>> responseMessage = likePost(widget.post.postId, widget.token);
+    final Future<Map<String, dynamic>> responseMessage =
+        likePost(widget.post.postId, widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
         widget.onLike();
@@ -43,8 +59,9 @@ cognito_user.User? user = UserProvider().user;
     });
   }
 
-   doDeletePost() {
-    final Future<Map<String, dynamic>> responseMessage = deletePost(widget.post.postId, widget.token);
+  doDeletePost() {
+    final Future<Map<String, dynamic>> responseMessage =
+        deletePost(widget.post.postId, widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
         widget.onDelete();
@@ -98,14 +115,13 @@ cognito_user.User? user = UserProvider().user;
                         children: [
                           Text(
                             "c/${widget.post.communityName}",
-                            style: const TextStyle(
-                            fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                             textAlign: TextAlign.left,
                           ),
                           Text(
                             "u/${widget.post.creator}",
                             style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
+                                fontSize: 24, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.left,
                           ),
                           Text(
@@ -116,39 +132,40 @@ cognito_user.User? user = UserProvider().user;
                         ],
                       ),
                     ),
-                    if (widget.post.creator == user!.username) ... [
+                    if (widget.post.creator == user!.username) ...[
                       PopupMenuButton(itemBuilder: (context) {
-                      return [
-                        const PopupMenuItem<int>(
-                          value: 0,
-                          child: Text("Delete"),
-                        ),
-                      ];
-                    }, onSelected: (value) {
-                      if (value == 0) {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: const Text('Delete'),
-                            content: const Text('Are you sure you want to delete this post?'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () =>
-                                  Navigator.pop(context, 'Cancel'),
-                                  child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  doDeletePost();
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('Yes'),
-                              ),
-                            ],
+                        return [
+                          const PopupMenuItem<int>(
+                            value: 0,
+                            child: Text("Delete"),
                           ),
-                        );
-                      }
-                    }),
+                        ];
+                      }, onSelected: (value) {
+                        if (value == 0) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Delete'),
+                              content: const Text(
+                                  'Are you sure you want to delete this post?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'Cancel'),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    doDeletePost();
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Yes'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }),
                     ]
                   ],
                 ),
@@ -175,7 +192,9 @@ cognito_user.User? user = UserProvider().user;
                               children: [
                                 Text(
                                   widget.post.title,
-                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 5),
@@ -190,7 +209,8 @@ cognito_user.User? user = UserProvider().user;
                                           controller: scrollController,
                                           child: Text(
                                             widget.post.body,
-                                            style: const TextStyle(fontSize: 16),
+                                            style:
+                                                const TextStyle(fontSize: 16),
                                             textAlign: TextAlign.left,
                                           ),
                                         ),
@@ -223,16 +243,19 @@ cognito_user.User? user = UserProvider().user;
                         children: [
                           IconButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PostPage(
-                                    postId: widget.post.postId,
-                                    token: widget.token,
-                                    route: widget.route,
+                              if (isNewRouteCurrent(context)) {
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PostPage(
+                                      postId: widget.post.postId,
+                                      token: widget.token,
+                                      route: widget.route,
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              }
                             },
                             icon: const Icon(
                               Icons.comment,
