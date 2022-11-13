@@ -97,7 +97,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    hintText: "Add a comment",
+                    hintText: "comment body",
                   ),
                 ),
               ),
