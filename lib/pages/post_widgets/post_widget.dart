@@ -249,7 +249,7 @@ class _PostWidget extends State<PostWidget> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           if (widget.isPostPage)
-                            const Padding(padding: EdgeInsets.only(left: 25)),
+                            const Padding(padding: EdgeInsets.only(left: 20)),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -261,6 +261,9 @@ class _PostWidget extends State<PostWidget> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
                                   ),
+                                  if (widget.isPostPage)
+                                    const Padding(
+                                        padding: EdgeInsets.only(left: 5)),
                                   const Padding(
                                       padding: EdgeInsets.only(left: 5)),
                                   if (!widget.isPostPage) ...[
