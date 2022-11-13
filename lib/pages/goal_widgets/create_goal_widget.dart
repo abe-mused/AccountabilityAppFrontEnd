@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/util/apis.dart';
+import 'package:linear/model/goal.dart';
 
 class CreateGoalWidget extends StatefulWidget {
-  CreateGoalWidget({super.key, required this.token, required this.communityName});
+  CreateGoalWidget({super.key, required this.token, required this.communityName, required this.onSuccess});
   String token;
   String communityName;
+  final Function onSuccess;
 
   @override
   State<CreateGoalWidget> createState() => _CreateGoalWidgetState();
@@ -16,6 +18,16 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
   TextEditingController checkInGoalInput = TextEditingController();
 
   bool _isCreatingGoal = false;
+  Goal _goal = Goal(
+    communityName: '',
+    goalId: '',
+    creator: '',
+    creationDate: 0,
+    checkInGoal: 0,
+    goalBody: '',
+    completedCheckIns: 0
+  );
+  
 
   doCreatePost() {
     setState(() {
@@ -27,16 +39,39 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
 
     successfulMessage.then((response) {
       if (response['status'] == true) {
+         Goal goal = Goal(
+            communityName: widget.communityName,
+            goalId:  ' '/*response['goalId']*/,
+            creator: ' ',
+            creationDate: 0 /*int.parse(response['creationDate'])*/,
+            checkInGoal: int.parse(checkInGoalInput.text.toString()),
+            goalBody: goalBodyInput.text,
+            completedCheckIns: 0);
+
+        setState(() {
+          _goal = goal;
+        });
+
+        widget.onSuccess(_goal);
+
         goalBodyInput.clear();
         checkInGoalInput.clear();
-        showDialog(
+       showDialog(
             context: context,
             builder: (context) {
-              return const AlertDialog(
-                title: Text("Success!"),
-                content: Text("Goal succesfully Created."),
+              return AlertDialog(
+                title: const Text("Success!"),
+                content: const Text("Goal succesfully Created."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
               );
             });
+        
       } else {
         showDialog(
             context: context,
