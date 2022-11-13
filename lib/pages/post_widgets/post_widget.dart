@@ -10,20 +10,20 @@ import 'package:provider/provider.dart';
 import 'package:linear/util/cognito/user.dart' as cognito_user;
 
 class PostWidget extends StatefulWidget {
-  const PostWidget(
+  PostWidget(
       {super.key,
       required this.post,
-      required this.liked,
       required this.onLike,
       required this.token,
       required this.onDelete,
-      required this.route});
+      required this.route,
+      this.isPostPage = false});
   final Post post;
   final String token;
-  final bool liked;
-  final VoidCallback onLike;
+  final Function onLike;
   final VoidCallback onDelete;
   final Widget route;
+  bool isPostPage;
 
   @override
   State<StatefulWidget> createState() => _PostWidget();
@@ -32,30 +32,41 @@ class PostWidget extends StatefulWidget {
 class _PostWidget extends State<PostWidget> {
   cognito_user.User? user = UserProvider().user;
 
-  isNewRoute(context) {
-    var route = ModalRoute.of(context);
-
-    final newRoute = MaterialPageRoute(
-      builder: (context) => PostPage(
-        postId: widget.post.postId,
-        token: widget.token,
-        route: widget.route,
-      ),
-    );
-    if (route != null) {
-      return route.settings != newRoute.settings;
-    } else {
-      return false;
-    }
-  }
-
   likeUnlikePost() {
+    if (widget.post.likes!.contains(user!.username)) {
+      widget.post.likes!.remove(user!.username);
+    } else {
+      widget.post.likes!.add(user!.username);
+    }
+    widget.onLike(widget.post.likes);
     final Future<Map<String, dynamic>> responseMessage =
         likePost(widget.post.postId, widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
-        widget.onLike();
-      } else {}
+      } else {
+        if (widget.post.likes!.contains(user!.username)) {
+          widget.post.likes!.remove(user!.username);
+        } else {
+          widget.post.likes!.add(user!.username);
+        }
+        widget.onLike(widget.post.likes);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Error!"),
+                content: const Text(
+                    "An error occured while attempting to like the post."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+      }
     });
   }
 
@@ -72,7 +83,6 @@ class _PostWidget extends State<PostWidget> {
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserProvider>(context).user;
-
     final ScrollController scrollController = ScrollController();
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.9,
@@ -233,55 +243,92 @@ class _PostWidget extends State<PostWidget> {
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      width: 1000,
-                    ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.only(top: 20, left: 175),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          if (isNewRoute(context))
-                            IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PostPage(
-                                      postId: widget.post.postId,
-                                      token: widget.token,
-                                      route: widget.route,
-                                    ),
+                          if (widget.isPostPage)
+                            const Padding(padding: EdgeInsets.only(left: 25)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    "${widget.post.comments?.length ?? 0}",
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                );
-                              },
-                              icon: const Icon(
-                                Icons.comment,
-                                size: 34.0,
+                                  const Padding(
+                                      padding: EdgeInsets.only(left: 5)),
+                                  if (!widget.isPostPage) ...[
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => PostPage(
+                                              postId: widget.post.postId,
+                                              token: widget.token,
+                                              route: widget.route,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      icon: const Icon(
+                                        Icons.comment,
+                                        size: 34.0,
+                                      ),
+                                    ),
+                                  ] else ...[
+                                    const Icon(
+                                      Icons.comment,
+                                      size: 34.0,
+                                    ),
+                                  ],
+                                ],
                               ),
-                            ),
-                          if (widget.liked) ...[
-                            IconButton(
-                              onPressed: () {
-                                likeUnlikePost();
-                              },
-                              icon: const Icon(
-                                Icons.favorite,
-                                color: Colors.pink,
-                                size: 34.0,
+                              Padding(
+                                  padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * 0.05,
+                              )),
+                              Row(
+                                children: [
+                                  Text(
+                                    "${widget.post.likes?.length ?? 0}",
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  if (widget.post.likes!
+                                      .contains(user!.username)) ...[
+                                    IconButton(
+                                      onPressed: () {
+                                        likeUnlikePost();
+                                      },
+                                      icon: const Icon(
+                                        Icons.favorite,
+                                        color: Colors.pink,
+                                        size: 34.0,
+                                      ),
+                                    )
+                                  ] else ...[
+                                    IconButton(
+                                      onPressed: () {
+                                        likeUnlikePost();
+                                      },
+                                      icon: const Icon(
+                                        Icons.favorite_border,
+                                        size: 34.0,
+                                      ),
+                                    )
+                                  ]
+                                ],
                               ),
-                            )
-                          ] else ...[
-                            IconButton(
-                              onPressed: () {
-                                likeUnlikePost();
-                              },
-                              icon: const Icon(
-                                Icons.favorite_border,
-                                size: 34.0,
-                              ),
-                            )
-                          ]
+                            ],
+                          ),
                         ],
                       ),
                     ),

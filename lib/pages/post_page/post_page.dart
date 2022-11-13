@@ -12,7 +12,11 @@ import 'package:provider/provider.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 
 class PostPage extends StatefulWidget {
-  PostPage({super.key, required this.postId, required this.token, required this.route});
+  PostPage(
+      {super.key,
+      required this.postId,
+      required this.token,
+      required this.route});
 
   String postId;
   String token;
@@ -36,7 +40,6 @@ class PostPageState extends State<PostPage> {
   User? user = UserProvider().user;
 
   bool _isloading = true;
-  List<dynamic> _likedPosts = [];
 
   @override
   void initState() {
@@ -45,7 +48,8 @@ class PostPageState extends State<PostPage> {
   }
 
   delete(context) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => widget.route));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => widget.route));
   }
 
   doGetPost() {
@@ -56,12 +60,6 @@ class PostPageState extends State<PostPage> {
         response['post']['creationDate'] =
             int.parse(response['post']['creationDate']);
         Post post = Post.fromJson(response['post']);
-        List<dynamic> likedPosts = [];
-
-        likedPosts.add(post.likes?.contains(user!.username));
-        setState(() {
-          _likedPosts = likedPosts;
-        });
 
         setState(() {
           _post = post;
@@ -102,19 +100,18 @@ class PostPageState extends State<PostPage> {
           child: Column(
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
                 child: PostWidget(
-                  liked: _likedPosts[0],
-                  onLike: () {
-                    setState(() {
-                      _likedPosts[0] = !_likedPosts[0];
-                    });
-                  },
+                  onLike: (likes) => setState(() {
+                    _post.likes = likes;
+                  }),
                   token: widget.token,
                   post: _post,
                   onDelete: () {
                     delete(context);
-                  }, route: widget.route,
+                  },
+                  route: widget.route,
+                  isPostPage: true,
                 ),
               ),
               const SizedBox(height: 10),

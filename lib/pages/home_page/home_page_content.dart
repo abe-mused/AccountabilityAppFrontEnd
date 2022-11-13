@@ -21,7 +21,6 @@ class _HomePageContentState extends State<HomePageContent> {
   cognito_user.User? user = UserProvider().user;
   ScrollController scrollController = ScrollController();
   List<dynamic> _posts = [];
-  List<dynamic> _likedPosts = [];
   dynamic _tokens = {};
   bool _nextPageMightContainMorePosts = false;
 
@@ -65,16 +64,6 @@ class _HomePageContentState extends State<HomePageContent> {
           _nextPageMightContainMorePosts = response['nextPageMightContainMorePosts'];
           isLoading = false;
         });
-
-        if (_posts.isNotEmpty) {
-          List<dynamic> likedPosts = [];
-          for (var i = 0; i < _posts.length; i++) {
-            likedPosts.add(_posts[i]['likes'].contains(user?.username));
-          }
-          setState(() {
-            _likedPosts = likedPosts;
-          });
-        }
       } else {
         setState(() {
           isLoading = false;
@@ -98,16 +87,6 @@ class _HomePageContentState extends State<HomePageContent> {
           _nextPageMightContainMorePosts = response['nextPageMightContainMorePosts'];
           isLoadingMorePosts = false;
         });
-
-        if (_posts.isNotEmpty) {
-          List<dynamic> likedPosts = [];
-          for (var i = 0; i < _posts.length; i++) {
-            likedPosts.add(_posts[i]['likes'].contains(user?.username));
-          }
-          setState(() {
-            _likedPosts = likedPosts;
-          });
-        }
       } else {
         setState(() {
           isLoadingMorePosts = false;
@@ -140,12 +119,9 @@ class _HomePageContentState extends State<HomePageContent> {
                           itemCount: _posts.length,
                           itemBuilder: (context, index) {
                             return PostWidget(
-                              liked: _likedPosts[index],
-                              onLike: () {
-                                setState(() {
-                                  _likedPosts[index] = !_likedPosts[index];
-                                });
-                              },
+                              onLike: (likes) => setState(() {
+                                _posts[index]['likes'] = likes;
+                              }),
                               token: widget.token,
                               post: Post(
                                 communityName: _posts[index]['community'],
