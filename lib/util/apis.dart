@@ -234,11 +234,12 @@ Future<Map<String, dynamic>> createComment(String commentBody, String postId, St
   );
 }
 
-Future<Map<String, dynamic>> deleteComment(String commentId, String token) async {
+Future<Map<String, dynamic>> deleteComment(String postId, String commentId, String token) async {
   const url ='https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/comment';
   return await http.delete(
     Uri.parse(url),
     body: jsonEncode({
+      "postId": postId,
       "commentId": commentId,
     }),
     headers: {

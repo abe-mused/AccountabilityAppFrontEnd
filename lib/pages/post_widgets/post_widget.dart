@@ -44,8 +44,14 @@ cognito_user.User? user = UserProvider().user;
     final Future<Map<String, dynamic>> responseMessage = deletePost(widget.post.postId, widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
+        print("Post has successfully been deleted!");
         widget.onDelete();
-      } else {}
+      } else {
+         const AlertDialog(
+          title: Text("Error!"),
+          content: Text('An error occurred while deleting the post, please try again.'),
+        );
+      }
     });
   }
 
@@ -226,11 +232,11 @@ cognito_user.User? user = UserProvider().user;
                                   builder: (context) => PostPage(
                                     postId: widget.post.postId,
                                     token: widget.token,
-                                    commentId: widget.post.creator,
+                                    // commentId: widget.post.postId,
                                     onDelete: () { 
-                                      setState(() {
-                                        
-                                      });
+                                      // setState(() {
+                                      //   widget.post.removeAt(widget.post.body);
+                                      // });
                                      },
                                   ),
                                 ),
