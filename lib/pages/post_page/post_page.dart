@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
-import 'package:linear/pages/home_page/home_page.dart';
 import 'package:linear/pages/post_page/create_comment_widget.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
@@ -115,7 +114,7 @@ class PostPageState extends State<PostPage> {
                   post: _post,
                   onDelete: () {
                     delete(context);
-                  }, route: const HomePage(),
+                  }, route: widget.route,
                 ),
               ),
               const SizedBox(height: 10),
