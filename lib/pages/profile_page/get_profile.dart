@@ -487,16 +487,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                 });
                               },
                               token: widget.token,
-                              post: Post(
-                                communityName: _post[index]['community'],
-                                postId: _post[index]['postId'],
-                                creator: _post[index]['creator'],
-                                creationDate:
-                                    int.parse(_post[index]['creationDate']),
-                                title: _post[index]['title'],
-                                body: _post[index]['body'],
-                                likes: _post[index]['likes'],
-                              ),
+                              post: Post.fromJson(_post[index]),
                               onDelete: () { 
                               setState(() {
                                 _post.removeAt(index);

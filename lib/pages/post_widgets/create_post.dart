@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linear/pages/image_related_widgets/upload_image_widget.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/model/post.dart';
 
@@ -19,6 +20,7 @@ class CreatePostWidget extends StatefulWidget {
 class _CreatePostWidgetState extends State<CreatePostWidget> {
   TextEditingController postBodyInput = TextEditingController();
   TextEditingController postTitleInput = TextEditingController();
+  String? imageUrl;
 
   bool _isCreatingPost = false;
   Post _post = Post(
@@ -30,6 +32,12 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
     body: '',
   );
 
+  void onUploadImageSuccess(String url){
+    setState(() {
+      imageUrl = url;
+    });
+  }
+
   doCreatePost() {
     setState(() {
       _isCreatingPost = true;
@@ -39,7 +47,8 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
         postTitleInput.text,
         postBodyInput.text,
         widget.communityName,
-        widget.token);
+        widget.token,
+        imageUrl);
 
     responseMessage.then((response) {
       if (response['status'] == true) {
@@ -49,7 +58,8 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
             creator: '',
             creationDate: int.parse(response['creationDate']),
             title: postTitleInput.text,
-            body: postBodyInput.text);
+            body: postBodyInput.text
+            );
 
         setState(() {
           _post = post;
@@ -152,6 +162,10 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                     hintText: "post body",
                   ),
                 ),
+              ),
+              UploadImageWidget(
+                token: widget.token,
+                onSuccess: onUploadImageSuccess,
               ),
               ElevatedButton(
                 onPressed: () async {
