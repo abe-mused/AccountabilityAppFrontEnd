@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/post_page/post_page.dart';
 import 'package:linear/util/date_formatter.dart';
@@ -53,6 +54,21 @@ cognito_user.User? user = UserProvider().user;
         );
       }
     });
+  }
+
+  delete() {
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => PostPage(
+        postId: widget.post.postId, 
+        token: widget.token, 
+        onDelete: () {  
+          delete();
+        },
+      ),
+    ),
+  );
   }
 
   @override
@@ -234,7 +250,7 @@ cognito_user.User? user = UserProvider().user;
                                     token: widget.token,
                                     onDelete: () { 
                                       setState(() {
-                                      
+                                      delete();
                                       });
                                      },
                                   ),
