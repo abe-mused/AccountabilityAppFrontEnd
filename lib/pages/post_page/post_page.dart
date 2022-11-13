@@ -13,10 +13,9 @@ import 'package:linear/pages/common_widgets/user_icon.dart';
 
 class PostPage extends StatefulWidget {
 
-  PostPage({super.key, required this.postId,  /* required this.commentId,*/ required this.token, required this.onDelete});
+  PostPage({super.key, required this.postId, required this.token, required this.onDelete});
 
   String postId;
-  // String commentId;
   String token;
   final VoidCallback onDelete;
 
@@ -43,18 +42,12 @@ class PostPageState extends State<PostPage> {
     Navigator.pop(context);
   }
 
-  doDeleteComment(String passCommentId) {
-    final Future<Map<String, dynamic>> responseMessage = deleteComment(passCommentId, widget.postId, widget.token);
+doDeleteComment(passIndex) {
+    final Future<Map<String, dynamic>> responseMessage = deleteComment(widget.postId, _comments[passIndex]['commentId'], widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
-        print("Comment has successfully been deleted!");
         widget.onDelete();
-      } else {
-        const AlertDialog(
-          title: Text("Error!"),
-          content: Text('An error occurred while deleting the comment, please try again.'),
-        );
-      }
+      } else {}
     });
   }
 
@@ -210,7 +203,7 @@ class PostPageState extends State<PostPage> {
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                doDeleteComment(_comments[index]['commentId']);
+                                                doDeleteComment(index);
                                                 Navigator.pop(context);
                                               },
                                               child: const Text('Yes'),
