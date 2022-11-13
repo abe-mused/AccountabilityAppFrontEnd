@@ -216,53 +216,54 @@ cognito_user.User? user = UserProvider().user;
                     const SizedBox(
                       width: 1000,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
+                    if(widget.post.imageUrl != null) ...[
+                      const SizedBox(height: 10),
+                      Image.network(widget.post.imageUrl!, height: 200),
+                    ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PostPage(
+                                  postId: widget.post.postId,
+                                  token: widget.token,
+                                  route: widget.route,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.comment,
+                            size: 34.0,
+                          ),
+                        ),
+                        if (widget.liked) ...[
                           IconButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PostPage(
-                                    postId: widget.post.postId,
-                                    token: widget.token,
-                                    route: widget.route,
-                                  ),
-                                ),
-                              );
+                              likeUnlikePost();
                             },
                             icon: const Icon(
-                              Icons.comment,
+                              Icons.favorite,
+                              color: Colors.pink,
                               size: 34.0,
                             ),
-                          ),
-                          if (widget.liked) ...[
-                            IconButton(
-                              onPressed: () {
-                                likeUnlikePost();
-                              },
-                              icon: const Icon(
-                                Icons.favorite,
-                                color: Colors.pink,
-                                size: 34.0,
-                              ),
-                            )
-                          ] else ...[
-                            IconButton(
-                              onPressed: () {
-                                likeUnlikePost();
-                              },
-                              icon: const Icon(
-                                Icons.favorite_border,
-                                size: 34.0,
-                              ),
-                            )
-                          ]
-                        ],
-                      ),
+                          )
+                        ] else ...[
+                          IconButton(
+                            onPressed: () {
+                              likeUnlikePost();
+                            },
+                            icon: const Icon(
+                              Icons.favorite_border,
+                              size: 34.0,
+                            ),
+                          )
+                        ]
+                      ],
                     ),
                   ],
                 ),

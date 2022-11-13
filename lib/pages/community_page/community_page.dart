@@ -270,15 +270,7 @@ class CommunityPageState extends State<CommunityPage> {
                           });
                         },
                         token: widget.token,
-                        post: Post(
-                          communityName: _posts[index]['community'],
-                          postId: _posts[index]['postId'],
-                          creator: _posts[index]['creator'],
-                          creationDate: int.parse(_posts[index]['creationDate']),
-                          title: _posts[index]['title'],
-                          body: _posts[index]['body'],
-                          likes: _posts[index]['likes'],
-                        ),
+                        post: Post.fromJson(_posts[index]),
                         onDelete: () {
                         setState(() {
                            _posts.removeAt(index);
