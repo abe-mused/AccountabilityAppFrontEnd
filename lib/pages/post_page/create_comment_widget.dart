@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/constants/themeSettings.dart';
 
@@ -75,17 +76,21 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
           child: Column(
             children: [
               const Text(
-                "create a comment!",
+                "Add a Comment!",
                 style: TextStyle(fontSize: 24),
               ),
               Container(
                 margin: const EdgeInsets.all(10),
                 child: TextFormField(
                   controller: commentBodyInput,
+                  // inputFormatters allows character limit to be up to 256
+                  inputFormatters: [
+                  LengthLimitingTextInputFormatter(256),
+                  ],
                   style: const TextStyle(
                     fontSize: 20,
                   ),
-                  onChanged: (value) {
+                 onChanged: (value) {
                     setState(() {});
                   },
                   decoration: InputDecoration(
@@ -117,7 +122,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
                         });
                   }
                 },
-                child: const Text("create comment"),
+                child: const Text("Add a Comment"),
               ),
             ],
           ),
