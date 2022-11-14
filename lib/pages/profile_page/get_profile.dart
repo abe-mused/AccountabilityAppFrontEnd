@@ -66,6 +66,11 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
     successfulMessage.then((response) {
       if (response['status'] == true) {
         User user = User.fromJson(response['user']);
+
+        if(user.imageUrl != null){
+          print("user.imageUrl ${user.imageUrl}");
+        }
+        
         setState(() {
           _viewUser = user;
         });
@@ -90,6 +95,52 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
   Widget build(BuildContext context) {
     currentUser = Provider.of<UserProvider>(context).user;
 
+    _buildFollowButton(){
+      if (!_isUpdatingFollow && !isViewingOwnProfile()){
+       return ElevatedButton(
+          onPressed: () async {
+            setState(() {
+              _isUpdatingFollow = true;
+            });
+            await followAndUnfollow(widget.username, widget.token);
+            setState(() {
+              if (_isFollowing) {
+                _viewUser.followers!.remove(currentUser!.username);
+                _viewUser = _viewUser;
+              } else {
+                _viewUser.followers!.add(currentUser!.username);
+                _viewUser = _viewUser;
+              }
+              _isFollowing = !_isFollowing;
+              _isUpdatingFollow = false;
+            });
+          },
+          style: _isFollowing
+              ? AppThemes.secondaryTextButtonStyle(context)
+              : null,
+          child: Text(_isFollowing ? "Unfollow" : "Follow"),
+        );
+      } else if (_isUpdatingFollow && !isViewingOwnProfile()) {
+        return ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+          ),
+          child: const SizedBox(
+            height: 10.0,
+            width: 10.0,
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          ),
+        );
+      } else {
+        return Container();
+      }
+    }
+
     if (isLoading == false && isErrorFetchingUser == false) {
       return Scaffold(
         body: RefreshIndicator(
@@ -99,87 +150,104 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                 const Padding(
                   padding: EdgeInsets.only(bottom: 30.0),
                 ),
-                Text(
-                  "u/${_viewUser.username}",
-                  style: const TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
                 Container(
                   padding: const EdgeInsets.only(left: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      UserIcon(radius: 50, username: _viewUser.username),
+                      if(_viewUser.imageUrl != null) ...[
+                        Container(
+                          width: 110,
+                          height: 110,
+                          decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: Image.network(_viewUser.imageUrl ?? "").image,
+                            fit: BoxFit.fill
+                          ),
+                          ),
+                        )
+                      ] else ...[
+                        UserIcon(radius: 50, username: _viewUser.username),
+                      ],
                       const SizedBox(
                         width: 20,
                       ),
                       Container(
                         padding: const EdgeInsets.only(left: 10),
                       ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              "${_viewUser.followers?.length ?? 0}",
-                              style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ViewFollowsPage(
-                                        token: widget.token,
-                                        username: _viewUser.username,
-                                        user: _viewUser,
-                                        type: "followers"),
-                                  ),
-                                );
-                              },
-                              child: const Text(
-                                "Followers",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 16),
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ViewFollowsPage(
+                                          token: widget.token,
+                                          username: _viewUser.username,
+                                          user: _viewUser,
+                                          type: "followers"),
+                                    ),
+                                  );
+                                },
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "${_viewUser.followers?.length ?? 0}",
+                                      style: const TextStyle(
+                                          fontSize: 24, fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const Text(
+                                        "Followers",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                  ]
+                                ), 
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              "${_viewUser.following?.length ?? 0}",
-                              style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ViewFollowsPage(
-                                        token: widget.token,
-                                        username: _viewUser.username,
-                                        user: _viewUser,
-                                        type: "following"),
-                                  ),
-                                );
-                              },
-                              child: const Text(
-                                "Following",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 16),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ViewFollowsPage(
+                                          token: widget.token,
+                                          username: _viewUser.username,
+                                          user: _viewUser,
+                                          type: "following"),
+                                    ),
+                                  );
+                                },
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "${_viewUser.following?.length ?? 0}",
+                                      style: const TextStyle(
+                                          fontSize: 24, fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const Text(
+                                      "Following",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ]
+                                ), 
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              _buildFollowButton(),
+                            ]
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -191,53 +259,28 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                       Text(
                         _viewUser.name,
                         style: const TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 22.0,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
                     ],
                   ),
                 ),
-                if (!_isUpdatingFollow && !isViewingOwnProfile())
-                  ElevatedButton(
-                    onPressed: () async {
-                      setState(() {
-                        _isUpdatingFollow = true;
-                      });
-                      await followAndUnfollow(widget.username, widget.token);
-                      setState(() {
-                        if (_isFollowing) {
-                          _viewUser.followers!.remove(currentUser!.username);
-                          _viewUser = _viewUser;
-                        } else {
-                          _viewUser.followers!.add(currentUser!.username);
-                          _viewUser = _viewUser;
-                        }
-                        _isFollowing = !_isFollowing;
-                        _isUpdatingFollow = false;
-                      });
-                    },
-                    style: _isFollowing
-                        ? AppThemes.secondaryTextButtonStyle(context)
-                        : null,
-                    child: Text(_isFollowing ? "Unfollow" : "Follow"),
-                  ),
-                if (_isUpdatingFollow && !isViewingOwnProfile())
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                Container(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "u/${_viewUser.username}",
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
-                    ),
-                    child: const SizedBox(
-                      height: 10.0,
-                      width: 10.0,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    ),
+                    ],
                   ),
+                ),
                 const SizedBox(height: 20.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,

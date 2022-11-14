@@ -4,6 +4,7 @@ class User {
   List<dynamic>? communities;
   List<dynamic>? following;
   List<dynamic>? followers;
+  String? imageUrl;
 
   User({
     required this.username,
@@ -21,6 +22,11 @@ class User {
       followers: item['followers'] ?? [],
       following: item['following'] ?? [],
     );
+
+    if(item["imageUrl"] != null) {
+      user.imageUrl = item["imageUrl"];
+    }
+
     return user;
   }
 }
