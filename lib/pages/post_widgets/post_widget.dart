@@ -199,6 +199,38 @@ class _PostWidget extends State<PostWidget> {
                           );
                         }
                       }),
+                    ],
+                    if (widget.post.creator != user!.username) ...[
+                      PopupMenuButton(
+                        itemBuilder: (context) {
+                          return [
+                            const PopupMenuItem<int>(
+                              value: 1,
+                              child: Text("Report"),
+                            ),
+                          ];
+                        },
+                        onSelected: (value) {
+                          if(value == 1) {
+                            createReport({"postId": widget.post.postId}, widget.token);
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: const Text('Post reported!'),
+                                content: const Text(
+                                    'This post has been reported and will be reviewed by our moderators.'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'Ok'),
+                                    child: const Text('Ok'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                        }
+                      ),
                     ]
                   ],
                 ),

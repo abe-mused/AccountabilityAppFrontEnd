@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
+import 'package:linear/util/apis.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -86,6 +87,38 @@ class ProfilePageState extends State<ProfilePage> {
         appBar: AppBar(
           title: const Text("Profile"),
           automaticallyImplyLeading: true,
+          actions: <Widget>[
+            PopupMenuButton(
+              itemBuilder: (context) {
+                return [
+                  const PopupMenuItem<int>(
+                    value: 1,
+                    child: Text("Report"),
+                  ),
+                ];
+              },
+              onSelected: (value) {
+                if(value == 1) {
+                  createReport({"username": widget.username}, user?.idToken ?? "INVALID TOKEN");
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: const Text('User reported!'),
+                      content: const Text(
+                          'This user has been reported and will be reviewed by our moderators.'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.pop(context, 'Ok'),
+                          child: const Text('Ok'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              }
+            ),
+          ],
         ),
         body: Center(child: GetProfileWidget(token: user?.idToken ?? "INVALID TOKEN", username: widget.username)),
         bottomNavigationBar: const LinearNavBar(),

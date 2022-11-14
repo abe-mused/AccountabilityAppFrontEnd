@@ -230,43 +230,77 @@ class PostPageState extends State<PostPage> {
                                         ],
                                       ),
                                     ),
-                                    if (_comments[index]['creator'] ==
-                                        user!.username) ...[
-                                      PopupMenuButton(itemBuilder: (context) {
-                                        return [
-                                          const PopupMenuItem<int>(
-                                            value: 0,
-                                            child: Text("Delete"),
-                                          ),
-                                        ];
-                                      }, onSelected: (value) {
-                                        if (value == 0) {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) =>
-                                                AlertDialog(
-                                              title: const Text('Delete'),
-                                              content: const Text(
-                                                  'Are you sure you want to delete this comment?'),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                          context, 'Cancel'),
-                                                  child: const Text('Cancel'),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () {
-                                                    doDeleteComment(index);
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: const Text('Yes'),
-                                                ),
-                                              ],
+                                    if (_comments[index]['creator'] == user!.username) ...[
+                                      PopupMenuButton(
+                                        itemBuilder: (context) {
+                                          return [
+                                            const PopupMenuItem<int>(
+                                              value: 0,
+                                              child: Text("Delete"),
                                             ),
-                                          );
+                                          ];
+                                        },
+                                        onSelected: (value) {
+                                          if (value == 0) {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                title: const Text('Delete'),
+                                                content: const Text(
+                                                    'Are you sure you want to delete this comment?'),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(
+                                                            context, 'Cancel'),
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      doDeleteComment(index);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text('Yes'),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }
                                         }
-                                      }),
+                                      ),
+                                    ],
+                                    if (_comments[index]['creator'] != user!.username) ...[
+                                      PopupMenuButton(
+                                        itemBuilder: (context) {
+                                          return [
+                                            const PopupMenuItem<int>(
+                                              value: 1,
+                                              child: Text("Report"),
+                                            ),
+                                          ];
+                                        },
+                                        onSelected: (value) {
+                                          if(value == 1) {
+                                            createReport({"commentId": _comments[index]['commentId']}, widget.token);
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) => AlertDialog(
+                                                title: const Text('Comment reported!'),
+                                                content: const Text(
+                                                    'This comment has been reported and will be reviewed by our moderators.'),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context, 'Ok'),
+                                                    child: const Text('Ok'),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      ),
                                     ],
                                   ]),
                             ),

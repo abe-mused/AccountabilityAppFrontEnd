@@ -417,3 +417,14 @@ Future<Map<String, dynamic>> getHomeFeed(String token, dynamic pageTokens) async
     },
   );
 }
+
+Future<void> createReport(dynamic reportBody, String token) async {
+  http.post(
+    Uri.parse('https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/report'),
+    body: jsonEncode(reportBody),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  );
+}
