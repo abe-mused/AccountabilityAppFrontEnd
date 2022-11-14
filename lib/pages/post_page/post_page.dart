@@ -12,11 +12,13 @@ import 'package:provider/provider.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 
 class PostPage extends StatefulWidget {
-  PostPage({super.key, required this.postId, required this.token, required this.route});
+  PostPage({super.key, required this.postId, required this.token, required this.route, required this.onDelete});
 
   String postId;
   String token;
   Widget route;
+  final VoidCallback onDelete;
+
   @override
   State<PostPage> createState() => PostPageState();
 }
@@ -46,6 +48,20 @@ class PostPageState extends State<PostPage> {
 
   delete(context) {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => widget.route));
+  }
+
+doDeleteComment(passIndex) {
+    final Future<Map<String, dynamic>> responseMessage = deleteComment(widget.postId, _comments[passIndex]['commentId'], widget.token);
+    responseMessage.then((response) {
+      if (response['status'] == true) {
+        widget.onDelete();
+      } else {
+        const AlertDialog(
+          title: Text("Error!"),
+          content: Text('An error occurred while deleting the comment, please try again.'),
+        );
+      }
+    });
   }
 
   doGetPost() {
@@ -184,8 +200,40 @@ class PostPageState extends State<PostPage> {
                                       ],
                                     ),
                                   ),
+                                 if (_comments[index]['creator'] == user!.username) ... [
+                                    PopupMenuButton(itemBuilder: (context) {
+                                    return [
+                                      const PopupMenuItem<int>(
+                                        value: 0,
+                                        child: Text("Delete"),
+                                      ),
+                                    ];
+                                  }, onSelected: (value) {
+                                    if (value == 0) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) => AlertDialog(
+                                          title: const Text('Delete'),
+                                          content: const Text('Are you sure you want to delete this comment?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () =>
+                                                Navigator.pop(context, 'Cancel'),
+                                                child: const Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                doDeleteComment(index);
+                                              },
+                                              child: const Text('Yes'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                  }),
                                 ],
-                              ),
+                          ]),
                             ),
                             const Divider(
                               height: 10,

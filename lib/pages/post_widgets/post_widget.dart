@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/post_page/post_page.dart';
 import 'package:linear/util/date_formatter.dart';
@@ -39,7 +40,8 @@ class _PostWidget extends State<PostWidget> {
       builder: (context) => PostPage(
         postId: widget.post.postId,
         token: widget.token,
-        route: widget.route,
+        route: widget.route, 
+        onDelete: () {  },
       ),
     );
     if (route != null) {
@@ -65,8 +67,17 @@ class _PostWidget extends State<PostWidget> {
     responseMessage.then((response) {
       if (response['status'] == true) {
         widget.onDelete();
-      } else {}
+      } else {
+         const AlertDialog(
+          title: Text("Error!"),
+          content: Text('An error occurred while deleting the post, please try again.'),
+        );
+      }
     });
+  }
+
+  delete() {
+    Navigator.pop(context);
   }
 
   @override
@@ -236,6 +247,7 @@ class _PostWidget extends State<PostWidget> {
                     const SizedBox(
                       width: 1000,
                     ),
+
                     if(widget.post.imageUrl != null) ...[
                       const SizedBox(height: 10),
                       Image.network(widget.post.imageUrl!, height: 200),
@@ -252,7 +264,12 @@ class _PostWidget extends State<PostWidget> {
                                   builder: (context) => PostPage(
                                     postId: widget.post.postId,
                                     token: widget.token,
-                                    route: widget.route,
+                                    route: widget.route, 
+                                    onDelete: () {
+                                      setState(() {
+                                        delete();
+                                      });
+                                      },
                                   ),
                                 ),
                               );
