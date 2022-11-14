@@ -30,7 +30,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
       username: '', name: '', communities: [], followers: [], following: []);
   cognito_user.User? currentUser = UserProvider().user;
   List<dynamic> _post = [];
-  List<dynamic> _likedPosts = [];
 
   final ScrollController _scrollController = ScrollController();
 
@@ -78,15 +77,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
           _isFollowing = user.followers!.contains(currentUser!.username);
         });
 
-        if (_post.isNotEmpty) {
-          List<dynamic> likedPosts = [];
-          for (var i = 0; i < _post.length; i++) {
-            likedPosts.add(_post[i]['likes'].contains(user.username));
-          }
-          setState(() {
-            _likedPosts = likedPosts;
-          });
-        }
       } else {
         setState(() {
           isLoading = false;
@@ -480,19 +470,17 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                           itemCount: _post.length,
                           itemBuilder: (context, index) {
                             return PostWidget(
-                              liked: _likedPosts[index],
-                              onLike: () {
-                                setState(() {
-                                  _likedPosts[index] = !_likedPosts[index];
-                                });
-                              },
+                              onLike: (likes) => setState(() {
+                                _post[index]['likes'] = likes;
+                              }),
                               token: widget.token,
                               post: Post.fromJson(_post[index]),
-                              onDelete: () { 
-                              setState(() {
-                                _post.removeAt(index);
-                              });
-                             }, route: const ProfilePage(),
+                              onDelete: () {
+                                setState(() {
+                                  _post.removeAt(index);
+                                });
+                              },
+                              route: const ProfilePage(),
                             );
                           },
                         ),

@@ -10,20 +10,20 @@ import 'package:provider/provider.dart';
 import 'package:linear/util/cognito/user.dart' as cognito_user;
 
 class PostWidget extends StatefulWidget {
-  const PostWidget(
+  PostWidget(
       {super.key,
       required this.post,
-      required this.liked,
       required this.onLike,
       required this.token,
       required this.onDelete,
-      required this.route});
+      required this.route,
+      this.isPostPage = false});
   final Post post;
   final String token;
-  final bool liked;
-  final VoidCallback onLike;
+  final Function onLike;
   final VoidCallback onDelete;
   final Widget route;
+  bool isPostPage;
 
   @override
   State<StatefulWidget> createState() => _PostWidget();
@@ -50,12 +50,40 @@ class _PostWidget extends State<PostWidget> {
   }
 
   likeUnlikePost() {
+    if (widget.post.likes!.contains(user!.username)) {
+      widget.post.likes!.remove(user!.username);
+    } else {
+      widget.post.likes!.add(user!.username);
+    }
+    widget.onLike(widget.post.likes);
     final Future<Map<String, dynamic>> responseMessage =
         likePost(widget.post.postId, widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
-        widget.onLike();
-      } else {}
+      } else {
+        if (widget.post.likes!.contains(user!.username)) {
+          widget.post.likes!.remove(user!.username);
+        } else {
+          widget.post.likes!.add(user!.username);
+        }
+        widget.onLike(widget.post.likes);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Error!"),
+                content: const Text(
+                    "An error occured while attempting to like the post."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+      }
     });
   }
 
@@ -236,14 +264,14 @@ class _PostWidget extends State<PostWidget> {
                     const SizedBox(
                       width: 1000,
                     ),
-                    if(widget.post.imageUrl != null) ...[
+                    if (widget.post.imageUrl != null) ...[
                       const SizedBox(height: 10),
                       Image.network(widget.post.imageUrl!, height: 200),
                     ],
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        if (isNewRoute(context))
+                        if (!widget.isPostPage)
                           IconButton(
                             onPressed: () {
                               Navigator.push(
@@ -262,7 +290,7 @@ class _PostWidget extends State<PostWidget> {
                               size: 34.0,
                             ),
                           ),
-                        if (widget.liked) ...[
+                        if (widget.post.likes!.contains(user!.username)) ...[
                           IconButton(
                             onPressed: () {
                               likeUnlikePost();

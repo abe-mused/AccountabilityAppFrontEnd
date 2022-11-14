@@ -29,7 +29,6 @@ class CommunityPageState extends State<CommunityPage> {
   List<dynamic> _posts = [];
 
   User? user = UserProvider().user;
-  List<dynamic> _likedPosts = [];
   bool _isMember = false;
 
   bool _isUpdatingMembership = false;
@@ -90,9 +89,7 @@ class CommunityPageState extends State<CommunityPage> {
         'likes': [],
         'comments': [],
       });
-      _likedPosts.add(false);
       _posts = _posts;
-      _likedPosts = _likedPosts;
     });
   }
 
@@ -123,15 +120,6 @@ class CommunityPageState extends State<CommunityPage> {
           }
         }
 
-        if (_posts.isNotEmpty) {
-          List<dynamic> likedPosts = [];
-          for (var i = 0; i < _posts.length; i++) {
-            likedPosts.add(_posts[i]['likes'].contains(user!.username));
-          }
-          setState(() {
-            _likedPosts = likedPosts;
-          });
-        }
         setState(() {
           _isMember = _community.members.contains(user!.username);
           _isloading = false;
@@ -263,12 +251,9 @@ class CommunityPageState extends State<CommunityPage> {
                     itemCount: _posts.length,
                     itemBuilder: (context, index) {
                       return PostWidget(
-                        liked: _likedPosts[index],
-                        onLike: () {
-                          setState(() {
-                            _likedPosts[index] = !_likedPosts[index];
-                          });
-                        },
+                        onLike: (likes) => setState(() {
+                          _posts[index]['likes'] = likes;
+                        }),
                         token: widget.token,
                         post: Post.fromJson(_posts[index]),
                         onDelete: () {

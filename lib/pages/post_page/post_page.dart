@@ -36,7 +36,6 @@ class PostPageState extends State<PostPage> {
   User? user = UserProvider().user;
 
   bool _isloading = true;
-  List<dynamic> _likedPosts = [];
 
   @override
   void initState() {
@@ -56,12 +55,6 @@ class PostPageState extends State<PostPage> {
         response['post']['creationDate'] =
             int.parse(response['post']['creationDate']);
         Post post = Post.fromJson(response['post']);
-        List<dynamic> likedPosts = [];
-
-        likedPosts.add(post.likes?.contains(user!.username));
-        setState(() {
-          _likedPosts = likedPosts;
-        });
 
         setState(() {
           _post = post;
@@ -104,12 +97,10 @@ class PostPageState extends State<PostPage> {
               SizedBox(
                 width: MediaQuery.of(context).size.height,
                 child: PostWidget(
-                  liked: _likedPosts[0],
-                  onLike: () {
-                    setState(() {
-                      _likedPosts[0] = !_likedPosts[0];
-                    });
-                  },
+                  isPostPage: true,
+                  onLike: (likes) => setState(() {
+                    _post.likes = likes;
+                  }),
                   token: widget.token,
                   post: _post,
                   onDelete: () {
