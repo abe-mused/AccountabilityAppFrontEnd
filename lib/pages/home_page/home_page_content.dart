@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:linear/util/apis.dart';
+import 'package:linear/pages/home_page/home_page.dart';
+import 'package:linear/util/apis.dart' as API;
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/util/cognito/user_provider.dart';
@@ -18,37 +19,57 @@ class HomePageContent extends StatefulWidget {
 
 class _HomePageContentState extends State<HomePageContent> {
   cognito_user.User? user = UserProvider().user;
-  List<dynamic> _post = [];
+  ScrollController scrollController = ScrollController();
+  List<dynamic> _posts = [];
   List<dynamic> _likedPosts = [];
+  dynamic _tokens = {};
+  bool _nextPageMightContainMorePosts = false;
 
-  bool isLoading = true;
+  bool isLoading = false;
+  bool isLoadingMorePosts = false;
   bool isErrorFetchingUser = false;
 
   @override
   void initState() {
     super.initState();
-    getUser();
+    scrollController = ScrollController()..addListener(scrollListener);
+    getHomeFeed();
+  }
+  
+  @override
+  void dispose() {
+    scrollController.removeListener(scrollListener);
+    super.dispose();
+  }
+
+  scrollListener() {
+    if (scrollController.position.extentAfter < 500 && _nextPageMightContainMorePosts && !isLoadingMorePosts) {
+      fetchMorePosts();
+    }
   }
 
   isViewingOwnProfile() {
     return user!.username == widget.username;
   }
 
-  getUser() {
-    //TODO: use the homepage endpoitn once it up and running
-    final Future<Map<String, dynamic>> responseMessage = getProfile(widget.username, widget.token);
+  getHomeFeed() {
+    setState(() {
+        isLoading = true;
+      });
+    final Future<Map<String, dynamic>> responseMessage = API.getHomeFeed(widget.token, {});
     responseMessage.then((response) {
       if (response['status'] == true) {
-        List<dynamic> posts = (response['posts']);
         setState(() {
-          _post = posts;
+          _posts = response['posts'];
+          _tokens = response['tokens'];
+          _nextPageMightContainMorePosts = response['nextPageMightContainMorePosts'];
           isLoading = false;
         });
 
-        if (_post.isNotEmpty) {
+        if (_posts.isNotEmpty) {
           List<dynamic> likedPosts = [];
-          for (var i = 0; i < _post.length; i++) {
-            likedPosts.add(_post[i]['likes'].contains(user?.username));
+          for (var i = 0; i < _posts.length; i++) {
+            likedPosts.add(_posts[i]['likes'].contains(user?.username));
           }
           setState(() {
             _likedPosts = likedPosts;
@@ -63,6 +84,39 @@ class _HomePageContentState extends State<HomePageContent> {
     });
   }
 
+  fetchMorePosts() {
+    setState(() {
+        isLoadingMorePosts = true;
+      });
+    final Future<Map<String, dynamic>> responseMessage = API.getHomeFeed(widget.token, _tokens);
+    responseMessage.then((response) {
+      if (response['status'] == true) {
+        List<dynamic> posts = (response['posts']);
+        setState(() {
+          _posts = [..._posts, ...posts];
+          _tokens = response['tokens'];
+          _nextPageMightContainMorePosts = response['nextPageMightContainMorePosts'];
+          isLoadingMorePosts = false;
+        });
+
+        if (_posts.isNotEmpty) {
+          List<dynamic> likedPosts = [];
+          for (var i = 0; i < _posts.length; i++) {
+            likedPosts.add(_posts[i]['likes'].contains(user?.username));
+          }
+          setState(() {
+            _likedPosts = likedPosts;
+          });
+        }
+      } else {
+        setState(() {
+          isLoadingMorePosts = false;
+          _nextPageMightContainMorePosts = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserProvider>(context).user;
@@ -71,18 +125,19 @@ class _HomePageContentState extends State<HomePageContent> {
       return RefreshIndicator(
         child: Scaffold(
           body: SingleChildScrollView(
+            controller: scrollController,
             child: Column(
               children: [
                 Column(
                   children: [
                     // ignore: prefer_is_empty
-                    if (_post.length != 0) ...[
+                    if (_posts.length != 0) ...[
                       Padding(
                         padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
                         child: ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: _post.length,
+                          itemCount: _posts.length,
                           itemBuilder: (context, index) {
                             return PostWidget(
                               liked: _likedPosts[index],
@@ -93,19 +148,19 @@ class _HomePageContentState extends State<HomePageContent> {
                               },
                               token: widget.token,
                               post: Post(
-                                communityName: _post[index]['community'],
-                                postId: _post[index]['postId'],
-                                creator: _post[index]['creator'],
-                                creationDate: int.parse(_post[index]['creationDate']),
-                                title: _post[index]['title'],
-                                body: _post[index]['body'],
-                                likes: _post[index]['likes'],
+                                communityName: _posts[index]['community'],
+                                postId: _posts[index]['postId'],
+                                creator: _posts[index]['creator'],
+                                creationDate: int.parse(_posts[index]['creationDate']),
+                                title: _posts[index]['title'],
+                                body: _posts[index]['body'],
+                                likes: _posts[index]['likes'],
                               ),
                               onDelete: () {  
                               setState(() {
-                                _post.removeAt(index);
+                                _posts.removeAt(index);
                               });
-                            },
+                            }, route: const HomePage(),
                             );
                           },
                         ),
@@ -118,7 +173,23 @@ class _HomePageContentState extends State<HomePageContent> {
                     ],
                   ],
                 ),
-                const SizedBox(height: 80.0),
+                if(!_nextPageMightContainMorePosts) ...[
+                  const Padding(
+                    padding: EdgeInsets.only(left: 35.0, right: 35.0, top: 15.0, bottom: 15.0),
+                    child: Text(
+                        'That\'s it! Join more communities to see their posts here.',
+                        textAlign: TextAlign.center,
+                      ),
+                  ),
+                ] else ...[
+                    const Padding(
+                      padding: EdgeInsets.only(left: 35.0, right: 35.0, top: 15.0, bottom: 15.0),
+                      child: Text(
+                        'Loading more posts...',
+                        textAlign: TextAlign.center,
+                        ),
+                    ),
+                ],
               ],
             ),
           ),
@@ -127,7 +198,7 @@ class _HomePageContentState extends State<HomePageContent> {
           setState(() {
             isLoading = true;
           });
-          getUser();
+          getHomeFeed();
         },
       );
     } else if (isLoading == false && isErrorFetchingUser == true) {
