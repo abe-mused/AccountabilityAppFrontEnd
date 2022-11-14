@@ -32,7 +32,7 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
     body: '',
   );
 
-  void onUploadImageSuccess(String url){
+  void onUploadImageSuccess(String url) {
     setState(() {
       imageUrl = url;
     });
@@ -58,8 +58,7 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
             creator: '',
             creationDate: int.parse(response['creationDate']),
             title: postTitleInput.text,
-            body: postBodyInput.text
-            );
+            body: postBodyInput.text);
 
         setState(() {
           _post = post;
@@ -113,12 +112,12 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
     if (_isCreatingPost) {
       return const Center(child: CircularProgressIndicator());
     }
-
     return Container(
       margin: const EdgeInsets.only(left: 20.0, right: 20.0),
       width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.height * 0.5,
       child: Card(
-        margin: const EdgeInsets.only(top: 20.0),
+        margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -167,28 +166,42 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                 token: widget.token,
                 onSuccess: onUploadImageSuccess,
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  if (postTitleInput.text != '' && postBodyInput.text != '') {
-                    doCreatePost();
-                  } else {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            content: const Text("Please fill out all fields."),
-                            actions: [
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("Ok"))
-                            ],
-                          );
-                        });
-                  }
-                },
-                child: const Text("create post"),
+              const Padding(padding: EdgeInsets.only(bottom: 10)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (postTitleInput.text != '' &&
+                          postBodyInput.text != '') {
+                        doCreatePost();
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content:
+                                    const Text("Please fill out all fields."),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text("Ok"))
+                                ],
+                              );
+                            });
+                      }
+                    },
+                    child: const Text("create post"),
+                  ),
+                ],
               ),
             ],
           ),

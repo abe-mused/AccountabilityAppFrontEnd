@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/util/cognito/auth_util.dart' as authUtil;
 import 'package:intl/intl.dart';
+import 'package:linear/constants/themeSettings.dart';
+import 'package:flutter/rendering.dart';
 
 class CommunityPage extends StatefulWidget {
   CommunityPage({super.key, required this.communityName, required this.token});
@@ -27,7 +29,12 @@ class CommunityPage extends StatefulWidget {
 }
 
 class CommunityPageState extends State<CommunityPage> {
-  Community _community = Community(communityName: '', creationDate: 1, creator: '', members: [], checkIns: []);
+  Community _community = Community(
+      communityName: '',
+      creationDate: 1,
+      creator: '',
+      members: [],
+      checkIns: []);
   List<dynamic> _posts = [];
 
   User? user = UserProvider().user;
@@ -42,19 +49,41 @@ class CommunityPageState extends State<CommunityPage> {
   bool _hasGoal = false;
   int _hasGoalIndex = 0;
 
+  bool _showActionButton = true;
+
+  ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-
-    authUtil.refreshTokenIfExpired().then((response) => {
-          if (response['refreshed'] == true)
-            {
-              Provider.of<UserProvider>(context, listen: false).setUser(response['user']),
-            }
-        },
-      );
+    scrollController = ScrollController()..addListener(scrollListener);
+    authUtil.refreshTokenIfExpired().then(
+          (response) => {
+            if (response['refreshed'] == true)
+              {
+                Provider.of<UserProvider>(context, listen: false)
+                    .setUser(response['user']),
+              }
+          },
+        );
 
     doGetCommunity();
+  }
+
+  @override
+  void dispose() {
+    scrollController.removeListener(scrollListener);
+    super.dispose();
+  }
+
+  scrollListener() {
+    if (_showActionButton !=
+        (scrollController.position.userScrollDirection ==
+            ScrollDirection.forward)) {
+      setState(() {
+        _showActionButton = !_showActionButton;
+      });
+    }
   }
 
   updateCommunity(Post newPost) {
@@ -96,6 +125,7 @@ class CommunityPageState extends State<CommunityPage> {
       });
       _posts = _posts;
     });
+    Navigator.pop(context);
   }
 
   updateGoal(Goal newGoal){
@@ -115,7 +145,8 @@ class CommunityPageState extends State<CommunityPage> {
    }
 
   doGetCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage = getPostsForCommunity(widget.communityName, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage =
+        getPostsForCommunity(widget.communityName, widget.token);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         Community community = Community.fromJson(response['community']);
@@ -194,9 +225,74 @@ class CommunityPageState extends State<CommunityPage> {
       appBar: AppBar(
         title: const Text("Community"),
       ),
+      floatingActionButton: Visibility(
+        visible: _showActionButton,
+        child: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Actions'),
+                content: SizedBox(
+                  height: 90,
+                  width: 50,
+                  child: ListView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      ListTile(
+                        title: const Text('Create Post'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return CreatePostWidget(
+                                  communityName: widget.communityName,
+                                  token: widget.token,
+                                  onSuccess: updateCommunity,
+                                );
+                              });
+                        },
+                      ),
+                      //add logic here to check if user already created a goal
+                      ListTile(
+                        title: const Text('Create Goal'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return CreateGoalWidget(
+                                  communityName: widget.communityName,
+                                  token: widget.token,
+                                  //add on success method here and within that do Navigator.pop at end, (follow create post)
+                                );
+                              });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Okay'))
+                ],
+              ),
+            );
+          },
+          backgroundColor: AppThemes.primaryIconColor(context),
+          child: const Icon(
+            Icons.add_circle_outline,
+            size: 57,
+          ),
+        ),
+      ),
       body: RefreshIndicator(
         child: SingleChildScrollView(
-          // removes bottom overflow pixel error
+          controller: scrollController,
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
@@ -209,7 +305,8 @@ class CommunityPageState extends State<CommunityPage> {
                     children: <Widget>[
                       Text(
                         "c/${_community.communityName}",
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 10),
                       Text(
@@ -246,7 +343,8 @@ class CommunityPageState extends State<CommunityPage> {
                             setState(() {
                               _isUpdatingMembership = true;
                             });
-                            await joinAndLeave(widget.communityName, widget.token);
+                            await joinAndLeave(
+                                widget.communityName, widget.token);
 
                             setState(() {
                               if (_isMember) {
@@ -260,22 +358,27 @@ class CommunityPageState extends State<CommunityPage> {
                               _isUpdatingMembership = false;
                             });
                           },
-                          style: _isMember ? AppThemes.secondaryTextButtonStyle(context) : null,
-                          child: Text(_isMember ? "Leave community" : "Join community"),
+                          style: _isMember
+                              ? AppThemes.secondaryTextButtonStyle(context)
+                              : null,
+                          child: Text(
+                              _isMember ? "Leave community" : "Join community"),
                         ),
                       if (_isUpdatingMembership)
                         ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
                             shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
                             ),
                           ),
                           child: const SizedBox(
                             height: 10.0,
                             width: 10.0,
                             child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           ),
                         ),
@@ -311,7 +414,8 @@ class CommunityPageState extends State<CommunityPage> {
               // ignore: prefer_is_empty
               if ((_posts.length) > 0) ...[
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                  padding:
+                      const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
                   child: ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -324,10 +428,14 @@ class CommunityPageState extends State<CommunityPage> {
                         token: widget.token,
                         post: Post.fromJson(_posts[index]),
                         onDelete: () {
-                        setState(() {
-                           _posts.removeAt(index);
-                              });
-                        }, route:  CommunityPage(communityName: _community.communityName,token: widget.token,),
+                          setState(() {
+                            _posts.removeAt(index);
+                          });
+                        },
+                        route: CommunityPage(
+                          communityName: _community.communityName,
+                          token: widget.token,
+                        ),
                       );
                     },
                   ),
