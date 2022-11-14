@@ -25,7 +25,7 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
     creationDate: 0,
     checkInGoal: 0,
     goalBody: '',
-    //completedCheckIns: 0
+    completedCheckIns: 0
   );
   
 
@@ -49,7 +49,7 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
             creationDate: 0 /*int.parse(response['creationDate'])*/,
             checkInGoal: int.parse(checkInGoalInput.text.toString()),
             goalBody: goalBodyInput.text,
-            //completedCheckIns: 0
+            completedCheckIns: 0,
             );
 
         setState(() {

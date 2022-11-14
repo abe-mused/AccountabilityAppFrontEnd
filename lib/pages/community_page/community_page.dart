@@ -125,7 +125,12 @@ class CommunityPageState extends State<CommunityPage> {
       });
       _posts = _posts;
     });
-    Navigator.pop(context);
+
+    if(_hasGoal){
+      updateGoalCheckIn(_goals[_hasGoalIndex]['goalId'], widget.token);
+    }
+
+   // Navigator.pop(context);
   }
 
   updateGoal(Goal newGoal){
@@ -255,6 +260,7 @@ class CommunityPageState extends State<CommunityPage> {
                         },
                       ),
                       //add logic here to check if user already created a goal
+                      /*
                       ListTile(
                         title: const Text('Create Goal'),
                         onTap: () {
@@ -264,12 +270,13 @@ class CommunityPageState extends State<CommunityPage> {
                               builder: (context) {
                                 return CreateGoalWidget(
                                   communityName: widget.communityName,
-                                  token: widget.token,
+                                  token: widget.token, 
                                   //add on success method here and within that do Navigator.pop at end, (follow create post)
                                 );
                               });
                         },
                       ),
+                      */
                     ],
                   ),
                 ),
@@ -399,7 +406,7 @@ class CommunityPageState extends State<CommunityPage> {
                            creationDate: int.parse(_goals[_hasGoalIndex]['creationDate']),
                            checkInGoal: _goals[_hasGoalIndex]['checkInGoal'],
                            goalBody: _goals[_hasGoalIndex]['goalBody'],
-                           //completedCheckIns: _goals[_hasGoalIndex]['completedCheckIns'],
+                           completedCheckIns: _goals[_hasGoalIndex]['completedCheckIns'],
                          ),
                          onDelete: () {  
                            setState(() {
