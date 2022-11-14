@@ -334,6 +334,62 @@ Future<Map<String, dynamic>> createGoal(int checkInGoal, String goalBody, String
   );
 }
 
+Future<Map<String, dynamic>> getGoalsForGoalPage(String token) async {
+  var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal';
+  try {
+    return await http.get(
+      Uri.parse(url),
+      headers: {
+        "Authorization": token,
+        "Content-Type": "application/json",
+      },
+    ).then((response) {
+      print("Response body goalsForGoalPage: ${response.body}");
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        var goals = jsonResponse['goals'];
+        return {
+          'status': true,
+          'message': 'Goals Succesfully Found.',
+          'goals': goals,
+        };
+      }
+      return {'status': false, 'message': 'Goals not found.'};
+    });
+  } catch (e) {
+    print(e);
+    print('Goals[] is null');
+    return {'status': false, 'message': 'Goals not found.'};
+  }
+}
+
+Future<Map<String, dynamic>> deleteGoal(String goalId, String token) async {
+  const url ='https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal';
+  return await http.delete(
+    Uri.parse(url),
+    body: jsonEncode({
+      "goalId": goalId,
+    }),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  ).then(
+    (response) {
+      if (response.statusCode == 200) {
+        print("Success!");
+        return {'status': true, 'message': 'Goal Succesfully Deleted.'};
+      } else {
+        return {
+          'status': false,
+          'message':
+              'An error occurred while deleting the goal, please try again.'
+        };
+      }
+    },
+  );
+}
+
 Future<Map<String, dynamic>> getHomeFeed(String token, dynamic pageTokens) async {
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/home';
   return await http.post(
