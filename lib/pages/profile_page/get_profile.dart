@@ -120,8 +120,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                       ),
                       Expanded(
                         child: Column(
-                          //crossAxisAlignment: CrossAxisAlignment.start,
-                          //mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               "${_viewUser.followers?.length ?? 0}",
@@ -153,8 +151,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                       ),
                       Expanded(
                         child: Column(
-                          //crossAxisAlignment: CrossAxisAlignment.start,
-                          //mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               "${_viewUser.following?.length ?? 0}",
