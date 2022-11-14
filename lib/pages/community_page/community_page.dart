@@ -5,6 +5,8 @@ import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/post_widgets/create_post.dart';
 import 'package:linear/pages/goal_widgets/create_goal_widget.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
+import 'package:linear/pages/goal_widgets/goal_widget.dart';
+import 'package:linear/model/goal.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
@@ -30,12 +32,15 @@ class CommunityPageState extends State<CommunityPage> {
 
   User? user = UserProvider().user;
   bool _isMember = false;
+  List<dynamic> _goals = [];
 
   bool _isUpdatingMembership = false;
   bool _isloading = true;
   final String _currentDate = DateFormat("dd/MM/yyyy").format(DateTime.now());
   bool _currentDateExists = false;
   bool _currentUserCheckedIn = false;
+  bool _hasGoal = false;
+  int _hasGoalIndex = 0;
 
   @override
   void initState() {
@@ -93,6 +98,22 @@ class CommunityPageState extends State<CommunityPage> {
     });
   }
 
+  updateGoal(Goal newGoal){
+      //update goal
+     setState(() {
+       _goals.add({
+         'goalId': newGoal.goalId,
+         'checkInGoal': newGoal.checkInGoal,
+         'goalBody': newGoal.goalBody,
+         'creator': user!.username,
+         'creationDate': newGoal.creationDate.toString(),
+         'community': widget.communityName,
+       });
+       _goals = _goals;
+       _hasGoal = true;
+     });
+   }
+
   doGetCommunity() {
     final Future<Map<String, dynamic>> successfulMessage = getPostsForCommunity(widget.communityName, widget.token);
     successfulMessage.then((response) {
@@ -121,7 +142,33 @@ class CommunityPageState extends State<CommunityPage> {
         }
 
         setState(() {
-          _isMember = _community.members.contains(user!.username);
+           _isMember = _community.members.contains(user!.username);
+         });
+
+         if(_isMember) {
+           final Future<Map<String, dynamic>> successfulMessage = getGoalsForGoalPage(widget.token);
+           successfulMessage.then((response) {
+             if (response['status'] == true) {
+               List<dynamic> goals = (response['goals']);
+
+               setState(() {
+                 _goals = goals;
+               });
+
+               for (var i = 0; i < _goals.length; i++) {
+                 if(_goals[i]['community'] == widget.communityName){
+                   setState(() {
+                      _hasGoal = true;
+                      _hasGoalIndex = i;
+                   });
+                 }
+               }
+
+             }
+           }); 
+         }
+
+        setState(() {
           _isloading = false;
         });
       }
@@ -237,7 +284,27 @@ class CommunityPageState extends State<CommunityPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              CreateGoalWidget(token: widget.token, communityName: widget.communityName),
+              if(!_hasGoal)
+              CreateGoalWidget(token: widget.token, communityName: widget.communityName, onSuccess: updateGoal),
+              if(_hasGoal)
+              GoalWidget(
+                         token: widget.token,
+                         goal: Goal(
+                           communityName: _goals[_hasGoalIndex]['community'],
+                           goalId: _goals[_hasGoalIndex]['goalId'],
+                           creator: _goals[_hasGoalIndex]['creator'],
+                           creationDate: int.parse(_goals[_hasGoalIndex]['creationDate']),
+                           checkInGoal: _goals[_hasGoalIndex]['checkInGoal'],
+                           goalBody: _goals[_hasGoalIndex]['goalBody'],
+                           //completedCheckIns: _goals[_hasGoalIndex]['completedCheckIns'],
+                         ),
+                         onDelete: () {  
+                           setState(() {
+                             _hasGoal = false;
+                            //_goals.removeAt(_hasGoalIndex);
+                         });
+                         }, 
+                       ),
               const SizedBox(height: 10),
               CreatePostWidget(token: widget.token, communityName: widget.communityName, onSuccess: updateCommunity),
               const SizedBox(height: 10),
