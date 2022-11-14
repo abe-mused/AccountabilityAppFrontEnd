@@ -428,3 +428,26 @@ Future<void> createReport(dynamic reportBody, String token) async {
     },
   );
 }
+
+Future<Map<String, dynamic>> changeProfilePicture(String token, String imageUrl) async {
+  return await http.post(
+    Uri.parse('https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/profile'),
+    body: jsonEncode({
+      "imageUrl": imageUrl
+    }),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  ).then(
+    (response) {
+      if (response.statusCode == 200) {
+        return {
+          'status': true,
+        };
+      } else {
+        return {'status': false };
+      }
+    },
+  );
+}

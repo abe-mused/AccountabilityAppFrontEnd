@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
+import 'package:linear/pages/image_related_widgets/upload_image_widget.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_provider.dart';
@@ -17,6 +18,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
+
+  bool _isChangingProfilePicture = false;
+
   logout() {
     final UserPreferences userPreferences = UserPreferences();
     userPreferences.clearPreferences();
@@ -39,6 +43,28 @@ class ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     User? user = Provider.of<UserProvider>(context).user;
+
+    bool shouldUploadImage() {
+      setState(() {
+        _isChangingProfilePicture = true;
+      });
+      return true;
+    }
+
+    void onImageWidgetSubmit(String? url) async {
+      if(_isChangingProfilePicture){
+        return;
+      }
+
+      final Future<Map<String, dynamic>> responseMessage = changeProfilePicture(user!.idToken, url! );
+
+      responseMessage.then((response) {
+        if (response['status'] == true) {
+          _isChangingProfilePicture = false;
+        }
+      });
+    }
+
     if (widget.username == '') {
       return Scaffold(
         appBar: AppBar(
@@ -51,6 +77,10 @@ class ProfilePageState extends State<ProfilePage> {
                   const PopupMenuItem<int>(
                     value: 0,
                     child: Text("Logout"),
+                  ),
+                  const PopupMenuItem<int>(
+                    value: 1,
+                    child: Text("Change profile picture"),
                   ),
                 ];
               }, onSelected: (value) {
@@ -72,6 +102,35 @@ class ProfilePageState extends State<ProfilePage> {
                           child: const Text('OK'),
                         ),
                       ],
+                    ),
+                  );
+                } else if (value == 1) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: const Text('Logout'),
+                      content: 
+                      Stack(
+                        children: [
+                          UploadImageWidget(
+                            token: user?.idToken ?? '',
+                            onLoading: shouldUploadImage,
+                            onSuccess: onImageWidgetSubmit,
+                            onCancel: () {
+                              Navigator.pop(context, 'Cancel');
+                            },
+                          ),
+                          if(_isChangingProfilePicture) ...[
+                            Container(
+                              color: Colors.black.withOpacity(0.5),
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          ],
+                        ]
+                      ),
+                      actions: const <Widget>[],
                     ),
                   );
                 }
