@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 class AppThemes {
   static const _theme = FlexScheme.jungle;
   static final _fontFamily = GoogleFonts.montserrat().fontFamily;
-  
 
   static final lightTheme = FlexThemeData.light(
     scheme: _theme,
@@ -49,6 +48,12 @@ class AppThemes {
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
     );
+  }
+
+  static primaryIconColor(context) {
+    return MediaQuery.of(context).platformBrightness == Brightness.dark
+        ? AppThemes.lightTheme.colorScheme.primaryContainer
+        : AppThemes.darkTheme.colorScheme.primaryContainer;
   }
 
   static iconColor(context) {
