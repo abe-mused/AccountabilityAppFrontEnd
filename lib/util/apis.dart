@@ -252,7 +252,6 @@ Future<Map<String, dynamic>> deleteComment(String postId, String commentId, Stri
   ).then(
     (response) {
       if (response.statusCode == 200) {
-        print("Success!");
         return {'status': true, 'message': 'Comment Succesfully Deleted.'};
       } else {
         return {

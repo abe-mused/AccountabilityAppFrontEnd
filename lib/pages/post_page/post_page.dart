@@ -54,7 +54,6 @@ doDeleteComment(passIndex) {
     final Future<Map<String, dynamic>> responseMessage = deleteComment(widget.postId, _comments[passIndex]['commentId'], widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
-        print("Comment has successfully been deleted!");
         widget.onDelete();
       } else {
         const AlertDialog(

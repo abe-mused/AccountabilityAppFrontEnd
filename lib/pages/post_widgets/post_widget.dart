@@ -40,7 +40,8 @@ class _PostWidget extends State<PostWidget> {
       builder: (context) => PostPage(
         postId: widget.post.postId,
         token: widget.token,
-        route: widget.route,
+        route: widget.route, 
+        onDelete: () {  },
       ),
     );
     if (route != null) {
@@ -65,7 +66,6 @@ class _PostWidget extends State<PostWidget> {
         deletePost(widget.post.postId, widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
-        print("Post has successfully been deleted!");
         widget.onDelete();
       } else {
          const AlertDialog(
@@ -264,7 +264,12 @@ class _PostWidget extends State<PostWidget> {
                                   builder: (context) => PostPage(
                                     postId: widget.post.postId,
                                     token: widget.token,
-                                    route: widget.route,
+                                    route: widget.route, 
+                                    onDelete: () {
+                                      setState(() {
+                                        delete();
+                                      });
+                                      },
                                   ),
                                 ),
                               );
