@@ -5,7 +5,7 @@ class Goal {
   int creationDate;
   String goalBody;
   int checkInGoal;
-  //int completedCheckIns;
+  int completedCheckIns;
 
   Goal({
     required this.communityName,
@@ -14,7 +14,7 @@ class Goal {
     required this.creationDate,
     required this.goalBody,
     required this.checkInGoal,
-    //required this.completedCheckIns
+    required this.completedCheckIns
   }); 
   
   factory Goal.fromJson(Map<String, dynamic> item) {
@@ -25,7 +25,7 @@ class Goal {
       creationDate: item['creationDate'],
       checkInGoal: item['checkInGoal'],
       goalBody: item['goalBody'], 
-      //completedCheckIns: item['completedCheckIns'],
+      completedCheckIns: item['completedCheckIns'],
     );
     return goal;
   }

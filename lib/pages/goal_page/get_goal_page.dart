@@ -91,7 +91,7 @@ class _GetGoalsWidgetState extends State<GetGoalsWidget> {
                           creationDate: int.parse(_goals[index]['creationDate']),
                           checkInGoal: _goals[index]['checkInGoal'],
                           goalBody: _goals[index]['goalBody'],
-                          //completedCheckIns: _goals[index]['completedCheckIns'],
+                          completedCheckIns: _goals[index]['completedCheckIns'],
                         ),
                         onDelete: () {  
                           setState(() {
