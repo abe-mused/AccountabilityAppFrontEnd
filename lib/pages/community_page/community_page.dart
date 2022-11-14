@@ -143,6 +143,7 @@ class CommunityPageState extends State<CommunityPage> {
        _goals = _goals;
        _hasGoal = true;
      });
+      Navigator.pop(context);
    }
 
   doGetCommunity() {

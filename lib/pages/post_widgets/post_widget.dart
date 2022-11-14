@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:linear/model/post.dart';
+import 'package:linear/pages/community_page/community_page.dart';
 import 'package:linear/pages/post_page/post_page.dart';
 import 'package:linear/util/date_formatter.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
@@ -146,16 +148,55 @@ class _PostWidget extends State<PostWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "c/${widget.post.communityName}",
-                            style: const TextStyle(fontSize: 16),
-                            textAlign: TextAlign.left,
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                              TextSpan(
+                                  text: 'c/${widget.post.communityName}',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => CommunityPage(
+                                            communityName: widget.post.communityName,
+                                            token: widget.token,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                ),
+                              ]
+                            ),
                           ),
-                          Text(
-                            "u/${widget.post.creator}",
-                            style: const TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left,
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                              TextSpan(
+                                  text: 'u/${widget.post.creator}',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProfilePage(
+                                            username: widget.post.creator,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                ),
+                              ]
+                            ),
                           ),
                           Text(
                             getFormattedDate(widget.post.creationDate),
