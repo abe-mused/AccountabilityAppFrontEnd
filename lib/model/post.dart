@@ -5,6 +5,7 @@ class Post {
   int creationDate;
   String title;
   String body;
+  String? imageUrl;
   List<dynamic>? comments;
   List<dynamic>? likes;
 
@@ -24,7 +25,7 @@ class Post {
       communityName: item['community'],
       postId: item['postId'],
       creator: item['creator'],
-      creationDate: item['creationDate'],
+      creationDate: item['creationDate'] is int ? item['creationDate'] : int.parse(item['creationDate']),
       title: item['title'],
       body: item['body'],
     );
@@ -33,6 +34,9 @@ class Post {
     }
     if (item['likes'] != null) {
       post.likes = item['likes'];
+    }
+    if (item['imageUrl'] != null && item['imageUrl'] != "NONE") {
+      post.imageUrl = item['imageUrl'];
     }
     return post;
   }

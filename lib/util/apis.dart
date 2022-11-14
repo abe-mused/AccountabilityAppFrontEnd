@@ -73,15 +73,19 @@ Future<Map<String, dynamic>> getProfile(String username, String token) async {
   }
 }
 
-Future<Map<String, dynamic>> createPost(String postTitle, String postBody, String communityName, String token) async {
+Future<Map<String, dynamic>> createPost(String postTitle, String postBody, String communityName, String token, String? imageUrl) async {
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post';
-  return await http.post(
-    Uri.parse(url),
-    body: jsonEncode({
+  var body = {
       "postTitle": postTitle,
       "postBody": postBody,
       "communityName": communityName,
-    }),
+    };
+  if (imageUrl != null) {
+    body['imageUrl'] = imageUrl;
+  }
+  return await http.post(
+    Uri.parse(url),
+    body: jsonEncode(body),
     headers: {
       "Authorization": token,
       "Content-Type": "application/json",
