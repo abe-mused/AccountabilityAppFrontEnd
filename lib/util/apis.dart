@@ -428,3 +428,26 @@ Future<void> createReport(dynamic reportBody, String token) async {
     },
   );
 }
+
+
+ Future<Map<String, dynamic>> updateGoalCheckIn(String goalId, String token) async {
+   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal?goalId=$goalId';
+   return await http.patch(
+     Uri.parse(url),
+     body: jsonEncode({
+       "goalId": goalId,
+     }),
+     headers: {
+       "Authorization": token,
+       "Content-Type": "application/json",
+     },
+   ).then(
+     (response) {
+       if (response.statusCode == 200) {
+         return {'status': true, 'message': 'CompletedCheckIns Incremented'};
+       } else {
+         return {'status': false, 'message': 'An error occurred while incrementing CompletedCheckIns, please try again.'};
+       }
+     },
+   );
+ }

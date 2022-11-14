@@ -133,6 +133,11 @@ class GoalWidget extends StatelessWidget {
                                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 ),
+                                Text(
+                                   "Total days completed: ${goal.completedCheckIns.toString()}",
+                                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                   textAlign: TextAlign.center,
+                                 ),
                                 const SizedBox(height: 5),
                                 if (goal.goalBody.length > 300) ...[
                                   SizedBox(
