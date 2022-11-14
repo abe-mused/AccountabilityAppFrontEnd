@@ -210,7 +210,6 @@ doDeleteComment(passIndex) {
                                             TextButton(
                                               onPressed: () {
                                                 doDeleteComment(index);
-                                                Navigator.pop(context);
                                               },
                                               child: const Text('Yes'),
                                             ),

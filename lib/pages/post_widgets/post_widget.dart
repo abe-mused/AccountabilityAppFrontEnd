@@ -57,18 +57,7 @@ cognito_user.User? user = UserProvider().user;
   }
 
   delete() {
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => PostPage(
-        postId: widget.post.postId, 
-        token: widget.token, 
-        onDelete: () {  
-          delete();
-        },
-      ),
-    ),
-  );
+    Navigator.pop(context);
   }
 
   @override
