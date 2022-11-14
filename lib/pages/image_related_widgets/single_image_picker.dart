@@ -4,30 +4,29 @@ import 'package:linear/pages/image_related_widgets/add_image_modal.dart';
 import 'package:linear/util/image_utils/single_image_util.dart';
 import 'package:linear/util/image_utils/image_premissions_util.dart';
 
-
-typedef Future<bool> OnSaveImage(String url);
-
 enum Source { GALLERY, CAMERA, NONE }
 enum PickImageSource { GALLERY, CAMERA, BOTH }
 
 class SingleImagePicker {
   final String token;
   final PickImageSource pickImageSource;
-  final Function(String path) onImagePicked;
+  final Function(XFile image) onImagePicked;
   final Function(String downloadUrl) onImageSuccessfullyUploaded;
-  final OnSaveImage onSaveImage;
+  final Function() onImageRemoved;
   final Function(String message) onImageUploadFailed;
 
   SingleImagePicker({
     required this.token,
     this.pickImageSource = PickImageSource.BOTH,
     required this.onImagePicked,
-    required this.onSaveImage,
+    required this.onImageRemoved,
     required this.onImageSuccessfullyUploaded,
     required this.onImageUploadFailed,
   });
 
   final ImagePicker imagePicker = ImagePicker();
+  bool isImagePicked = false;
+  XFile? image;
 
   Future<void> pickImage(context) async {
     try {
@@ -73,32 +72,43 @@ class SingleImagePicker {
         return;
       }
 
-      PickedFile? image = await imagePicker.getImage(source: imageSource);
+      image = await imagePicker.pickImage(source: imageSource);
 
       if (image != null) {
-        onImagePicked.call(image.path);
-
-        SingleImageUtility singleImageUtility = SingleImageUtility();
-
-        await singleImageUtility.generateUploadUrl(token);
-        if (!singleImageUtility.isUploadUrlGenerated) {
-          throw "Error generating upload url for your image!";
-        }
-
-        await singleImageUtility.uploadImage(image);
-        if (!singleImageUtility.isImageUploaded) {
-          throw "Error uploading your image!";
-        }
-
-        bool isSaved = await onSaveImage(singleImageUtility.downloadUrl);
-        if (isSaved) {
-          onImageSuccessfullyUploaded(singleImageUtility.downloadUrl);
-        } else {
-          throw "Failed to save image";
-        }
+        onImagePicked.call(image!);
+        isImagePicked = true;
+        print("Image picked!");
       }
     } catch (e) {
       onImageUploadFailed(e.toString());
     }
+  }
+
+  Future<String> uploadImage(XFile localImage) async {
+    try{
+      SingleImageUtility singleImageUtility = SingleImageUtility();
+
+      await singleImageUtility.generateUploadUrl(token);
+      if (!singleImageUtility.isUploadUrlGenerated) {
+        throw "Error generating upload url for your image!";
+      }
+
+      await singleImageUtility.uploadImage(localImage);
+      if (!singleImageUtility.isImageUploaded) {
+        throw "Error uploading your image!";
+      }
+
+      onImageSuccessfullyUploaded(singleImageUtility.downloadUrl);
+      return singleImageUtility.downloadUrl;
+    } catch (e) {
+      onImageUploadFailed(e.toString());
+      return "IMAGE_UPLOAD_FAILED";
+    }
+  }
+
+  Future<void> removeImage() async {
+    isImagePicked = false;
+    image = null;
+    onImageRemoved();
   }
 }

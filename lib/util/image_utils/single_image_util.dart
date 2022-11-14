@@ -35,7 +35,7 @@ class SingleImageUtility {
     }
   }
 
-  Future<void> uploadImage(PickedFile image) async {
+  Future<void> uploadImage(XFile image) async {
     if(isImageUploaded){
       throw 'ERROR: `uploadImage` called more than once for the same link.';
     }

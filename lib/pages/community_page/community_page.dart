@@ -111,19 +111,20 @@ class CommunityPageState extends State<CommunityPage> {
       }
     }
 
-    //update postList
+    var tempNewPost = {
+      'postId': newPost.postId,
+      'title': newPost.title,
+      'body': newPost.body,
+      'creator': user!.username,
+      'creationDate': newPost.creationDate.toString(),
+      'community': widget.communityName,
+      'likes': [],
+      'comments': [],
+      'imageUrl': newPost.imageUrl
+    };
+    
     setState(() {
-      _posts.add({
-        'postId': newPost.postId,
-        'title': newPost.title,
-        'body': newPost.body,
-        'creator': user!.username,
-        'creationDate': newPost.creationDate.toString(),
-        'community': widget.communityName,
-        'likes': [],
-        'comments': [],
-      });
-      _posts = _posts;
+      _posts = [tempNewPost, ..._posts];
     });
     Navigator.pop(context);
   }
@@ -254,22 +255,22 @@ class CommunityPageState extends State<CommunityPage> {
                               });
                         },
                       ),
-                      //add logic here to check if user already created a goal
-                      ListTile(
-                        title: const Text('Create Goal'),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return CreateGoalWidget(
-                                  communityName: widget.communityName,
-                                  token: widget.token,
-                                  //add on success method here and within that do Navigator.pop at end, (follow create post)
-                                );
-                              });
-                        },
-                      ),
+                      if(!_hasGoal)
+                        ListTile(
+                          title: const Text('Create Goal'),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return CreateGoalWidget(
+                                    communityName: widget.communityName,
+                                    token: widget.token,
+                                    onSuccess: updateGoal
+                                  );
+                                });
+                          },
+                        ),
                     ],
                   ),
                 ),
@@ -387,29 +388,25 @@ class CommunityPageState extends State<CommunityPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              if(!_hasGoal)
-              CreateGoalWidget(token: widget.token, communityName: widget.communityName, onSuccess: updateGoal),
               if(_hasGoal)
-              GoalWidget(
-                         token: widget.token,
-                         goal: Goal(
-                           communityName: _goals[_hasGoalIndex]['community'],
-                           goalId: _goals[_hasGoalIndex]['goalId'],
-                           creator: _goals[_hasGoalIndex]['creator'],
-                           creationDate: int.parse(_goals[_hasGoalIndex]['creationDate']),
-                           checkInGoal: _goals[_hasGoalIndex]['checkInGoal'],
-                           goalBody: _goals[_hasGoalIndex]['goalBody'],
-                           //completedCheckIns: _goals[_hasGoalIndex]['completedCheckIns'],
-                         ),
-                         onDelete: () {  
-                           setState(() {
-                             _hasGoal = false;
-                            //_goals.removeAt(_hasGoalIndex);
-                         });
-                         }, 
-                       ),
-              const SizedBox(height: 10),
-              CreatePostWidget(token: widget.token, communityName: widget.communityName, onSuccess: updateCommunity),
+                GoalWidget(
+                  token: widget.token,
+                  goal: Goal(
+                    communityName: _goals[_hasGoalIndex]['community'],
+                    goalId: _goals[_hasGoalIndex]['goalId'],
+                    creator: _goals[_hasGoalIndex]['creator'],
+                    creationDate: int.parse(_goals[_hasGoalIndex]['creationDate']),
+                    checkInGoal: _goals[_hasGoalIndex]['checkInGoal'],
+                    goalBody: _goals[_hasGoalIndex]['goalBody'],
+                    //completedCheckIns: _goals[_hasGoalIndex]['completedCheckIns'],
+                  ),
+                  onDelete: () {  
+                    setState(() {
+                      _hasGoal = false;
+                    //_goals.removeAt(_hasGoalIndex);
+                  });
+                  }, 
+                ),
               const SizedBox(height: 10),
               // ignore: prefer_is_empty
               if ((_posts.length) > 0) ...[

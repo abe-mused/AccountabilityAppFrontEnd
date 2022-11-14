@@ -20,7 +20,6 @@ class CreatePostWidget extends StatefulWidget {
 class _CreatePostWidgetState extends State<CreatePostWidget> {
   TextEditingController postBodyInput = TextEditingController();
   TextEditingController postTitleInput = TextEditingController();
-  String? imageUrl;
 
   bool _isCreatingPost = false;
   Post _post = Post(
@@ -32,13 +31,42 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
     body: '',
   );
 
-  void onUploadImageSuccess(String url) {
-    setState(() {
-      imageUrl = url;
-    });
+  bool shouldUploadImage() {
+  if (postTitleInput.text != '' &&
+      postBodyInput.text != '') {
+      setState(() {
+        _isCreatingPost = true;
+      });
+      return true;
+    }
+    return false;
   }
 
-  doCreatePost() {
+  void onImageWidgetSubmit(String? url) {
+    print("onImageWidgetSubmit ${url}");
+    if (postTitleInput.text != '' &&
+        postBodyInput.text != '') {
+      doCreatePost(url);
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content:
+                  const Text("Please fill out all fields."),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Ok"))
+              ],
+            );
+          });
+    } 
+  }
+
+  doCreatePost(String? url) {
     setState(() {
       _isCreatingPost = true;
     });
@@ -48,7 +76,7 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
         postBodyInput.text,
         widget.communityName,
         widget.token,
-        imageUrl);
+        url);
 
     responseMessage.then((response) {
       if (response['status'] == true) {
@@ -58,7 +86,10 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
             creator: '',
             creationDate: int.parse(response['creationDate']),
             title: postTitleInput.text,
-            body: postBodyInput.text);
+            body: postBodyInput.text
+          );
+        
+        post.imageUrl = url;
 
         setState(() {
           _post = post;
@@ -164,44 +195,11 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
               ),
               UploadImageWidget(
                 token: widget.token,
-                onSuccess: onUploadImageSuccess,
-              ),
-              const Padding(padding: EdgeInsets.only(bottom: 10)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Cancel"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (postTitleInput.text != '' &&
-                          postBodyInput.text != '') {
-                        doCreatePost();
-                      } else {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                content:
-                                    const Text("Please fill out all fields."),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text("Ok"))
-                                ],
-                              );
-                            });
-                      }
-                    },
-                    child: const Text("create post"),
-                  ),
-                ],
+                onLoading: shouldUploadImage,
+                onSuccess: onImageWidgetSubmit,
+                onCancel: () {
+                  Navigator.pop(context);
+                },
               ),
             ],
           ),
