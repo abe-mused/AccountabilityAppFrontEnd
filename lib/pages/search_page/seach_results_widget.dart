@@ -114,11 +114,11 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
           width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.all(3.0),
           child: Card(
-            margin: EdgeInsets.symmetric(horizontal: 10),
+            margin: const EdgeInsets.symmetric(horizontal: 10),
             child: Container(
               padding: const EdgeInsets.all(10.0),
               alignment: Alignment.center,
-              child: CircularProgressIndicator(),
+              child: const CircularProgressIndicator(),
             ),
           ),
         ),
@@ -127,11 +127,11 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
           width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.all(3.0),
           child: Card(
-            margin: EdgeInsets.symmetric(horizontal: 10),
+            margin: const EdgeInsets.symmetric(horizontal: 10),
             child: Container(
                 padding: const EdgeInsets.all(10.0),
                 alignment: Alignment.centerLeft,
-                child: Text(
+                child: const Text(
                   "No results found",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
                 )),
@@ -142,7 +142,7 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
           width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.all(3.0),
           child: Card(
-            margin: EdgeInsets.symmetric(horizontal: 10),
+            margin: const EdgeInsets.symmetric(horizontal: 10),
             child: Container(
               alignment: Alignment.centerLeft,
               child: TextButton(
@@ -174,7 +174,7 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
           padding: const EdgeInsets.all(3.0),
           width: MediaQuery.of(context).size.width,
           child: Card(
-            margin: EdgeInsets.symmetric(horizontal: 10),
+            margin: const EdgeInsets.symmetric(horizontal: 10),
             child: Container(
               alignment: Alignment.centerLeft,
               child: TextButton(

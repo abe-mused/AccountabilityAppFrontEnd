@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/post_page/post_page.dart';
 import 'package:linear/util/date_formatter.dart';
@@ -41,7 +40,6 @@ class _PostWidget extends State<PostWidget> {
         postId: widget.post.postId,
         token: widget.token,
         route: widget.route, 
-        onDelete: () {  },
       ),
     );
     if (route != null) {
@@ -102,10 +100,6 @@ class _PostWidget extends State<PostWidget> {
         );
       }
     });
-  }
-
-  delete() {
-    Navigator.pop(context);
   }
 
   @override
@@ -292,11 +286,6 @@ class _PostWidget extends State<PostWidget> {
                                     postId: widget.post.postId,
                                     token: widget.token,
                                     route: widget.route, 
-                                    onDelete: () {
-                                      setState(() {
-                                        delete();
-                                      });
-                                      },
                                   ),
                                 ),
                               );

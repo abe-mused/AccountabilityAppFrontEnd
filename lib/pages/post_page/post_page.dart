@@ -12,12 +12,15 @@ import 'package:provider/provider.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 
 class PostPage extends StatefulWidget {
-  PostPage({super.key, required this.postId, required this.token, required this.route, required this.onDelete});
+  PostPage(
+      {super.key,
+      required this.postId,
+      required this.token,
+      required this.route});
 
   String postId;
   String token;
   Widget route;
-  final VoidCallback onDelete;
 
   @override
   State<PostPage> createState() => PostPageState();
@@ -45,20 +48,51 @@ class PostPageState extends State<PostPage> {
     doGetPost();
   }
 
-  delete(context) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => widget.route));
+  deletePost(context) {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => widget.route));
   }
 
-doDeleteComment(passIndex) {
-    final Future<Map<String, dynamic>> responseMessage = deleteComment(widget.postId, _comments[passIndex]['commentId'], widget.token);
+  doDeleteComment(passIndex) {
+    final Future<Map<String, dynamic>> responseMessage = deleteComment(
+        widget.postId, _comments[passIndex]['commentId'], widget.token);
     responseMessage.then((response) {
       if (response['status'] == true) {
-        widget.onDelete();
+        setState(() {
+          _comments.removeAt(passIndex);
+        });
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Success!"),
+                content: const Text("Comment succesfully deleted."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
       } else {
-        const AlertDialog(
-          title: Text("Error!"),
-          content: Text('An error occurred while deleting the comment, please try again.'),
-        );
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Error!"),
+                content: const Text(
+                    "An error occurred while deleting the comment, please try again."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
       }
     });
   }
@@ -88,7 +122,6 @@ doDeleteComment(passIndex) {
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserProvider>(context).user;
-
     if (_isloading) {
       return Scaffold(
         appBar: AppBar(
@@ -106,7 +139,6 @@ doDeleteComment(passIndex) {
       ),
       body: RefreshIndicator(
         child: SingleChildScrollView(
-          // removes bottom overflow pixel error
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
@@ -120,14 +152,20 @@ doDeleteComment(passIndex) {
                   token: widget.token,
                   post: _post,
                   onDelete: () {
-                    delete(context);
-                  }, route: widget.route,
+                    deletePost(context);
+                  },
+                  route: widget.route,
                 ),
               ),
               const SizedBox(height: 10),
               CreateCommentWidget(
                 token: widget.token,
                 postId: widget.postId,
+                addComment: (comment) => {
+                  setState(() {
+                    _comments.add(comment);
+                  }),
+                },
               ),
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
@@ -145,86 +183,92 @@ doDeleteComment(passIndex) {
                             Container(
                               padding: const EdgeInsets.all(10),
                               child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 60,
-                                    height: 60,
-                                    child: RawMaterialButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => ProfilePage(
-                                              username: _comments[index]
-                                                  ['creator'],
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: 60,
+                                      height: 60,
+                                      child: RawMaterialButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => ProfilePage(
+                                                username: _comments[index]
+                                                    ['creator'],
+                                              ),
                                             ),
+                                          );
+                                        },
+                                        child: UserIcon(
+                                          username: _comments[index]['creator'],
+                                          radius: 45,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "u/${_comments[index]['creator']}",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 22),
                                           ),
-                                        );
-                                      },
-                                      child: UserIcon(
-                                        username: _comments[index]['creator'],
-                                        radius: 45,
+                                          Text(
+                                            getFormattedDate(int.parse(
+                                                _comments[index]['creationDate']
+                                                    .toString())),
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "u/${_comments[index]['creator']}",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 22),
-                                        ),
-                                        Text(
-                                          getFormattedDate(int.parse(
-                                              _comments[index]['creationDate']
-                                                  .toString())),
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                 if (_comments[index]['creator'] == user!.username) ... [
-                                    PopupMenuButton(itemBuilder: (context) {
-                                    return [
-                                      const PopupMenuItem<int>(
-                                        value: 0,
-                                        child: Text("Delete"),
-                                      ),
-                                    ];
-                                  }, onSelected: (value) {
-                                    if (value == 0) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) => AlertDialog(
-                                          title: const Text('Delete'),
-                                          content: const Text('Are you sure you want to delete this comment?'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () =>
-                                                Navigator.pop(context, 'Cancel'),
-                                                child: const Text('Cancel'),
+                                    if (_comments[index]['creator'] ==
+                                        user!.username) ...[
+                                      PopupMenuButton(itemBuilder: (context) {
+                                        return [
+                                          const PopupMenuItem<int>(
+                                            value: 0,
+                                            child: Text("Delete"),
+                                          ),
+                                        ];
+                                      }, onSelected: (value) {
+                                        if (value == 0) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                AlertDialog(
+                                              title: const Text('Delete'),
+                                              content: const Text(
+                                                  'Are you sure you want to delete this comment?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, 'Cancel'),
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    doDeleteComment(index);
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('Yes'),
+                                                ),
+                                              ],
                                             ),
-                                            TextButton(
-                                              onPressed: () {
-                                                doDeleteComment(index);
-                                              },
-                                              child: const Text('Yes'),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  }),
-                                ],
-                          ]),
+                                          );
+                                        }
+                                      }),
+                                    ],
+                                  ]),
                             ),
                             const Divider(
                               height: 10,

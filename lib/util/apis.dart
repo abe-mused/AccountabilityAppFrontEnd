@@ -229,7 +229,9 @@ Future<Map<String, dynamic>> createComment(String commentBody, String postId, St
   ).then(
     (response) {
       if (response.statusCode == 200) {
-        return {'status': true, 'message': 'comment Succesfully Created.'};
+        var jsonResponse = jsonDecode(response.body);
+        var comment = jsonResponse['comment'];
+        return {'status': true, 'message': 'comment Succesfully Created.', 'comment': comment};
       } else {
         return {'status': false, 'message': 'An error occurred while creating the comment, please try again.'};
       }

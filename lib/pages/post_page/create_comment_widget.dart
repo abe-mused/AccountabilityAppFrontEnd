@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/constants/themeSettings.dart';
 
 class CreateCommentWidget extends StatefulWidget {
-  CreateCommentWidget({super.key, required this.token, required this.postId});
+  CreateCommentWidget({super.key, required this.token, required this.postId, required this.addComment});
   String token;
   String postId;
+  Function addComment;
 
   @override
   State<CreateCommentWidget> createState() => _CreateCommentWidgetState();
@@ -16,6 +16,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
   TextEditingController commentBodyInput = TextEditingController();
 
   bool _isCreatingComment = false;
+  Map<String, dynamic> _newComment = {};
 
   doCreateComment() {
     setState(() {
@@ -24,16 +25,26 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
 
     final Future<Map<String, dynamic>> successfulMessage =
         createComment(commentBodyInput.text, widget.postId, widget.token);
-
     successfulMessage.then((response) {
       if (response['status'] == true) {
+        setState(() {
+          _newComment = response['comment'];
+        });
+        widget.addComment(_newComment);
         commentBodyInput.clear();
         showDialog(
             context: context,
             builder: (context) {
-              return const AlertDialog(
-                title: Text("Success!"),
-                content: Text("Comment succesfully Created."),
+              return AlertDialog(
+                title: const Text("Success!"),
+                content: const Text("Comment succesfully Created."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
               );
             });
       } else {
@@ -83,14 +94,13 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
                 margin: const EdgeInsets.all(10),
                 child: TextFormField(
                   controller: commentBodyInput,
-                  // inputFormatters allows character limit to be up to 256
                   inputFormatters: [
-                  LengthLimitingTextInputFormatter(256),
+                    LengthLimitingTextInputFormatter(256),
                   ],
                   style: const TextStyle(
                     fontSize: 20,
                   ),
-                 onChanged: (value) {
+                  onChanged: (value) {
                     setState(() {});
                   },
                   decoration: InputDecoration(
