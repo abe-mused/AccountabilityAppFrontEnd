@@ -126,6 +126,14 @@ class CommunityPageState extends State<CommunityPage> {
     setState(() {
       _posts = [tempNewPost, ..._posts];
     });
+
+    if(_hasGoal){
+       updateGoalCheckIn(_goals[_hasGoalIndex]['goalId'], widget.token);
+       setState(() {
+       _goals[_hasGoalIndex]['completedCheckIns']++;
+      });
+     }
+
     Navigator.pop(context);
   }
 
@@ -143,6 +151,7 @@ class CommunityPageState extends State<CommunityPage> {
        _goals = _goals;
        _hasGoal = true;
      });
+      Navigator.pop(context);
    }
 
   doGetCommunity() {
@@ -398,7 +407,7 @@ class CommunityPageState extends State<CommunityPage> {
                     creationDate: int.parse(_goals[_hasGoalIndex]['creationDate']),
                     checkInGoal: _goals[_hasGoalIndex]['checkInGoal'],
                     goalBody: _goals[_hasGoalIndex]['goalBody'],
-                    //completedCheckIns: _goals[_hasGoalIndex]['completedCheckIns'],
+                    completedCheckIns: _goals[_hasGoalIndex]['completedCheckIns'],
                   ),
                   onDelete: () {  
                     setState(() {

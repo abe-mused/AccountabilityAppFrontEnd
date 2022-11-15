@@ -429,8 +429,31 @@ Future<void> createReport(dynamic reportBody, String token) async {
   );
 }
 
-Future<Map<String, dynamic>> changeProfilePicture(String token, String imageUrl) async {
-  return await http.post(
+ Future<Map<String, dynamic>> updateGoalCheckIn(String goalId, String token) async {
+   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal?goalId=$goalId';
+   return await http.patch(
+     Uri.parse(url),
+     body: jsonEncode({
+       "goalId": goalId,
+     }),
+     headers: {
+       "Authorization": token,
+       "Content-Type": "application/json",
+     },
+   ).then(
+     (response) {
+       if (response.statusCode == 200) {
+         return {'status': true, 'message': 'CompletedCheckIns Incremented'};
+       } else {
+         return {'status': false, 'message': 'An error occurred while incrementing CompletedCheckIns, please try again.'};
+       }
+     },
+   );
+ }
+
+Future<Map<String, dynamic>> changeProfilePicture(String token, String imageUrl) {
+  print("imageUrl imageUrl ${imageUrl}");
+  return http.post(
     Uri.parse('https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/profile'),
     body: jsonEncode({
       "imageUrl": imageUrl
@@ -441,6 +464,7 @@ Future<Map<String, dynamic>> changeProfilePicture(String token, String imageUrl)
     },
   ).then(
     (response) {
+      print("Response body: ${response.body} code: ${response.statusCode}");
       if (response.statusCode == 200) {
         return {
           'status': true,

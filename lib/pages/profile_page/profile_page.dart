@@ -20,6 +20,7 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage> {
 
   bool _isChangingProfilePicture = false;
+  bool _showLoadingSpinner = false;
 
   logout() {
     final UserPreferences userPreferences = UserPreferences();
@@ -46,23 +47,37 @@ class ProfilePageState extends State<ProfilePage> {
 
     bool shouldUploadImage() {
       setState(() {
-        _isChangingProfilePicture = true;
+        _showLoadingSpinner = true;
       });
       return true;
     }
 
     void onImageWidgetSubmit(String? url) async {
-      if(_isChangingProfilePicture){
+      if(_isChangingProfilePicture || url == null) {
         return;
       }
 
-      final Future<Map<String, dynamic>> responseMessage = changeProfilePicture(user!.idToken, url! );
+      setState(() {
+        _isChangingProfilePicture = true;
+      });
+
+      final Future<Map<String, dynamic>> responseMessage = changeProfilePicture(user!.idToken, url);
 
       responseMessage.then((response) {
-        if (response['status'] == true) {
+        setState(() {
           _isChangingProfilePicture = false;
-        }
+          _showLoadingSpinner = false;
+        });
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfilePage(
+                username: widget.username,
+              ),
+            ),
+          );
       });
+
     }
 
     if (widget.username == '') {
@@ -117,10 +132,13 @@ class ProfilePageState extends State<ProfilePage> {
                             onLoading: shouldUploadImage,
                             onSuccess: onImageWidgetSubmit,
                             onCancel: () {
+                              setState(() {
+                                _isChangingProfilePicture = false;
+                              });
                               Navigator.pop(context, 'Cancel');
                             },
                           ),
-                          if(_isChangingProfilePicture) ...[
+                          if(_showLoadingSpinner) ...[
                             Container(
                               color: Colors.black.withOpacity(0.5),
                               child: const Center(
