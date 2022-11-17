@@ -35,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
               context: context,
               builder: (context) {
                 return AlertDialog(
+                  key: const Key('badLogin'),
                   title: const Text("Failed Login"),
                   content: Text(response['message']),
                   actions: [
