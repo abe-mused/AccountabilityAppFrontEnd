@@ -22,14 +22,6 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
   TextEditingController postTitleInput = TextEditingController();
 
   bool _isCreatingPost = false;
-  Post _post = Post(
-    communityName: '',
-    postId: '',
-    creator: '',
-    creationDate: 0,
-    title: '',
-    body: '',
-  );
 
   bool shouldUploadImage() {
   if (postTitleInput.text != '' &&
@@ -80,25 +72,10 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
 
     responseMessage.then((response) {
       if (response['status'] == true) {
-        Post post = Post(
-            communityName: widget.communityName,
-            postId: response['postId'],
-            creator: '',
-            creationDate: int.parse(response['creationDate']),
-            title: postTitleInput.text,
-            body: postBodyInput.text
-          );
-        
-        post.imageUrl = url;
-
-        setState(() {
-          _post = post;
-        });
-
-        widget.onSuccess(_post);
-
         postBodyInput.clear();
         postTitleInput.clear();
+        widget.onSuccess();
+        
         showDialog(
             context: context,
             builder: (context) {

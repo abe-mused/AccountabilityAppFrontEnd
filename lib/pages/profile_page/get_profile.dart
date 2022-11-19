@@ -44,8 +44,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
 
   calculateStreak(index) {
     _streak.add(computeStreak(
-        _viewUser.communities![index][1]['first_streak_date'],
-        _viewUser.communities![index][1]['last_streak_date'],
+        _viewUser.communities![index]['firstStreakDate'],
+        _viewUser.communities![index]['lastStreakDate'],
         currentEpoch));
     return _streak[index];
   }
@@ -372,9 +372,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                                                         (context) =>
                                                                             CommunityPage(
                                                                       communityName:
-                                                                          _viewUser.communities![index][0]
-                                                                              [
-                                                                              'communityName'],
+                                                                          _viewUser.communities![index]['communityName'],
                                                                       token: widget
                                                                           .token,
                                                                     ),
@@ -382,7 +380,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                                                 );
                                                               },
                                                               child: Text(
-                                                                "c/${_viewUser.communities![index][0]['communityName']}",
+                                                                "c/${_viewUser.communities![index]['communityName']}",
                                                                 style:
                                                                     const TextStyle(
                                                                   fontSize:
@@ -420,12 +418,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                                                   size: 30.0,
                                                                 ),
                                                               ],
-                                                              if (_viewUser
-                                                                      .username ==
-                                                                  _viewUser.communities![
-                                                                          index][1]
-                                                                      [
-                                                                      'creator']) ...[
+                                                              if (_viewUser.username == _viewUser.communities![index]['creator']) 
+                                                                  ...[
                                                                 Icon(
                                                                   Icons
                                                                       .admin_panel_settings,

@@ -18,18 +18,8 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
   TextEditingController checkInGoalInput = TextEditingController();
 
   bool _isCreatingGoal = false;
-  Goal _goal = Goal(
-    communityName: '',
-    goalId: '',
-    creator: '',
-    creationDate: 0,
-    checkInGoal: 0,
-    goalBody: '',
-    completedCheckIns: 0
-  );
-  
 
-  doCreatePost() {
+  doCreateGoal() {
     setState(() {
       _isCreatingGoal = true;
     });
@@ -42,21 +32,7 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
 
     successfulMessage.then((response) {
       if (response['status'] == true) {
-         Goal goal = Goal(
-            communityName: widget.communityName,
-            goalId:  ' '/*response['goalId']*/,
-            creator: ' ',
-            creationDate: 0 /*int.parse(response['creationDate'])*/,
-            checkInGoal: int.parse(checkInGoalInput.text.toString()),
-            goalBody: goalBodyInput.text,
-            completedCheckIns: 0
-            );
-
-        setState(() {
-          _goal = goal;
-        });
-
-        widget.onSuccess(_goal);
+        widget.onSuccess(response['newGoal']);
 
         goalBodyInput.clear();
         checkInGoalInput.clear();
@@ -75,7 +51,6 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
                 ],
               );
             });
-        
       } else {
         showDialog(
             context: context,
@@ -171,7 +146,7 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
                     onPressed: () async {
                       if (goalBodyInput.text != '' &&
                           checkInGoalInput.text != '') {
-                        doCreatePost();
+                        doCreateGoal();
                       } else {
                         showDialog(
                             context: context,

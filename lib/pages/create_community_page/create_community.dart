@@ -17,7 +17,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
   bool _isLoading = false;
 
   doCreateCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage = postCommunity(userInput.text, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage = createCommunity(userInput.text, widget.token);
 
     successfulMessage.then((response) {
       setState(() {

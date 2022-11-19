@@ -12,8 +12,8 @@ String getFormattedDate(int unixTimeMilliseconds) {
 }
 
 computeStreak(firstStreakEpoch, lastStreakEpoch, currentEpoch) {
-  firstStreakEpoch = int.parse(firstStreakEpoch);
-  lastStreakEpoch = int.parse(lastStreakEpoch);
+  firstStreakEpoch = firstStreakEpoch is int? firstStreakEpoch : int.parse(firstStreakEpoch);
+  firstStreakEpoch = lastStreakEpoch is int? lastStreakEpoch : int.parse(lastStreakEpoch);
   if (currentEpoch - dayInMilliseconds < lastStreakEpoch) {
     int streak = (lastStreakEpoch - firstStreakEpoch) ~/ dayInMilliseconds;
     return streak;

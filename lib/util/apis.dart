@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-Future<Map<String, dynamic>> postCommunity(String communityName, String token) async {
+Future<Map<String, dynamic>> createCommunity(String communityName, String token) async {
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community';
   return await http.post(
     Uri.parse(url),
@@ -92,11 +92,10 @@ Future<Map<String, dynamic>> createPost(String postTitle, String postBody, Strin
     },
   ).then(
     (response) {
+      print(response.body.toString());
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        var postId = jsonResponse['postId'];
-        var creationDate = jsonResponse['creationDate'];
-        return {'status': true, 'message': 'Post Succesfully Created.', 'postId':postId, 'creationDate': creationDate};
+        return {'status': true, 'message': 'Post Succesfully Created.', 'newPost': jsonResponse['newPost']};
       } else {
         return {'status': false, 'message': 'An error occurred while creating the post, please try again.'};
       }
@@ -168,13 +167,12 @@ Future<Map<String, dynamic>> getPostsForCommunity(String communityName, String t
     ).then((response) {
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        var community = jsonResponse['community'];
-        var posts = jsonResponse['posts'];
         return {
           'status': true,
           'message': 'Community Succesfully Found.',
-          'community': community,
-          'posts': posts,
+          'community': jsonResponse['community'],
+          'posts': jsonResponse['posts'],
+          "goals": jsonResponse['goals'],
         };
       }
       return {'status': false, 'message': 'Community not found.'};
@@ -326,7 +324,7 @@ Future<Map<String, dynamic>> createGoal(int checkInGoal, String goalBody, String
   ).then(
     (response) {
       if (response.statusCode == 200) {
-        return {'status': true, 'message': 'Goal Succesfully Created.'};
+        return {'status': true, 'message': 'Goal Succesfully Created.', 'newGoal': jsonDecode(response.body)['newGoal']};
       } else {
         return {'status': false, 'message': 'An error occurred while creating the post, please try again.'};
       }
@@ -344,7 +342,6 @@ Future<Map<String, dynamic>> getGoalsForGoalPage(String token) async {
         "Content-Type": "application/json",
       },
     ).then((response) {
-      print("Response body goalsForGoalPage: ${response.body}");
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         var goals = jsonResponse['goals'];
@@ -428,28 +425,6 @@ Future<void> createReport(dynamic reportBody, String token) async {
     },
   );
 }
-
- Future<Map<String, dynamic>> updateGoalCheckIn(String goalId, String token) async {
-   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal?goalId=$goalId';
-   return await http.patch(
-     Uri.parse(url),
-     body: jsonEncode({
-       "goalId": goalId,
-     }),
-     headers: {
-       "Authorization": token,
-       "Content-Type": "application/json",
-     },
-   ).then(
-     (response) {
-       if (response.statusCode == 200) {
-         return {'status': true, 'message': 'CompletedCheckIns Incremented'};
-       } else {
-         return {'status': false, 'message': 'An error occurred while incrementing CompletedCheckIns, please try again.'};
-       }
-     },
-   );
- }
 
 Future<Map<String, dynamic>> changeProfilePicture(String token, String imageUrl) {
   print("imageUrl imageUrl ${imageUrl}");

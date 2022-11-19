@@ -20,8 +20,8 @@ class CommunityListWidget extends StatelessWidget {
   List _streak = [];
 
   calculateStreak(index) {
-    _streak.add(computeStreak(user.communities![index][1]['first_streak_date'],
-        user.communities![index][1]['last_streak_date'], currentEpoch));
+    _streak.add(computeStreak(user.communities![index]['firstStreakDate'],
+        user.communities![index]['lastStreakDate'], currentEpoch));
     return _streak[index];
   }
 
@@ -49,15 +49,14 @@ class CommunityListWidget extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => CommunityPage(
-                                communityName: user.communities![index][0]
-                                    ['communityName'],
+                                communityName: user.communities![index]['communityName'],
                                 token: token,
                               ),
                             ),
                           );
                         },
                         child: Text(
-                          "c/${user.communities![index][0]['communityName']}",
+                          "c/${user.communities![index]['communityName']}",
                           style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.w800,
@@ -81,7 +80,7 @@ class CommunityListWidget extends StatelessWidget {
                           ),
                         ],
                         if (user.username ==
-                            user.communities![index][1]['creator']) ...[
+                            user.communities![index]['creator']) ...[
                           Icon(
                             Icons.admin_panel_settings,
                             color: AppThemes.iconColor(context),

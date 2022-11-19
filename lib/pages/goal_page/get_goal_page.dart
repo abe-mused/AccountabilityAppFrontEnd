@@ -84,15 +84,7 @@ class _GetGoalsWidgetState extends State<GetGoalsWidget> {
                     itemBuilder: (context, index) {
                       return GoalWidget(
                         token: widget.token,
-                        goal: Goal(
-                          communityName: _goals[index]['community'],
-                          goalId: _goals[index]['goalId'],
-                          creator: _goals[index]['creator'],
-                          creationDate: int.parse(_goals[index]['creationDate']),
-                          checkInGoal: _goals[index]['checkInGoal'],
-                          goalBody: _goals[index]['goalBody'],
-                          completedCheckIns: _goals[index]['completedCheckIns'],
-                        ),
+                        goal: Goal.fromJson(_goals[index]),
                         onDelete: () {  
                           setState(() {
                           _goals.removeAt(index);
