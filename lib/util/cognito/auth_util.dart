@@ -146,3 +146,21 @@ bool isIdTokenExpired(int idTokenExpiration) {
     ),
   );
 }
+
+getAuthToken() async {
+  Map<String, dynamic> tokenMap = await refreshTokenIfExpired();
+  if(tokenMap["user"] != null) {
+    return tokenMap["user"].idToken;
+  } else {
+    return null;
+  }
+}
+
+getUserName() async {
+  Map<String, dynamic> tokenMap = await refreshTokenIfExpired();
+  if(tokenMap["user"] != null) {
+    return tokenMap["user"].username;
+  } else {
+    return null;
+  }
+}

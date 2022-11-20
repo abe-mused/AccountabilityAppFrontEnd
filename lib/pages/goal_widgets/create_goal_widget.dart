@@ -24,13 +24,14 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
       _isCreatingGoal = true;
     });
 
-    final Future<Map<String, dynamic>> successfulMessage = createGoal(
+    final Future<Map<String, dynamic>> responseMessage = createGoal(
+        context,
         int.parse(checkInGoalInput.text.toString()),
         goalBodyInput.text,
         widget.communityName,
-        widget.token);
+        );
 
-    successfulMessage.then((response) {
+    responseMessage.then((response) {
       if (response['status'] == true) {
         widget.onSuccess(response['newGoal']);
 

@@ -55,7 +55,7 @@ class _HomePageContentState extends State<HomePageContent> {
     setState(() {
         isLoading = true;
       });
-    final Future<Map<String, dynamic>> responseMessage = API.getHomeFeed(widget.token, {});
+    final Future<Map<String, dynamic>> responseMessage = API.getHomeFeed(context, {});
     responseMessage.then((response) {
       if (response['status'] == true) {
         setState(() {
@@ -78,7 +78,7 @@ class _HomePageContentState extends State<HomePageContent> {
     setState(() {
         isLoadingMorePosts = true;
       });
-    final Future<Map<String, dynamic>> responseMessage = API.getHomeFeed(widget.token, _tokens);
+    final Future<Map<String, dynamic>> responseMessage = API.getHomeFeed(context, _tokens);
     responseMessage.then((response) {
       if (response['status'] == true) {
         List<dynamic> posts = (response['posts']);

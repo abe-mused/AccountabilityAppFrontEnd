@@ -39,7 +39,7 @@ class _GetGoalsWidgetState extends State<GetGoalsWidget> {
   }
 
  doGetGoals() {
-    final Future<Map<String, dynamic>> successfulMessage = getGoalsForGoalPage(widget.token);
+    final Future<Map<String, dynamic>> successfulMessage = getGoalsForGoalPage(context);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         List<dynamic> goals = (response['goals']);

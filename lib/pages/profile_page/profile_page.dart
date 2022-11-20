@@ -61,7 +61,7 @@ class ProfilePageState extends State<ProfilePage> {
         _isChangingProfilePicture = true;
       });
 
-      final Future<Map<String, dynamic>> responseMessage = changeProfilePicture(user!.idToken, url);
+      final Future<Map<String, dynamic>> responseMessage = changeProfilePicture(context, url);
 
       responseMessage.then((response) {
         setState(() {
@@ -176,7 +176,7 @@ class ProfilePageState extends State<ProfilePage> {
               },
               onSelected: (value) {
                 if(value == 1) {
-                  createReport({"username": widget.username}, user?.idToken ?? "INVALID TOKEN");
+                  createReport(context, {"username": widget.username});
                   showDialog(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(

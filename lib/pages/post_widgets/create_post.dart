@@ -64,10 +64,10 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
     });
 
     final Future<Map<String, dynamic>> responseMessage = createPost(
+        context,
         postTitleInput.text,
         postBodyInput.text,
         widget.communityName,
-        widget.token,
         url);
 
     responseMessage.then((response) {

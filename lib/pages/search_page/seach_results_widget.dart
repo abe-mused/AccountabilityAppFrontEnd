@@ -24,7 +24,7 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
   getSearchResults() {
     _community = Community(communityName: '', creationDate: 1, creator: '', members: [], checkIns: []);
     _user = User(username: '', name: '', communities: [], followers: [], following: []);
-    final Future<Map<String, dynamic>> apiResponse = API.getSearchResults(userInput.text, widget.token);
+    final Future<Map<String, dynamic>> apiResponse = API.getSearchResults(context, userInput.text);
     apiResponse.then((response) {
       if (response['status'] == true) {
         if (!response['searchResults']['communities'].isEmpty) {

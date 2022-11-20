@@ -58,8 +58,7 @@ class _PostWidget extends State<PostWidget> {
       widget.post.likes!.add(user!.username);
     }
     widget.onLike(widget.post.likes);
-    final Future<Map<String, dynamic>> responseMessage =
-        likePost(widget.post.postId, widget.token);
+    final Future<Map<String, dynamic>> responseMessage = likePost(context, widget.post.postId);
     responseMessage.then((response) {
       if (response['status'] == true) {
       } else {
@@ -91,7 +90,7 @@ class _PostWidget extends State<PostWidget> {
 
   doDeletePost() {
     final Future<Map<String, dynamic>> responseMessage =
-        deletePost(widget.post.postId, widget.token);
+        deletePost(context, widget.post.postId);
     responseMessage.then((response) {
       if (response['status'] == true) {
         widget.onDelete();
@@ -253,7 +252,7 @@ class _PostWidget extends State<PostWidget> {
                         },
                         onSelected: (value) {
                           if(value == 1) {
-                            createReport({"postId": widget.post.postId}, widget.token);
+                            createReport(context, {"postId": widget.post.postId});
                             showDialog(
                               context: context,
                               builder: (BuildContext context) => AlertDialog(

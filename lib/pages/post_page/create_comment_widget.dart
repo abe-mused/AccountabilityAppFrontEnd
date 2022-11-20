@@ -24,7 +24,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
     });
 
     final Future<Map<String, dynamic>> successfulMessage =
-        createComment(commentBodyInput.text, widget.postId, widget.token);
+        createComment(context, commentBodyInput.text, widget.postId);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         setState(() {

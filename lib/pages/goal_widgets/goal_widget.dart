@@ -13,20 +13,21 @@ class GoalWidget extends StatelessWidget {
   final Goal goal;
   final String token;
   final VoidCallback onDelete;
-  //final Widget route;
-
-  doDeleteGoal() {
-    final Future<Map<String, dynamic>> responseMessage = deleteGoal(goal.goalId, token);
-    responseMessage.then((response) {
-      if (response['status'] == true) {
-       onDelete();
-      } else {}
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
+    
     final ScrollController scrollController = ScrollController();
+    
+    doDeleteGoal() {
+      final Future<Map<String, dynamic>> responseMessage = deleteGoal(context, goal.goalId);
+      responseMessage.then((response) {
+        if (response['status'] == true) {
+        onDelete();
+        } else {}
+      });
+    }
+
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.9,
       child: Card(

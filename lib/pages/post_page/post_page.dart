@@ -54,8 +54,8 @@ class PostPageState extends State<PostPage> {
   }
 
   doDeleteComment(passIndex) {
-    final Future<Map<String, dynamic>> responseMessage = deleteComment(
-        widget.postId, _comments[passIndex]['commentId'], widget.token);
+    final Future<Map<String, dynamic>> responseMessage = 
+        deleteComment(context, widget.postId, _comments[passIndex]['commentId']);
     responseMessage.then((response) {
       if (response['status'] == true) {
         setState(() {
@@ -99,7 +99,7 @@ class PostPageState extends State<PostPage> {
 
   doGetPost() {
     final Future<Map<String, dynamic>> responseMessage =
-        getPostWithComments(widget.postId, widget.token);
+        getPostWithComments(context, widget.postId);
     responseMessage.then((response) {
       if (response['status'] == true) {
         response['post']['creationDate'] =
@@ -282,7 +282,7 @@ class PostPageState extends State<PostPage> {
                                         },
                                         onSelected: (value) {
                                           if(value == 1) {
-                                            createReport({"commentId": _comments[index]['commentId']}, widget.token);
+                                            createReport(context, {"commentId": _comments[index]['commentId']});
                                             showDialog(
                                               context: context,
                                               builder: (BuildContext context) => AlertDialog(

@@ -17,7 +17,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
   bool _isLoading = false;
 
   doCreateCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage = createCommunity(userInput.text, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage = createCommunity(context, userInput.text);
 
     successfulMessage.then((response) {
       setState(() {
@@ -25,7 +25,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
       });
       
       if (response['status'] == true) {
-        joinAndLeave(userInput.text, widget.token);
+        joinAndLeave(context, userInput.text);
         showDialog(
             context: context,
             builder: (context) {

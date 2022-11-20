@@ -62,7 +62,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
 
   getUser() {
     final Future<Map<String, dynamic>> successfulMessage =
-        getProfile(widget.username, widget.token);
+        getProfile(context, widget.username);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         User user = User.fromJson(response['user']);
@@ -102,7 +102,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
             setState(() {
               _isUpdatingFollow = true;
             });
-            await followAndUnfollow(widget.username, widget.token);
+            await followAndUnfollow(context, widget.username);
             setState(() {
               if (_isFollowing) {
                 _viewUser.followers!.remove(currentUser!.username);

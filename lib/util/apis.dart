@@ -1,8 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-Future<Map<String, dynamic>> createCommunity(String communityName, String token) async {
+import 'package:linear/util/cognito/auth_util.dart' as auth_utility;
+
+getTokenOrRedirectToLogin(BuildContext context) async {
+  dynamic token = await auth_utility.getAuthToken();
+  if (token == null) {
+    // ignore: use_build_context_synchronously
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+  return token;
+}
+
+Future<Map<String, dynamic>> createCommunity(BuildContext context, String communityName) async {
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community';
+    String token = await getTokenOrRedirectToLogin(context);
   return await http.post(
     Uri.parse(url),
     body: jsonEncode({
@@ -25,8 +38,9 @@ Future<Map<String, dynamic>> createCommunity(String communityName, String token)
   );
 }
 
-Future<Map<String, dynamic>> getSearchResults(String searchTerm, String token) async {
+Future<Map<String, dynamic>> getSearchResults(BuildContext context, String searchTerm) async {
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/search?searchTerm=$searchTerm';
+  String token = await getTokenOrRedirectToLogin(context);
   try {
     return await http.get(
       Uri.parse(url),
@@ -47,8 +61,9 @@ Future<Map<String, dynamic>> getSearchResults(String searchTerm, String token) a
   }
 }
 
-Future<Map<String, dynamic>> getProfile(String username, String token) async {
+Future<Map<String, dynamic>> getProfile(BuildContext context, String username) async {
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/profile?username=$username';
+  String token = await getTokenOrRedirectToLogin(context);
   try {
     return await http.get(
       Uri.parse(url),
@@ -73,8 +88,9 @@ Future<Map<String, dynamic>> getProfile(String username, String token) async {
   }
 }
 
-Future<Map<String, dynamic>> createPost(String postTitle, String postBody, String communityName, String token, String? imageUrl) async {
+Future<Map<String, dynamic>> createPost(BuildContext context, String postTitle, String postBody, String communityName, String? imageUrl) async {
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post';
+  String token = await getTokenOrRedirectToLogin(context);
   var body = {
       "postTitle": postTitle,
       "postBody": postBody,
@@ -103,8 +119,9 @@ Future<Map<String, dynamic>> createPost(String postTitle, String postBody, Strin
   );
 }
 
-Future<Map<String, dynamic>> deletePost(String postId, String token) async {
+Future<Map<String, dynamic>> deletePost(BuildContext context, String postId) async {
   const url ='https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post';
+  String token = await getTokenOrRedirectToLogin(context);
   return await http.delete(
     Uri.parse(url),
     body: jsonEncode({
@@ -129,8 +146,9 @@ Future<Map<String, dynamic>> deletePost(String postId, String token) async {
   );
 }
 
-Future<Map<String, dynamic>> likePost(String postId, String token) async {
+Future<Map<String, dynamic>> likePost(BuildContext context, String postId) async {
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/like?postId=$postId';
+  String token = await getTokenOrRedirectToLogin(context);
   try {
     return await http.patch(
       Uri.parse(url),
@@ -155,8 +173,9 @@ Future<Map<String, dynamic>> likePost(String postId, String token) async {
   }
 }
 
-Future<Map<String, dynamic>> getPostsForCommunity(String communityName, String token) async {
+Future<Map<String, dynamic>> getPostsForCommunity(BuildContext context, String communityName) async {
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community?communityName=$communityName';
+  String token = await getTokenOrRedirectToLogin(context);
   try {
     return await http.get(
       Uri.parse(url),
@@ -183,8 +202,9 @@ Future<Map<String, dynamic>> getPostsForCommunity(String communityName, String t
   }
 }
 
-Future<Map<String, dynamic>> getPostWithComments(String postId, String token) async {
+Future<Map<String, dynamic>> getPostWithComments(BuildContext context, String postId) async {
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post?postId=$postId';
+  String token = await getTokenOrRedirectToLogin(context);
   try {
     return await http.get(
       Uri.parse(url),
@@ -212,8 +232,9 @@ Future<Map<String, dynamic>> getPostWithComments(String postId, String token) as
   }
 }
 
-Future<Map<String, dynamic>> createComment(String commentBody, String postId, String token) async {
+Future<Map<String, dynamic>> createComment(BuildContext context, String commentBody, String postId) async {
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/comment';
+  String token = await getTokenOrRedirectToLogin(context);
   return await http.post(
     Uri.parse(url),
     body: jsonEncode({
@@ -237,8 +258,9 @@ Future<Map<String, dynamic>> createComment(String commentBody, String postId, St
   );
 }
 
-Future<Map<String, dynamic>> deleteComment(String postId, String commentId, String token) async {
+Future<Map<String, dynamic>> deleteComment(BuildContext context, String postId, String commentId) async {
   const url ='https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/comment';
+  String token = await getTokenOrRedirectToLogin(context);
   return await http.delete(
     Uri.parse(url),
     body: jsonEncode({
@@ -264,8 +286,9 @@ Future<Map<String, dynamic>> deleteComment(String postId, String commentId, Stri
   );
 }
 
-Future<Map<String, dynamic>> joinAndLeave(String communityName, String token) async {
+Future<Map<String, dynamic>> joinAndLeave(BuildContext context, String communityName) async {
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/join?communityName=$communityName';
+  String token = await getTokenOrRedirectToLogin(context);
   return await http.patch(
     Uri.parse(url),
     body: jsonEncode({
@@ -286,8 +309,9 @@ Future<Map<String, dynamic>> joinAndLeave(String communityName, String token) as
   );
 }
 
-Future<Map<String, dynamic>> followAndUnfollow(String otherUser, String token) async {
+Future<Map<String, dynamic>> followAndUnfollow(BuildContext context, String otherUser) async {
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/follow?otherUser=$otherUser';
+  String token = await getTokenOrRedirectToLogin(context);
   return await http.patch(
     Uri.parse(url),
     body: jsonEncode({
@@ -308,8 +332,9 @@ Future<Map<String, dynamic>> followAndUnfollow(String otherUser, String token) a
   );
 }
 
-Future<Map<String, dynamic>> createGoal(int checkInGoal, String goalBody, String communityName, String token) async {
+Future<Map<String, dynamic>> createGoal(BuildContext context, int checkInGoal, String goalBody, String communityName) async {
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal';
+  String token = await getTokenOrRedirectToLogin(context);
   return await http.post(
     Uri.parse(url),
     body: jsonEncode({
@@ -332,8 +357,9 @@ Future<Map<String, dynamic>> createGoal(int checkInGoal, String goalBody, String
   );
 }
 
-Future<Map<String, dynamic>> getGoalsForGoalPage(String token) async {
+Future<Map<String, dynamic>> getGoalsForGoalPage(BuildContext context) async {
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal';
+  String token = await getTokenOrRedirectToLogin(context);
   try {
     return await http.get(
       Uri.parse(url),
@@ -360,8 +386,9 @@ Future<Map<String, dynamic>> getGoalsForGoalPage(String token) async {
   }
 }
 
-Future<Map<String, dynamic>> deleteGoal(String goalId, String token) async {
+Future<Map<String, dynamic>> deleteGoal(BuildContext context, String goalId) async {
   const url ='https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal';
+  String token = await getTokenOrRedirectToLogin(context);
   return await http.delete(
     Uri.parse(url),
     body: jsonEncode({
@@ -387,8 +414,9 @@ Future<Map<String, dynamic>> deleteGoal(String goalId, String token) async {
   );
 }
 
-Future<Map<String, dynamic>> getHomeFeed(String token, dynamic pageTokens) async {
+Future<Map<String, dynamic>> getHomeFeed(BuildContext context, dynamic pageTokens) async {
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/home';
+  String token = await getTokenOrRedirectToLogin(context);
   return await http.post(
     Uri.parse(url),
     body: jsonEncode({
@@ -415,7 +443,8 @@ Future<Map<String, dynamic>> getHomeFeed(String token, dynamic pageTokens) async
   );
 }
 
-Future<void> createReport(dynamic reportBody, String token) async {
+Future<void> createReport(BuildContext context, dynamic reportBody) async {
+  String token = await getTokenOrRedirectToLogin(context);
   http.post(
     Uri.parse('https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/report'),
     body: jsonEncode(reportBody),
@@ -426,8 +455,8 @@ Future<void> createReport(dynamic reportBody, String token) async {
   );
 }
 
-Future<Map<String, dynamic>> changeProfilePicture(String token, String imageUrl) {
-  print("imageUrl imageUrl ${imageUrl}");
+Future<Map<String, dynamic>> changeProfilePicture(BuildContext context, String imageUrl) async {
+  String token = await getTokenOrRedirectToLogin(context);
   return http.post(
     Uri.parse('https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/profile'),
     body: jsonEncode({

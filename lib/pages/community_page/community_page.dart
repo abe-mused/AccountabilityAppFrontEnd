@@ -104,7 +104,7 @@ class CommunityPageState extends State<CommunityPage> {
       });
     }
 
-    final Future<Map<String, dynamic>> responseMessage = getPostsForCommunity(widget.communityName, widget.token);
+    final Future<Map<String, dynamic>> responseMessage = getPostsForCommunity(context, widget.communityName);
 
     responseMessage.then((response) {
       if (response['status'] == true) {
@@ -288,8 +288,7 @@ class CommunityPageState extends State<CommunityPage> {
                             setState(() {
                               _isUpdatingMembership = true;
                             });
-                            await joinAndLeave(
-                                widget.communityName, widget.token);
+                            await joinAndLeave(context, widget.communityName);
 
                             setState(() {
                               if (isMember()) {
