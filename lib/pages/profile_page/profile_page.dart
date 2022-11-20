@@ -21,8 +21,8 @@ class ProfilePageState extends State<ProfilePage> {
   bool _showLoadingSpinner = false;
 
   logout() {
-    final UserPreferences userPreferences = UserPreferences();
-    userPreferences.clearPreferences();
+    UserPreferences().setActiveTab(0);
+    UserPreferences().removeUser();
     Navigator.pushReplacementNamed(context, '/login');
   }
 
