@@ -1,31 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:linear/model/user.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/util/cognito/user_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:linear/pages/goal_widgets/create_goal_widget.dart';
-import 'package:linear/util/cognito/user.dart';
-import 'package:linear/util/cognito/user_provider.dart';
 import 'package:linear/model/goal.dart';
 import 'package:linear/pages/goal_widgets/goal_widget.dart';
-import 'package:linear/util/cognito/user.dart' as cognito_user;
-import 'package:linear/util/date_formatter.dart';
-
-// ignore: must_be_immutable
 class GetGoalsWidget extends StatefulWidget {
-  const GetGoalsWidget(
-      {super.key, required this.token});
-  final String token;
+  const GetGoalsWidget({super.key});
 
   @override
   State<GetGoalsWidget> createState() => _GetGoalsWidgetState();
 }
 
 class _GetGoalsWidgetState extends State<GetGoalsWidget> {
-  cognito_user.User? currentUser = UserProvider().user;
   List<dynamic> _goals = [];
-
-  final ScrollController _scrollController = ScrollController();
 
   bool _isLoading = true;
   bool isErrorFetchingGoals = false;
@@ -67,7 +52,6 @@ class _GetGoalsWidgetState extends State<GetGoalsWidget> {
       return Scaffold(
          body: RefreshIndicator(
         child: SingleChildScrollView(
-          // removes bottom overflow pixel error
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
@@ -83,7 +67,6 @@ class _GetGoalsWidgetState extends State<GetGoalsWidget> {
                     itemCount: _goals.length,
                     itemBuilder: (context, index) {
                       return GoalWidget(
-                        token: widget.token,
                         goal: Goal.fromJson(_goals[index]),
                         onDelete: () {  
                           setState(() {

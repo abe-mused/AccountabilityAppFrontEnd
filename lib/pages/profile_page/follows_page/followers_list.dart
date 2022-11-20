@@ -5,13 +5,9 @@ import 'package:linear/constants/themeSettings.dart';
 
 
 class FollowersListWidget extends StatelessWidget {
-  const FollowersListWidget(
-        {super.key,
-      required this.user,
-      required this.token});
+  const FollowersListWidget({super.key, required this.user});
 
   final User user;
-  final String token;
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/model/user.dart';
-import 'package:linear/util/apis.dart';
-import 'package:linear/util/cognito/user_provider.dart';
-import 'package:linear/util/cognito/user.dart' as cognito_user;
 import 'package:linear/pages/profile_page/follows_page/followers_list.dart';
 import 'package:linear/pages/profile_page/follows_page/following_list.dart';
 
@@ -12,9 +8,8 @@ enum _Tab {followers, following}
 
 // ignore: must_be_immutable
 class ViewFollowsPage extends StatefulWidget {
-  const ViewFollowsPage(
-      {super.key, required this.token, required this.username, required this.user, required this.type});
-  final String token;
+  const ViewFollowsPage({super.key, required this.username, required this.user, required this.type});
+  
   final String username;
   final User user;
   final String type;
@@ -24,16 +19,9 @@ class ViewFollowsPage extends StatefulWidget {
   State<ViewFollowsPage> createState() => _ViewFollowsPageState();
 }
 
-class _ViewFollowsPageState extends State<ViewFollowsPage> {
-  cognito_user.User? currentUser = UserProvider().user;
-
- 
+class _ViewFollowsPageState extends State<ViewFollowsPage> { 
    _Tab _selectedTab = _Tab.followers;
    int timesCalled = 0;
-
-  isViewingOwnProfile() {
-    return currentUser!.username == widget.username;
-  }
 
  @override
   Widget build(BuildContext context) {
@@ -70,9 +58,9 @@ class _ViewFollowsPageState extends State<ViewFollowsPage> {
           builder: (context) {
             switch (_selectedTab) {
               case _Tab.followers:
-                return FollowersListWidget(token: widget.token, user: widget.user);
+                return FollowersListWidget(user: widget.user);
               case _Tab.following:
-                return FollowingListWidget(token: widget.token, user: widget.user);
+                return FollowingListWidget(user: widget.user);
             }
           },
         ),

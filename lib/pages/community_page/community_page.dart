@@ -8,20 +8,16 @@ import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/pages/goal_widgets/goal_widget.dart';
 import 'package:linear/model/goal.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/util/cognito/user.dart';
-import 'package:linear/util/cognito/user_provider.dart';
 import 'package:linear/util/date_formatter.dart';
-import 'package:provider/provider.dart';
 import 'package:linear/constants/themeSettings.dart';
-import 'package:linear/util/cognito/auth_util.dart' as authUtil;
+import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 import 'package:intl/intl.dart';
 import 'package:flutter/rendering.dart';
 
 class CommunityPage extends StatefulWidget {
-  CommunityPage({super.key, required this.communityName, required this.token});
+  CommunityPage({super.key, required this.communityName});
 
   String communityName;
-  String token;
 
   @override
   State<CommunityPage> createState() => CommunityPageState();
@@ -36,7 +32,7 @@ class CommunityPageState extends State<CommunityPage> {
       checkIns: []);
   List<dynamic> _posts = [];
 
-  User? user = UserProvider().user;
+  String? _currentUsername;
   //TODO: display finished goals somewhere on the page
   List<dynamic> _finishedGoals = [];
   dynamic _unfinishedGoal;
@@ -54,15 +50,12 @@ class CommunityPageState extends State<CommunityPage> {
   void initState() {
     super.initState();
     scrollController = ScrollController()..addListener(scrollListener);
-    authUtil.refreshTokenIfExpired().then(
-          (response) => {
-            if (response['refreshed'] == true)
-              {
-                Provider.of<UserProvider>(context, listen: false)
-                    .setUser(response['user']),
-              }
-          },
-        );
+    
+    auth_util.getUserName().then((userName) {
+      setState(() {
+        _currentUsername = userName;
+      });
+    });
 
     doGetCommunity();
   }
@@ -90,11 +83,11 @@ class CommunityPageState extends State<CommunityPage> {
 
   isUserCheckedIn() {
     return doesCurrentDateExistInCheckins() &&
-            _community.checkIns[0]['usersCheckedIn'].contains(user!.username);
+            _community.checkIns[0]['usersCheckedIn'].contains(_currentUsername);
   }
 
   isMember() {
-    return _community.members.contains(user!.username);
+    return _community.members.contains(_currentUsername);
   }
 
   doGetCommunity({bool showLoadingIndicator = true}) {
@@ -128,8 +121,6 @@ class CommunityPageState extends State<CommunityPage> {
 
   @override
   Widget build(BuildContext context) {
-    user = Provider.of<UserProvider>(context).user;
-
     if (_isFetchingCommunity) {
       return Scaffold(
         appBar: AppBar(
@@ -184,7 +175,6 @@ class CommunityPageState extends State<CommunityPage> {
                               builder: (context) {
                                 return CreatePostWidget(
                                   communityName: widget.communityName,
-                                  token: widget.token,
                                   onSuccess: () {
                                     Navigator.pop(context);
                                     doGetCommunity( showLoadingIndicator: false);
@@ -203,9 +193,7 @@ class CommunityPageState extends State<CommunityPage> {
                                 builder: (context) {
                                   return CreateGoalWidget(
                                     communityName: widget.communityName,
-                                    token: widget.token,
                                     onSuccess: (newGoal) {
-                                      print("newGoal in community widget: ${newGoal.toString()}");
                                       setState(() {
                                         _unfinishedGoal = newGoal;
                                       });
@@ -292,10 +280,10 @@ class CommunityPageState extends State<CommunityPage> {
 
                             setState(() {
                               if (isMember()) {
-                                _community.members.remove(user!.username);
+                                _community.members.remove(_currentUsername);
                                 _community = _community;
                               } else {
-                                _community.members.add(user!.username);
+                                _community.members.add(_currentUsername);
                                 _community = _community;
                               }
                               _isUpdatingMembership = false;
@@ -332,7 +320,6 @@ class CommunityPageState extends State<CommunityPage> {
               const SizedBox(height: 10),
               if(_unfinishedGoal != null)
                 GoalWidget(
-                  token: widget.token,
                   goal: Goal.fromJson( _unfinishedGoal),
                   onDelete: () {  
                     setState(() {
@@ -355,7 +342,6 @@ class CommunityPageState extends State<CommunityPage> {
                         onLike: (likes) => setState(() {
                           _posts[index]['likes'] = likes;
                         }),
-                        token: widget.token,
                         post: Post.fromJson(_posts[index]),
                         onDelete: () {
                           setState(() {
@@ -364,7 +350,6 @@ class CommunityPageState extends State<CommunityPage> {
                         },
                         route: CommunityPage(
                           communityName: _community.communityName,
-                          token: widget.token,
                         ),
                       );
                     },

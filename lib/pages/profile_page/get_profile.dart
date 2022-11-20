@@ -8,17 +8,14 @@ import 'package:linear/pages/community_page/community_page.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/profile_page/community_list.dart';
-import 'package:linear/util/cognito/user_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:linear/pages/profile_page/follows_page/view_follows.dart';
-import 'package:linear/util/cognito/user.dart' as cognito_user;
 import 'package:linear/util/date_formatter.dart';
+import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 
 // ignore: must_be_immutable
 class GetProfileWidget extends StatefulWidget {
   const GetProfileWidget(
-      {super.key, required this.token, required this.username});
-  final String token;
+      {super.key, required this.username});
   final String username;
 
   @override
@@ -26,9 +23,9 @@ class GetProfileWidget extends StatefulWidget {
 }
 
 class _GetProfileWidgetState extends State<GetProfileWidget> {
-  User _viewUser = User(
-      username: '', name: '', communities: [], followers: [], following: []);
-  cognito_user.User? currentUser = UserProvider().user;
+  User _viewUser = User(username: '', name: '', communities: [], followers: [], following: []);
+
+  String? _currentUsername;
   List<dynamic> _post = [];
 
   final ScrollController _scrollController = ScrollController();
@@ -53,11 +50,18 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
   @override
   void initState() {
     super.initState();
+    
+    auth_util.getUserName().then((userName) {
+      setState(() {
+        _currentUsername = userName;
+      });
+    });
+
     getUser();
   }
 
   isViewingOwnProfile() {
-    return currentUser!.username == widget.username;
+    return _currentUsername == widget.username;
   }
 
   getUser() {
@@ -79,7 +83,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
         setState(() {
           _post = post;
           isLoading = false;
-          _isFollowing = user.followers!.contains(currentUser!.username);
+          _isFollowing = user.followers!.contains(_currentUsername);
         });
 
       } else {
@@ -93,9 +97,8 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    currentUser = Provider.of<UserProvider>(context).user;
 
-    _buildFollowButton(){
+    buildFollowButton(){
       if (!_isUpdatingFollow && !isViewingOwnProfile()){
        return ElevatedButton(
           onPressed: () async {
@@ -105,10 +108,10 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
             await followAndUnfollow(context, widget.username);
             setState(() {
               if (_isFollowing) {
-                _viewUser.followers!.remove(currentUser!.username);
+                _viewUser.followers!.remove(_currentUsername);
                 _viewUser = _viewUser;
               } else {
-                _viewUser.followers!.add(currentUser!.username);
+                _viewUser.followers!.add(_currentUsername);
                 _viewUser = _viewUser;
               }
               _isFollowing = !_isFollowing;
@@ -187,7 +190,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ViewFollowsPage(
-                                          token: widget.token,
                                           username: _viewUser.username,
                                           user: _viewUser,
                                           type: "followers"),
@@ -216,7 +218,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ViewFollowsPage(
-                                          token: widget.token,
                                           username: _viewUser.username,
                                           user: _viewUser,
                                           type: "following"),
@@ -243,7 +244,7 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                           ),
                           Row(
                             children: <Widget>[
-                              _buildFollowButton(),
+                              buildFollowButton(),
                             ]
                           ),
                         ],
@@ -304,14 +305,12 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                         CommunityListWidget(
                           user: _viewUser,
                           communityLength: _viewUser.communities?.length,
-                          token: widget.token,
                           currentEpoch: currentEpoch,
                         ),
                       ] else ...[
                         CommunityListWidget(
                           user: _viewUser,
                           communityLength: 3,
-                          token: widget.token,
                           currentEpoch: currentEpoch,
                         ),
                         Row(
@@ -373,8 +372,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                                                                             CommunityPage(
                                                                       communityName:
                                                                           _viewUser.communities![index]['communityName'],
-                                                                      token: widget
-                                                                          .token,
                                                                     ),
                                                                   ),
                                                                 );
@@ -506,7 +503,6 @@ class _GetProfileWidgetState extends State<GetProfileWidget> {
                               onLike: (likes) => setState(() {
                                 _post[index]['likes'] = likes;
                               }),
-                              token: widget.token,
                               post: Post.fromJson(_post[index]),
                               onDelete: () {
                                 setState(() {

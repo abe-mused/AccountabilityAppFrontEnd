@@ -7,8 +7,7 @@ import 'package:linear/util/apis.dart' as API;
 
 // ignore: must_be_immutable
 class SearchResultWidget extends StatefulWidget {
-  SearchResultWidget({super.key, required this.token});
-  String token;
+  SearchResultWidget({super.key});
 
   @override
   State<SearchResultWidget> createState() => _SearchResultWidgetState();
@@ -152,7 +151,6 @@ class _SearchResultWidgetState extends State<SearchResultWidget> {
                     MaterialPageRoute(
                       builder: (context) => CommunityPage(
                         communityName: _community.communityName,
-                        token: widget.token,
                       ),
                     ),
                   );

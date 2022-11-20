@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:linear/pages/home_page/home_page.dart';
-import 'package:linear/util/apis.dart' as API;
+import 'package:linear/util/apis.dart' as api_util;
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/model/post.dart';
-import 'package:linear/util/cognito/user_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:linear/util/cognito/user.dart' as cognito_user;
 
 // ignore: must_be_immutable
 class HomePageContent extends StatefulWidget {
-  const HomePageContent({super.key, required this.token, required this.username});
-  final String token;
+  const HomePageContent({super.key, required this.username});
   final String username;
 
   @override
@@ -18,7 +14,6 @@ class HomePageContent extends StatefulWidget {
 }
 
 class _HomePageContentState extends State<HomePageContent> {
-  cognito_user.User? user = UserProvider().user;
   ScrollController scrollController = ScrollController();
   List<dynamic> _posts = [];
   dynamic _tokens = {};
@@ -47,15 +42,11 @@ class _HomePageContentState extends State<HomePageContent> {
     }
   }
 
-  isViewingOwnProfile() {
-    return user!.username == widget.username;
-  }
-
   getHomeFeed() {
     setState(() {
         isLoading = true;
       });
-    final Future<Map<String, dynamic>> responseMessage = API.getHomeFeed(context, {});
+    final Future<Map<String, dynamic>> responseMessage = api_util.getHomeFeed(context, {});
     responseMessage.then((response) {
       if (response['status'] == true) {
         setState(() {
@@ -78,7 +69,7 @@ class _HomePageContentState extends State<HomePageContent> {
     setState(() {
         isLoadingMorePosts = true;
       });
-    final Future<Map<String, dynamic>> responseMessage = API.getHomeFeed(context, _tokens);
+    final Future<Map<String, dynamic>> responseMessage = api_util.getHomeFeed(context, _tokens);
     responseMessage.then((response) {
       if (response['status'] == true) {
         List<dynamic> posts = (response['posts']);
@@ -100,7 +91,6 @@ class _HomePageContentState extends State<HomePageContent> {
 
   @override
   Widget build(BuildContext context) {
-    user = Provider.of<UserProvider>(context).user;
 
     if (isLoading == false && isErrorFetchingUser == false) {
       return RefreshIndicator(
@@ -124,7 +114,6 @@ class _HomePageContentState extends State<HomePageContent> {
                               onLike: (likes) => setState(() {
                                 _posts[index]['likes'] = likes;
                               }),
-                              token: widget.token,
                               post: Post.fromJson(_posts[index]),
                               onDelete: () {  
                               setState(() {

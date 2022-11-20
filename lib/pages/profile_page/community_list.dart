@@ -9,12 +9,10 @@ class CommunityListWidget extends StatelessWidget {
       {super.key,
       required this.user,
       required this.communityLength,
-      required this.token,
       required this.currentEpoch});
 
   final User user;
   final int? communityLength;
-  final String token;
   final int currentEpoch;
 
   List _streak = [];
@@ -50,7 +48,6 @@ class CommunityListWidget extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => CommunityPage(
                                 communityName: user.communities![index]['communityName'],
-                                token: token,
                               ),
                             ),
                           );

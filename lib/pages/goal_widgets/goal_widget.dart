@@ -9,9 +9,8 @@ import 'package:linear/util/apis.dart';
 import 'package:linear/constants/themeSettings.dart';
 
 class GoalWidget extends StatelessWidget {
-  const GoalWidget({super.key, required this.goal, required this.token, required this.onDelete/*, required this.route*/});
+  const GoalWidget({super.key, required this.goal, required this.onDelete/*, required this.route*/});
   final Goal goal;
-  final String token;
   final VoidCallback onDelete;
 
   @override
@@ -52,7 +51,7 @@ class GoalWidget extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => CommunityPage(
-                                    communityName: goal.communityName, token: token
+                                    communityName: goal.communityName,
                                   ),
                                 ),
                               );

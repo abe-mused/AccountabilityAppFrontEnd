@@ -4,8 +4,7 @@ import 'package:linear/util/apis.dart';
 import 'package:linear/model/goal.dart';
 
 class CreateGoalWidget extends StatefulWidget {
-  CreateGoalWidget({super.key, required this.token, required this.communityName, required this.onSuccess});
-  String token;
+  CreateGoalWidget({super.key, required this.communityName, required this.onSuccess});
   String communityName;
   final Function onSuccess;
 

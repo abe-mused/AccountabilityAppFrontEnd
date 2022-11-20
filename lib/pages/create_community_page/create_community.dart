@@ -5,8 +5,7 @@ import 'package:linear/pages/search_page/seach_results_widget.dart';
 import 'package:linear/constants/themeSettings.dart';
 
 class CreateCommunityWidget extends StatefulWidget {
-  CreateCommunityWidget({super.key, required this.token});
-  String token;
+  const CreateCommunityWidget({super.key});
 
   @override
   State<CreateCommunityWidget> createState() => _CreateCommunityWidgetState();
@@ -40,7 +39,6 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                       MaterialPageRoute(
                         builder: (context) => CommunityPage(
                           communityName: userInput.text,
-                          token: widget.token,
                         ),
                       ),
                     );
@@ -69,7 +67,6 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                       MaterialPageRoute(
                         builder: (context) => CommunityPage(
                           communityName: userInput.text,
-                          token: widget.token,
                         ),
                       ),
                     );

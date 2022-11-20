@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/image_related_widgets/upload_image_widget.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/util/cognito/user.dart';
-import 'package:linear/util/cognito/user_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:linear/pages/profile_page/get_profile.dart';
 import 'package:linear/util/cognito/user_preferences.dart';
-import 'package:linear/util/cognito/auth_util.dart' as authUtil;
+import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key, this.username = ''}) : super(key: key);
@@ -19,6 +16,7 @@ class ProfilePage extends StatefulWidget {
 
 class ProfilePageState extends State<ProfilePage> {
 
+  String? _currentUsername;
   bool _isChangingProfilePicture = false;
   bool _showLoadingSpinner = false;
 
@@ -32,18 +30,15 @@ class ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
 
-    authUtil.refreshTokenIfExpired().then((response) => {
-          if (response['refreshed'] == true)
-            {
-              Provider.of<UserProvider>(context, listen: false).setUser(response['user']),
-            }
-        },
-      );
+    auth_util.getUserName().then((userName) {
+      setState(() {
+        _currentUsername = userName;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    User? user = Provider.of<UserProvider>(context).user;
 
     bool shouldUploadImage() {
       setState(() {
@@ -128,7 +123,6 @@ class ProfilePageState extends State<ProfilePage> {
                       Stack(
                         children: [
                           UploadImageWidget(
-                            token: user?.idToken ?? '',
                             onLoading: shouldUploadImage,
                             onSuccess: onImageWidgetSubmit,
                             onCancel: () {
@@ -156,7 +150,11 @@ class ProfilePageState extends State<ProfilePage> {
             ]
           ],
         ),
-        body: Center(child: GetProfileWidget(token: user?.idToken ?? "INVALID TOKEN", username: user?.username ?? "INVALID USERNAME")),
+        body: Center(
+          child: _currentUsername != null?
+            GetProfileWidget(username: _currentUsername!)
+            : Container(),
+          ),
         bottomNavigationBar: const LinearNavBar(),
       );
     } else {
@@ -197,7 +195,7 @@ class ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
-        body: Center(child: GetProfileWidget(token: user?.idToken ?? "INVALID TOKEN", username: widget.username)),
+        body: Center(child: GetProfileWidget(username: widget.username)),
         bottomNavigationBar: const LinearNavBar(),
       );
     }

@@ -5,21 +5,18 @@ import 'package:linear/pages/post_page/create_comment_widget.dart';
 import 'package:linear/pages/post_widgets/post_widget.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/util/cognito/user.dart';
-import 'package:linear/util/cognito/user_provider.dart';
 import 'package:linear/util/date_formatter.dart';
-import 'package:provider/provider.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
+import 'package:linear/util/cognito/auth_util.dart' as auth_util;
+
 
 class PostPage extends StatefulWidget {
   PostPage(
       {super.key,
       required this.postId,
-      required this.token,
       required this.route});
 
   String postId;
-  String token;
   Widget route;
 
   @override
@@ -38,13 +35,20 @@ class PostPageState extends State<PostPage> {
       comments: []);
   List<dynamic> _comments = [];
 
-  User? user = UserProvider().user;
+  String? _currentUsername;
 
   bool _isloading = true;
 
   @override
   void initState() {
     super.initState();
+    
+    auth_util.getUserName().then((userName) {
+      setState(() {
+        _currentUsername = userName;
+      });
+    });
+
     doGetPost();
   }
 
@@ -121,7 +125,6 @@ class PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    user = Provider.of<UserProvider>(context).user;
     if (_isloading) {
       return Scaffold(
         appBar: AppBar(
@@ -149,7 +152,6 @@ class PostPageState extends State<PostPage> {
                   onLike: (likes) => setState(() {
                     _post.likes = likes;
                   }),
-                  token: widget.token,
                   post: _post,
                   onDelete: () {
                     deletePost(context);
@@ -159,7 +161,6 @@ class PostPageState extends State<PostPage> {
               ),
               const SizedBox(height: 10),
               CreateCommentWidget(
-                token: widget.token,
                 postId: widget.postId,
                 addComment: (comment) => {
                   setState(() {
@@ -230,7 +231,7 @@ class PostPageState extends State<PostPage> {
                                         ],
                                       ),
                                     ),
-                                    if (_comments[index]['creator'] == user!.username) ...[
+                                    if (_comments[index]['creator'] == _currentUsername) ...[
                                       PopupMenuButton(
                                         itemBuilder: (context) {
                                           return [
@@ -270,7 +271,7 @@ class PostPageState extends State<PostPage> {
                                         }
                                       ),
                                     ],
-                                    if (_comments[index]['creator'] != user!.username) ...[
+                                    if (_comments[index]['creator'] != _currentUsername) ...[
                                       PopupMenuButton(
                                         itemBuilder: (context) {
                                           return [

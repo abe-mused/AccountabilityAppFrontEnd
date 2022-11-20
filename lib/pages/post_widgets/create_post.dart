@@ -6,10 +6,8 @@ import 'package:linear/model/post.dart';
 class CreatePostWidget extends StatefulWidget {
   CreatePostWidget(
       {super.key,
-      required this.token,
       required this.communityName,
       required this.onSuccess});
-  String token;
   String communityName;
   final Function onSuccess;
 
@@ -171,7 +169,6 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                 ),
               ),
               UploadImageWidget(
-                token: widget.token,
                 onLoading: shouldUploadImage,
                 onSuccess: onImageWidgetSubmit,
                 onCancel: () {

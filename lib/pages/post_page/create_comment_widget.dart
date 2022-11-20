@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:linear/util/apis.dart';
 
 class CreateCommentWidget extends StatefulWidget {
-  CreateCommentWidget({super.key, required this.token, required this.postId, required this.addComment});
-  String token;
+  CreateCommentWidget({super.key, required this.postId, required this.addComment});
   String postId;
   Function addComment;
 

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:linear/util/cognito/user_provider.dart';
-import 'package:provider/provider.dart';
 
 class LinearNavBar extends StatefulWidget {
   const LinearNavBar({super.key});
@@ -28,13 +26,10 @@ class _LinearNavBarState extends State<LinearNavBar> {
     setState(() {
       selected_icon = index;
     });
-    Provider.of<UserProvider>(context, listen: false).setSelectedTab(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    selected_icon = Provider.of<UserProvider>(context).selectedTab;
-
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       items: const <BottomNavigationBarItem>[
