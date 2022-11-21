@@ -5,7 +5,7 @@ import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 import 'package:linear/pages/community_page/community_page.dart';
-import 'package:linear/pages/post_widgets/post_widget.dart';
+import 'package:linear/pages/common_widgets/post_widget.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/profile_page/community_list.dart';
 import 'package:linear/pages/profile_page/follows_page/view_follows.dart';

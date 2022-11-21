@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/util/apis.dart' as api_util;
 import 'package:linear/model/post.dart';
-import 'package:linear/pages/post_widgets/post_widget.dart';
+import 'package:linear/pages/common_widgets/post_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
