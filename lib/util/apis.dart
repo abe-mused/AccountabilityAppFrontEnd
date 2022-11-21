@@ -50,9 +50,9 @@ Future<Map<String, dynamic>> getSearchResults(BuildContext context, String searc
     ).then((response) {
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        return {'status': true, 'message': 'results returned', 'searchResults': jsonResponse};
+        return {'status': true, 'searchResults': jsonResponse["searchResults"]};
       }
-      throw "results not found";
+      return {'status': false, 'message': 'results not found.'};
     });
   } catch (e) {
     print(e);

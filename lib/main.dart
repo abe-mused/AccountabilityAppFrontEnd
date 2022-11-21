@@ -37,6 +37,7 @@ class LinearApp extends StatelessWidget {
                 } else if (!isUserDataLoaded(snapshot)) {
                   return const LoginPage();
                 }
+                UserPreferences().setActiveTab(0);
                 return const HomePage();
             }
           }),

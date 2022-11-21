@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/pages/community_page/community_page.dart';
-import 'package:linear/pages/search_page/seach_results_widget.dart';
-import 'package:linear/constants/themeSettings.dart';
 
 class CreateCommunityWidget extends StatefulWidget {
   const CreateCommunityWidget({super.key});
