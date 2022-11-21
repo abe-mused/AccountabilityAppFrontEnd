@@ -153,7 +153,7 @@ class SearchPageState extends State<SearchPage> {
                             if(_searchResults[index]["type"] == "COMMUNITY"){
                               return CommunityPage(communityName: _searchResults[index]["value"]);
                             } else {
-                              return ProfilePage(username: _searchResults[index]["value"]);
+                              return ProfilePage(usernameToDisplay: _searchResults[index]["value"]);
                             }
                           }
                         ),

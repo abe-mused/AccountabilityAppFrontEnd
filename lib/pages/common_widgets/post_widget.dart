@@ -137,7 +137,7 @@ class _PostWidget extends State<PostWidget> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ProfilePage(
-                                  username: widget.post.creator,
+                                  usernameToDisplay: widget.post.creator,
                                 ),
                               ),
                             );
@@ -194,7 +194,7 @@ class _PostWidget extends State<PostWidget> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => ProfilePage(
-                                            username: widget.post.creator,
+                                            usernameToDisplay: widget.post.creator,
                                           ),
                                         ),
                                       );
