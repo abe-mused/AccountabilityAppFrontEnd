@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_in.dart';
 import 'package:linear/constants/routes.dart';
-import 'package:linear/pages/home_page/home_page.dart';
+import 'package:linear/pages/home_page.dart';
 import 'package:linear/util/cognito/user.dart';
 import 'package:linear/util/cognito/user_preferences.dart';
 import 'package:linear/constants/themeSettings.dart';
