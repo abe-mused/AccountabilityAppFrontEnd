@@ -119,18 +119,23 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
       return const Center(child: CircularProgressIndicator());
     }
     return Container(
-      margin: const EdgeInsets.only(left: 20.0, right: 20.0),
-      width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.height * 0.5,
+      margin: const EdgeInsets.all(20),
       child: Card(
         margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              Text(
-                "post something in c/${widget.communityName}!",
-                style: const TextStyle(fontSize: 24),
+              Container(
+                margin: const EdgeInsets.only(top: 20, bottom: 20.0),
+                child: Text(
+                  "Create a post in c/${widget.communityName}!",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
               Container(
                 margin: const EdgeInsets.all(10),
@@ -146,7 +151,7 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    hintText: "post title",
+                    hintText: "post title...",
                   ),
                 ),
               ),
@@ -160,11 +165,13 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                   onChanged: (value) {
                     setState(() {});
                   },
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    hintText: "post body",
+                    hintText: "body...",
                   ),
                 ),
               ),

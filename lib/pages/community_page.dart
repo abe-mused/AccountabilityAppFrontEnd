@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:linear/model/community.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
@@ -42,7 +43,7 @@ class CommunityPageState extends State<CommunityPage> {
   bool _isErrorFetchingCommunity = false;
   final String _currentDate = DateFormat("MM/dd/yyyy").format(DateTime.now());
 
-  bool _showActionButton = true;
+  bool _showFab = true;
 
   ScrollController scrollController = ScrollController();
 
@@ -67,11 +68,10 @@ class CommunityPageState extends State<CommunityPage> {
   }
 
   scrollListener() {
-    if (_showActionButton !=
-        (scrollController.position.userScrollDirection ==
-            ScrollDirection.forward)) {
+    if (_showFab != 
+      (scrollController.position.userScrollDirection == ScrollDirection.forward)) {
       setState(() {
-        _showActionButton = !_showActionButton;
+        _showFab = !_showFab;
       });
     }
   }
@@ -97,9 +97,7 @@ class CommunityPageState extends State<CommunityPage> {
       });
     }
 
-    final Future<Map<String, dynamic>> responseMessage = getPostsForCommunity(context, widget.communityName);
-
-    responseMessage.then((response) {
+    getPostsForCommunity(context, widget.communityName).then((response) {
       if (response['status'] == true) {
         setState(() {
           _community = Community.fromJson(response['community']);
@@ -152,75 +150,79 @@ class CommunityPageState extends State<CommunityPage> {
       appBar: AppBar(
         title: const Text("Community"),
       ),
-      floatingActionButton: Visibility(
-        visible: _showActionButton,
-        child: FloatingActionButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: const Text('Actions'),
-                content: SizedBox(
-                  height: 90,
-                  width: 50,
-                  child: ListView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      ListTile(
-                        title: const Text('Create Post'),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return CreatePostWidget(
-                                  communityName: widget.communityName,
-                                  onSuccess: () {
-                                    Navigator.pop(context);
-                                    doGetCommunity( showLoadingIndicator: false);
-                                  },
-                                );
-                              });
+      floatingActionButton: AnimatedSlide(
+        duration: const Duration(milliseconds: 300),
+        offset: _showFab ? Offset.zero : const Offset(2, 0),
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 300),
+          opacity: _showFab ? 1 : 0,
+          child: SpeedDial(
+            icon: Icons.add,
+            activeIcon: Icons.close,
+            spacing: 10,
+            childPadding: const EdgeInsets.all(0),
+            spaceBetweenChildren: 15,
+            renderOverlay: true,
+            overlayColor: Colors.black,
+            overlayOpacity: 0.5,
+            children: [
+              SpeedDialChild(
+                child: const Icon(Icons.post_add),
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                label: 'Create Post',
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CreatePostWidget(
+                        communityName: widget.communityName,
+                        onSuccess: () {
+                          Navigator.pop(context);
+                          doGetCommunity( showLoadingIndicator: false);
                         },
-                      ),
-                      if(_unfinishedGoal == null && isMember())
-                        ListTile(
-                          title: const Text('Create Goal'),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return CreateGoalWidget(
-                                    communityName: widget.communityName,
-                                    onSuccess: (newGoal) {
-                                      setState(() {
-                                        _unfinishedGoal = newGoal;
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                  );
-                                });
-                          },
-                        ),
-                    ],
-                  ),
-                ),
-                actions: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Okay'))
-                ],
+                      );
+                    }
+                  );
+                },
+                onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
               ),
-            );
-          },
-          backgroundColor: AppThemes.primaryIconColor(context),
-          child: const Icon(
-            Icons.add_circle_outline,
-            size: 57,
-          ),
+              SpeedDialChild(
+                child: const Icon(Icons.moving_rounded),
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                label: 'Create Goal',
+                visible: true,
+                onTap: () {
+                  if(!isMember()){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text(("You must be a member of the community to create a goal.")))
+                    );
+                  } else if(_unfinishedGoal != null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text(("You already have an unfinished goal in this community.")))
+                    );
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return CreateGoalWidget(
+                          communityName: widget.communityName,
+                          onSuccess: (newGoal) {
+                            setState(() {
+                              _unfinishedGoal = newGoal;
+                            });
+                            Navigator.pop(context);
+                          },
+                        );
+                      }
+                    );
+                  }
+                }, 
+                onLongPress: () => debugPrint('THIRD CHILD LONG PRESS'),
+              ),
+            ],
+          ),          
         ),
       ),
       body: RefreshIndicator(

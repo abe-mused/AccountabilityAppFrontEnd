@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/user.dart';
-import 'package:linear/pages/community_page/community_page.dart';
+import 'package:linear/pages/community_page.dart';
 import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/util/date_formatter.dart';
 

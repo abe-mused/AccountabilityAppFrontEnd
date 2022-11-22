@@ -82,7 +82,7 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
     }
 
     return Container(
-      margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+      margin: const EdgeInsets.all(20),
       width: MediaQuery.of(context).size.width * 0.9,
       height: MediaQuery.of(context).size.height * 0.5,
       child: Card(
@@ -91,9 +91,16 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              Text(
-                "Make a goal for yourself in c/${widget.communityName}!",
-                style: const TextStyle(fontSize: 24),
+              Container(
+                margin: const EdgeInsets.only(top: 20, bottom: 20.0),
+                child: Text(
+                  "Create a goal for yourself             in c/${widget.communityName}!", //the spaces here are to show the c/ in the next line
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
               Container(
                 margin: const EdgeInsets.all(10),
@@ -109,7 +116,7 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    hintText: "Goal",
+                    hintText: "Goal description...",
                   ),
                 ),
               ),
@@ -128,7 +135,7 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    hintText: "Days",
+                    hintText: "Target number of days...",
                   ),
                 ),
               ),
