@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/community_page.dart';
 import 'package:linear/pages/post_page/post_page.dart';
@@ -159,8 +160,10 @@ class _PostWidget extends State<PostWidget> {
                               children: [
                               TextSpan(
                                   text: 'c/${widget.post.communityName}',
-                                  style: const TextStyle(
-                                    color: Colors.black,
+                                  style: TextStyle(
+                                    color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                                      ? AppThemes.darkTheme.primaryColor
+                                      : AppThemes.lightTheme.primaryColor,
                                     fontSize: 16,
                                   ),
                                   recognizer: TapGestureRecognizer()
@@ -183,9 +186,11 @@ class _PostWidget extends State<PostWidget> {
                               children: [
                               TextSpan(
                                   text: 'u/${widget.post.creator}',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
+                                  style: TextStyle(
+                                    color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                                      ? AppThemes.darkTheme.primaryColor
+                                      : AppThemes.lightTheme.primaryColor,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   recognizer: TapGestureRecognizer()
