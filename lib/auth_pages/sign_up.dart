@@ -85,7 +85,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 borderRadius: const BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
             child: SingleChildScrollView(
               // removes bottom overflow pixel error
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -95,7 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   TextField(
                     controller: email,
                     decoration: const InputDecoration(
-                      hintText: "E-mail",
+                      hintText: "Email",
                     ),
                   ),
                   const SizedBox(
@@ -104,7 +104,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   TextField(
                     controller: username,
                     decoration: const InputDecoration(
-                      hintText: "username",
+                      hintText: "Username",
                     ),
                   ),
                   const SizedBox(
@@ -113,7 +113,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   TextField(
                     controller: name,
                     decoration: const InputDecoration(
-                      hintText: "Full name",
+                      hintText: "Full Name",
                     ),
                   ),
                   const SizedBox(
@@ -172,7 +172,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               MaterialPageRoute(builder: (context) => const LoginPage()),
                             );
                           },
-                          child: const Text("Sign In?"))
+                          child: const Text("Log In"))
                     ],
                   )
                 ],

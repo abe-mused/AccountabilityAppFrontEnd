@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 15,
                   ),
                   const Text(
-                    "Sign In",
+                    "Log In",
                     style: TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
                   ),
                   const SizedBox(
@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextField(
                     controller: emailOrUsername,
                     decoration: const InputDecoration(
-                      hintText: "E-mail or username",
+                      hintText: "Email or username",
                     ),
                   ),
                   const SizedBox(
@@ -131,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60),
                         ),
                         onPressed: doLogIn,
-                        child: const Text("Sign In")),
+                        child: const Text("Log In")),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
