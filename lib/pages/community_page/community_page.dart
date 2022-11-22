@@ -2,27 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:linear/model/community.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
-import 'package:linear/pages/post_widgets/create_post.dart';
-import 'package:linear/pages/goal_widgets/create_goal_widget.dart';
-import 'package:linear/pages/post_widgets/post_widget.dart';
-import 'package:linear/pages/goal_widgets/goal_widget.dart';
+import 'package:linear/pages/common_widgets/create_post.dart';
+import 'package:linear/pages/common_widgets/create_goal_widget.dart';
+import 'package:linear/pages/common_widgets/post_widget.dart';
+import 'package:linear/pages/common_widgets/goal_widget.dart';
 import 'package:linear/model/goal.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/util/cognito/user.dart';
-import 'package:linear/util/cognito/user_provider.dart';
 import 'package:linear/util/date_formatter.dart';
-import 'package:provider/provider.dart';
 import 'package:linear/constants/themeSettings.dart';
-import 'package:linear/util/cognito/auth_util.dart' as authUtil;
+import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 import 'package:intl/intl.dart';
-import 'package:linear/constants/themeSettings.dart';
 import 'package:flutter/rendering.dart';
 
 class CommunityPage extends StatefulWidget {
-  CommunityPage({super.key, required this.communityName, required this.token});
+  CommunityPage({super.key, required this.communityName});
 
   String communityName;
-  String token;
 
   @override
   State<CommunityPage> createState() => CommunityPageState();
@@ -37,17 +32,15 @@ class CommunityPageState extends State<CommunityPage> {
       checkIns: []);
   List<dynamic> _posts = [];
 
-  User? user = UserProvider().user;
-  bool _isMember = false;
-  List<dynamic> _goals = [];
+  String? _currentUsername;
+  //TODO: display finished goals somewhere on the page
+  List<dynamic> _finishedGoals = [];
+  dynamic _unfinishedGoal;
 
   bool _isUpdatingMembership = false;
-  bool _isloading = true;
-  final String _currentDate = DateFormat("dd/MM/yyyy").format(DateTime.now());
-  bool _currentDateExists = false;
-  bool _currentUserCheckedIn = false;
-  bool _hasGoal = false;
-  int _hasGoalIndex = 0;
+  bool _isFetchingCommunity = false;
+  bool _isErrorFetchingCommunity = false;
+  final String _currentDate = DateFormat("MM/dd/yyyy").format(DateTime.now());
 
   bool _showActionButton = true;
 
@@ -57,15 +50,12 @@ class CommunityPageState extends State<CommunityPage> {
   void initState() {
     super.initState();
     scrollController = ScrollController()..addListener(scrollListener);
-    authUtil.refreshTokenIfExpired().then(
-          (response) => {
-            if (response['refreshed'] == true)
-              {
-                Provider.of<UserProvider>(context, listen: false)
-                    .setUser(response['user']),
-              }
-          },
-        );
+    
+    auth_util.getUserName().then((userName) {
+      setState(() {
+        _currentUsername = userName;
+      });
+    });
 
     doGetCommunity();
   }
@@ -86,131 +76,44 @@ class CommunityPageState extends State<CommunityPage> {
     }
   }
 
-  updateCommunity(Post newPost) {
-    //update check in
-    if (_isMember && !_currentUserCheckedIn) {
-      if (_currentDateExists) {
+  doesCurrentDateExistInCheckins() {
+    return _community.checkIns.isNotEmpty &&
+            _community.checkIns[0]['date'] == _currentDate;
+  }
+
+  isUserCheckedIn() {
+    return doesCurrentDateExistInCheckins() &&
+            _community.checkIns[0]['usersCheckedIn'].contains(_currentUsername);
+  }
+
+  isMember() {
+    return _community.members.contains(_currentUsername);
+  }
+
+  doGetCommunity({bool showLoadingIndicator = true}) {
+    if(showLoadingIndicator){
+      setState(() {
+        _isFetchingCommunity = true;
+      });
+    }
+
+    final Future<Map<String, dynamic>> responseMessage = getPostsForCommunity(context, widget.communityName);
+
+    responseMessage.then((response) {
+      if (response['status'] == true) {
         setState(() {
-          _community.checkIns[0][1]['usersCheckedIn']
-              .add(user!.username.toString());
-          _community = _community;
-          _currentUserCheckedIn = true;
+          _community = Community.fromJson(response['community']);
+          _posts = response['posts'];
+          _finishedGoals = response['goals']["finishedGoals"];
+          _unfinishedGoal = response['goals'] ["unfinishedGoal"];
+        });
+
+        setState(() {
+          _isFetchingCommunity = false;
         });
       } else {
         setState(() {
-          _community.checkIns.insert(0, [
-            {"date": _currentDate.toString()},
-            {
-              "usersCheckedIn": [user!.username.toString()]
-            }
-          ]);
-          _community = _community;
-          _currentDateExists = true;
-          _currentUserCheckedIn = true;
-        });
-      }
-    }
-
-    var tempNewPost = {
-      'postId': newPost.postId,
-      'title': newPost.title,
-      'body': newPost.body,
-      'creator': user!.username,
-      'creationDate': newPost.creationDate.toString(),
-      'community': widget.communityName,
-      'likes': [],
-      'comments': [],
-      'imageUrl': newPost.imageUrl
-    };
-    
-    setState(() {
-      _posts = [tempNewPost, ..._posts];
-    });
-
-    if(_hasGoal){
-       updateGoalCheckIn(_goals[_hasGoalIndex]['goalId'], widget.token);
-       setState(() {
-       _goals[_hasGoalIndex]['completedCheckIns']++;
-      });
-     }
-
-    Navigator.pop(context);
-  }
-
-  updateGoal(Goal newGoal){
-      //update goal
-     setState(() {
-       _goals.add({
-         'goalId': newGoal.goalId,
-         'checkInGoal': newGoal.checkInGoal,
-         'goalBody': newGoal.goalBody,
-         'creator': user!.username,
-         'creationDate': newGoal.creationDate.toString(),
-         'community': widget.communityName,
-       });
-       _goals = _goals;
-       _hasGoal = true;
-     });
-      Navigator.pop(context);
-   }
-
-  doGetCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage =
-        getPostsForCommunity(widget.communityName, widget.token);
-    successfulMessage.then((response) {
-      if (response['status'] == true) {
-        Community community = Community.fromJson(response['community']);
-
-        setState(() {
-          _community = community;
-        });
-
-        List<dynamic> post = (response['posts']);
-        setState(() {
-          _posts = post;
-        });
-        if (_community.checkIns.isNotEmpty &&
-            _community.checkIns[0][0]['date'] == _currentDate) {
-          setState(() {
-            _currentDateExists = true;
-          });
-          if (_community.checkIns[0][1]['usersCheckedIn']
-              .contains(user!.username)) {
-            setState(() {
-              _currentUserCheckedIn = true;
-            });
-          }
-        }
-
-        setState(() {
-           _isMember = _community.members.contains(user!.username);
-         });
-
-         if(_isMember) {
-           final Future<Map<String, dynamic>> successfulMessage = getGoalsForGoalPage(widget.token);
-           successfulMessage.then((response) {
-             if (response['status'] == true) {
-               List<dynamic> goals = (response['goals']);
-
-               setState(() {
-                 _goals = goals;
-               });
-
-               for (var i = 0; i < _goals.length; i++) {
-                 if(_goals[i]['community'] == widget.communityName){
-                   setState(() {
-                      _hasGoal = true;
-                      _hasGoalIndex = i;
-                   });
-                 }
-               }
-
-             }
-           }); 
-         }
-
-        setState(() {
-          _isloading = false;
+          _isErrorFetchingCommunity = true;
         });
       }
     });
@@ -218,15 +121,29 @@ class CommunityPageState extends State<CommunityPage> {
 
   @override
   Widget build(BuildContext context) {
-    user = Provider.of<UserProvider>(context).user;
-
-    if (_isloading) {
+    if (_isFetchingCommunity) {
       return Scaffold(
         appBar: AppBar(
           title: const Text("Community"),
         ),
         body: const Center(
           child: CircularProgressIndicator(),
+        ),
+        bottomNavigationBar: const LinearNavBar(),
+      );
+    }
+    if (_isErrorFetchingCommunity) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Community"),
+        ),
+        body: const Center(
+          child: Center(
+            child: Text(
+              "We ran into an error trying to obtain the community. \nPlease try again later.",
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
         bottomNavigationBar: const LinearNavBar(),
       );
@@ -258,13 +175,15 @@ class CommunityPageState extends State<CommunityPage> {
                               builder: (context) {
                                 return CreatePostWidget(
                                   communityName: widget.communityName,
-                                  token: widget.token,
-                                  onSuccess: updateCommunity,
+                                  onSuccess: () {
+                                    Navigator.pop(context);
+                                    doGetCommunity( showLoadingIndicator: false);
+                                  },
                                 );
                               });
                         },
                       ),
-                      if(!_hasGoal)
+                      if(_unfinishedGoal == null && isMember())
                         ListTile(
                           title: const Text('Create Goal'),
                           onTap: () {
@@ -274,8 +193,12 @@ class CommunityPageState extends State<CommunityPage> {
                                 builder: (context) {
                                   return CreateGoalWidget(
                                     communityName: widget.communityName,
-                                    token: widget.token,
-                                    onSuccess: updateGoal
+                                    onSuccess: (newGoal) {
+                                      setState(() {
+                                        _unfinishedGoal = newGoal;
+                                      });
+                                      Navigator.pop(context);
+                                    },
                                   );
                                 });
                           },
@@ -332,10 +255,10 @@ class CommunityPageState extends State<CommunityPage> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 10),
-                      if (_currentDateExists) ...[
+                      if (doesCurrentDateExistInCheckins()) ...[
                         Text(
                           // ignore: unrelated_type_equality_checks
-                          "${_community.checkIns[0][1]['usersCheckedIn'].length} check-ins today",
+                          "${_community.checkIns[0]['usersCheckedIn'].length} check-ins today",
                           style: const TextStyle(fontSize: 16),
                           textAlign: TextAlign.center,
                         ),
@@ -353,26 +276,24 @@ class CommunityPageState extends State<CommunityPage> {
                             setState(() {
                               _isUpdatingMembership = true;
                             });
-                            await joinAndLeave(
-                                widget.communityName, widget.token);
+                            await joinAndLeave(context, widget.communityName);
 
                             setState(() {
-                              if (_isMember) {
-                                _community.members.remove(user!.username);
+                              if (isMember()) {
+                                _community.members.remove(_currentUsername);
                                 _community = _community;
                               } else {
-                                _community.members.add(user!.username);
+                                _community.members.add(_currentUsername);
                                 _community = _community;
                               }
-                              _isMember = !_isMember;
                               _isUpdatingMembership = false;
                             });
                           },
-                          style: _isMember
+                          style: isMember()
                               ? AppThemes.secondaryTextButtonStyle(context)
                               : null,
                           child: Text(
-                              _isMember ? "Leave community" : "Join community"),
+                              isMember() ? "Leave community" : "Join community"),
                         ),
                       if (_isUpdatingMembership)
                         ElevatedButton(
@@ -397,22 +318,12 @@ class CommunityPageState extends State<CommunityPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              if(_hasGoal)
+              if(_unfinishedGoal != null)
                 GoalWidget(
-                  token: widget.token,
-                  goal: Goal(
-                    communityName: _goals[_hasGoalIndex]['community'],
-                    goalId: _goals[_hasGoalIndex]['goalId'],
-                    creator: _goals[_hasGoalIndex]['creator'],
-                    creationDate: int.parse(_goals[_hasGoalIndex]['creationDate']),
-                    checkInGoal: _goals[_hasGoalIndex]['checkInGoal'],
-                    goalBody: _goals[_hasGoalIndex]['goalBody'],
-                    completedCheckIns: _goals[_hasGoalIndex]['completedCheckIns'],
-                  ),
+                  goal: Goal.fromJson( _unfinishedGoal),
                   onDelete: () {  
                     setState(() {
-                      _hasGoal = false;
-                    //_goals.removeAt(_hasGoalIndex);
+                      _unfinishedGoal = null;
                   });
                   }, 
                 ),
@@ -431,7 +342,6 @@ class CommunityPageState extends State<CommunityPage> {
                         onLike: (likes) => setState(() {
                           _posts[index]['likes'] = likes;
                         }),
-                        token: widget.token,
                         post: Post.fromJson(_posts[index]),
                         onDelete: () {
                           setState(() {
@@ -440,7 +350,6 @@ class CommunityPageState extends State<CommunityPage> {
                         },
                         route: CommunityPage(
                           communityName: _community.communityName,
-                          token: widget.token,
                         ),
                       );
                     },
@@ -455,9 +364,6 @@ class CommunityPageState extends State<CommunityPage> {
           ),
         ),
         onRefresh: () async {
-          setState(() {
-            _isloading = true;
-          });
           doGetCommunity();
         },
       ),

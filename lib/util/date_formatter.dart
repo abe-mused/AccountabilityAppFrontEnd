@@ -11,12 +11,12 @@ String getFormattedDate(int unixTimeMilliseconds) {
   return "${f_date.format(date)} at ${f_time.format(date)}";
 }
 
-computeStreak(firstStreakEpoch, lastStreakEpoch, currentEpoch) {
-  firstStreakEpoch = int.parse(firstStreakEpoch);
-  lastStreakEpoch = int.parse(lastStreakEpoch);
-  if (currentEpoch - dayInMilliseconds < lastStreakEpoch) {
-    int streak = (lastStreakEpoch - firstStreakEpoch) ~/ dayInMilliseconds;
-    return streak;
+int computeStreak(firstStreakEpoch, lastStreakEpoch) {
+  firstStreakEpoch = firstStreakEpoch is int? firstStreakEpoch : int.parse(firstStreakEpoch);
+  lastStreakEpoch = lastStreakEpoch is int? lastStreakEpoch : int.parse(lastStreakEpoch);
+  
+  if (DateTime.now().isBefore(DateTime.fromMillisecondsSinceEpoch(lastStreakEpoch).add(const Duration(days: 1, hours: 12)))) {
+    return (lastStreakEpoch - firstStreakEpoch) ~/ dayInMilliseconds;
   } else {
     return 0;
   }

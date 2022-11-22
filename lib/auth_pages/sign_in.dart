@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_up.dart';
 import 'package:linear/auth_pages/reset_password.dart';
-import 'package:linear/util/cognito/auth_util.dart' as authUtil;
-import 'package:linear/util/cognito/user_provider.dart';
-import 'package:provider/provider.dart';
-import '../util/cognito/user.dart';
+import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 import 'package:linear/constants/themeSettings.dart';
 
 class LoginPage extends StatefulWidget {
@@ -23,12 +20,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     doLogIn() {
-      final Future<Map<String, dynamic>> responseMessage = authUtil.login(emailOrUsername.text, password.text);
+      final Future<Map<String, dynamic>> responseMessage = auth_util.login(emailOrUsername.text, password.text);
 
       responseMessage.then((response) {
         if (response['status'] == true) {
-          User user = response['user'];
-          Provider.of<UserProvider>(context, listen: false).setUser(user);
           Navigator.pushReplacementNamed(context, '/home');
         } else {
           showDialog(

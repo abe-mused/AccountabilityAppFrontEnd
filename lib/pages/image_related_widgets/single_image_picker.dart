@@ -8,7 +8,6 @@ enum Source { GALLERY, CAMERA, NONE }
 enum PickImageSource { GALLERY, CAMERA, BOTH }
 
 class SingleImagePicker {
-  final String token;
   final PickImageSource pickImageSource;
   final Function(XFile image) onImagePicked;
   final Function(String downloadUrl) onImageSuccessfullyUploaded;
@@ -16,7 +15,6 @@ class SingleImagePicker {
   final Function(String message) onImageUploadFailed;
 
   SingleImagePicker({
-    required this.token,
     this.pickImageSource = PickImageSource.BOTH,
     required this.onImagePicked,
     required this.onImageRemoved,
@@ -84,11 +82,11 @@ class SingleImagePicker {
     }
   }
 
-  Future<String> uploadImage(XFile localImage) async {
+  Future<String> uploadImage(XFile localImage, BuildContext context) async {
     try{
       SingleImageUtility singleImageUtility = SingleImageUtility();
 
-      await singleImageUtility.generateUploadUrl(token);
+      await singleImageUtility.generateUploadUrl(context);
       if (!singleImageUtility.isUploadUrlGenerated) {
         throw "Error generating upload url for your image!";
       }

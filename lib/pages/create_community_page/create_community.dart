@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/pages/community_page/community_page.dart';
-import 'package:linear/pages/search_page/seach_results_widget.dart';
-import 'package:linear/constants/themeSettings.dart';
 
 class CreateCommunityWidget extends StatefulWidget {
-  CreateCommunityWidget({super.key, required this.token});
-  String token;
+  const CreateCommunityWidget({super.key});
 
   @override
   State<CreateCommunityWidget> createState() => _CreateCommunityWidgetState();
@@ -17,7 +14,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
   bool _isLoading = false;
 
   doCreateCommunity() {
-    final Future<Map<String, dynamic>> successfulMessage = postCommunity(userInput.text, widget.token);
+    final Future<Map<String, dynamic>> successfulMessage = createCommunity(context, userInput.text);
 
     successfulMessage.then((response) {
       setState(() {
@@ -25,7 +22,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
       });
       
       if (response['status'] == true) {
-        joinAndLeave(userInput.text, widget.token);
+        joinAndLeave(context, userInput.text);
         showDialog(
             context: context,
             builder: (context) {
@@ -40,7 +37,6 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                       MaterialPageRoute(
                         builder: (context) => CommunityPage(
                           communityName: userInput.text,
-                          token: widget.token,
                         ),
                       ),
                     );
@@ -69,7 +65,6 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                       MaterialPageRoute(
                         builder: (context) => CommunityPage(
                           communityName: userInput.text,
-                          token: widget.token,
                         ),
                       ),
                     );

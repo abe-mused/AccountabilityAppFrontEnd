@@ -10,12 +10,10 @@ enum PhotoSource { ASSET, NETWORK, NONE }
 class UploadImageWidget extends StatefulWidget {
   UploadImageWidget(
       {super.key,
-      required this.token,
       required this.onSuccess,
       required this.onCancel,
       required this.onLoading});
   
-  String token;
   final Function onSuccess;
   final Function onCancel;
   final Function onLoading;
@@ -34,7 +32,6 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
   Widget build(BuildContext context) {
     
     final SingleImagePicker picker = SingleImagePicker(
-      token: widget.token,
       pickImageSource: PickImageSource.BOTH,
       onImagePicked: (image) => {
         setState(() {
@@ -105,7 +102,7 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
             onPressed: () async {
               String? downloadURL;
               if(localImage != null && widget.onLoading()){
-                downloadURL = await picker.uploadImage(localImage!);
+                downloadURL = await picker.uploadImage(localImage!, context);
               }
               widget.onSuccess(downloadURL);
             },

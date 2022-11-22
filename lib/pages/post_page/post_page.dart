@@ -2,24 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/post_page/create_comment_widget.dart';
-import 'package:linear/pages/post_widgets/post_widget.dart';
+import 'package:linear/pages/common_widgets/post_widget.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/util/cognito/user.dart';
-import 'package:linear/util/cognito/user_provider.dart';
 import 'package:linear/util/date_formatter.dart';
-import 'package:provider/provider.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
+import 'package:linear/util/cognito/auth_util.dart' as auth_util;
+
 
 class PostPage extends StatefulWidget {
   PostPage(
       {super.key,
       required this.postId,
-      required this.token,
       required this.route});
 
   String postId;
-  String token;
   Widget route;
 
   @override
@@ -38,13 +35,20 @@ class PostPageState extends State<PostPage> {
       comments: []);
   List<dynamic> _comments = [];
 
-  User? user = UserProvider().user;
+  String? _currentUsername;
 
   bool _isloading = true;
 
   @override
   void initState() {
     super.initState();
+    
+    auth_util.getUserName().then((userName) {
+      setState(() {
+        _currentUsername = userName;
+      });
+    });
+
     doGetPost();
   }
 
@@ -54,8 +58,8 @@ class PostPageState extends State<PostPage> {
   }
 
   doDeleteComment(passIndex) {
-    final Future<Map<String, dynamic>> responseMessage = deleteComment(
-        widget.postId, _comments[passIndex]['commentId'], widget.token);
+    final Future<Map<String, dynamic>> responseMessage = 
+        deleteComment(context, widget.postId, _comments[passIndex]['commentId']);
     responseMessage.then((response) {
       if (response['status'] == true) {
         setState(() {
@@ -99,7 +103,7 @@ class PostPageState extends State<PostPage> {
 
   doGetPost() {
     final Future<Map<String, dynamic>> responseMessage =
-        getPostWithComments(widget.postId, widget.token);
+        getPostWithComments(context, widget.postId);
     responseMessage.then((response) {
       if (response['status'] == true) {
         response['post']['creationDate'] =
@@ -121,7 +125,6 @@ class PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    user = Provider.of<UserProvider>(context).user;
     if (_isloading) {
       return Scaffold(
         appBar: AppBar(
@@ -149,7 +152,6 @@ class PostPageState extends State<PostPage> {
                   onLike: (likes) => setState(() {
                     _post.likes = likes;
                   }),
-                  token: widget.token,
                   post: _post,
                   onDelete: () {
                     deletePost(context);
@@ -159,7 +161,6 @@ class PostPageState extends State<PostPage> {
               ),
               const SizedBox(height: 10),
               CreateCommentWidget(
-                token: widget.token,
                 postId: widget.postId,
                 addComment: (comment) => {
                   setState(() {
@@ -194,8 +195,7 @@ class PostPageState extends State<PostPage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => ProfilePage(
-                                                username: _comments[index]
-                                                    ['creator'],
+                                                usernameToDisplay: _comments[index]['creator'],
                                               ),
                                             ),
                                           );
@@ -230,7 +230,7 @@ class PostPageState extends State<PostPage> {
                                         ],
                                       ),
                                     ),
-                                    if (_comments[index]['creator'] == user!.username) ...[
+                                    if (_comments[index]['creator'] == _currentUsername) ...[
                                       PopupMenuButton(
                                         itemBuilder: (context) {
                                           return [
@@ -270,7 +270,7 @@ class PostPageState extends State<PostPage> {
                                         }
                                       ),
                                     ],
-                                    if (_comments[index]['creator'] != user!.username) ...[
+                                    if (_comments[index]['creator'] != _currentUsername) ...[
                                       PopupMenuButton(
                                         itemBuilder: (context) {
                                           return [
@@ -282,7 +282,7 @@ class PostPageState extends State<PostPage> {
                                         },
                                         onSelected: (value) {
                                           if(value == 1) {
-                                            createReport({"commentId": _comments[index]['commentId']}, widget.token);
+                                            createReport(context, {"commentId": _comments[index]['commentId']});
                                             showDialog(
                                               context: context,
                                               builder: (BuildContext context) => AlertDialog(

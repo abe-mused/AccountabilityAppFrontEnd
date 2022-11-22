@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:developer' as developer;
+
+import 'package:linear/util/apis.dart';
 
 class SingleImageUtility {
   bool isUploadUrlGenerated = false;
@@ -12,7 +15,8 @@ class SingleImageUtility {
 
   bool isImageUploaded = false;
 
-  Future<void> generateUploadUrl(String token) async {
+  Future<void> generateUploadUrl(BuildContext context) async {
+        String token = await getTokenOrRedirectToLogin(context);
     try {
       var response = await http.get(
         Uri.parse('https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post/image'),

@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:linear/util/apis.dart';
 
 class CreateCommentWidget extends StatefulWidget {
-  CreateCommentWidget({super.key, required this.token, required this.postId, required this.addComment});
-  String token;
+  CreateCommentWidget({super.key, required this.postId, required this.addComment});
   String postId;
   Function addComment;
 
@@ -24,7 +23,7 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
     });
 
     final Future<Map<String, dynamic>> successfulMessage =
-        createComment(commentBodyInput.text, widget.postId, widget.token);
+        createComment(context, commentBodyInput.text, widget.postId);
     successfulMessage.then((response) {
       if (response['status'] == true) {
         setState(() {

@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:developer' as developer;
 
 class UserPreferences {
-  Future<bool> saveUser(User user) async {
+  Future<void> saveUser(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setString("name", user.name);
@@ -13,14 +13,6 @@ class UserPreferences {
     prefs.setString("idToken", user.idToken);
     prefs.setInt("idTokenExpiration", user.idTokenExpiration);
     prefs.setString("refreshToken", user.refreshToken);
-
-    // ignore: deprecated_member_use
-    return prefs.commit();
-  }
-
-  Future<void> clearPreferences() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
   }
 
   Future<User?> getUser() async {
@@ -58,5 +50,19 @@ class UserPreferences {
     prefs.remove("idToken");
     prefs.remove("idTokenExpiration");
     prefs.remove("refreshToken");
+  }
+
+  Future<int> getActiveTab() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    int? activeTab = prefs.getInt("linearActiveTab");
+
+    return activeTab?? 0;
+  }
+
+  Future<void> setActiveTab(int activeTab) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setInt("linearActiveTab", activeTab);
   }
 }

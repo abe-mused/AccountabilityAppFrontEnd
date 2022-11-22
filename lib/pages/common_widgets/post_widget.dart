@@ -7,21 +7,18 @@ import 'package:linear/util/date_formatter.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/util/cognito/user_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:linear/util/cognito/user.dart' as cognito_user;
+import 'package:linear/util/cognito/auth_util.dart' as auth_util;
+
 
 class PostWidget extends StatefulWidget {
   PostWidget(
       {super.key,
       required this.post,
       required this.onLike,
-      required this.token,
       required this.onDelete,
       required this.route,
       this.isPostPage = false});
   final Post post;
-  final String token;
   final Function onLike;
   final VoidCallback onDelete;
   final Widget route;
@@ -32,7 +29,8 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidget extends State<PostWidget> {
-  cognito_user.User? user = UserProvider().user;
+
+  String? _currentUsername;
 
   isNewRoute(context) {
     var route = ModalRoute.of(context);
@@ -40,7 +38,6 @@ class _PostWidget extends State<PostWidget> {
     final newRoute = MaterialPageRoute(
       builder: (context) => PostPage(
         postId: widget.post.postId,
-        token: widget.token,
         route: widget.route, 
       ),
     );
@@ -52,21 +49,20 @@ class _PostWidget extends State<PostWidget> {
   }
 
   likeUnlikePost() {
-    if (widget.post.likes!.contains(user!.username)) {
-      widget.post.likes!.remove(user!.username);
+    if (widget.post.likes!.contains(_currentUsername)) {
+      widget.post.likes!.remove(_currentUsername);
     } else {
-      widget.post.likes!.add(user!.username);
+      widget.post.likes!.add(_currentUsername);
     }
     widget.onLike(widget.post.likes);
-    final Future<Map<String, dynamic>> responseMessage =
-        likePost(widget.post.postId, widget.token);
+    final Future<Map<String, dynamic>> responseMessage = likePost(context, widget.post.postId);
     responseMessage.then((response) {
       if (response['status'] == true) {
       } else {
-        if (widget.post.likes!.contains(user!.username)) {
-          widget.post.likes!.remove(user!.username);
+        if (widget.post.likes!.contains(_currentUsername)) {
+          widget.post.likes!.remove(_currentUsername);
         } else {
-          widget.post.likes!.add(user!.username);
+          widget.post.likes!.add(_currentUsername);
         }
         widget.onLike(widget.post.likes);
         showDialog(
@@ -91,7 +87,7 @@ class _PostWidget extends State<PostWidget> {
 
   doDeletePost() {
     final Future<Map<String, dynamic>> responseMessage =
-        deletePost(widget.post.postId, widget.token);
+        deletePost(context, widget.post.postId);
     responseMessage.then((response) {
       if (response['status'] == true) {
         widget.onDelete();
@@ -105,8 +101,18 @@ class _PostWidget extends State<PostWidget> {
   }
 
   @override
+    void initState() {
+      super.initState();
+      
+      auth_util.getUserName().then((userName) {
+        setState(() {
+          _currentUsername = userName;
+        });
+      });
+    }
+    
+  @override
   Widget build(BuildContext context) {
-    user = Provider.of<UserProvider>(context).user;
 
     final ScrollController scrollController = ScrollController();
     return SizedBox(
@@ -131,7 +137,7 @@ class _PostWidget extends State<PostWidget> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ProfilePage(
-                                  username: widget.post.creator,
+                                  usernameToDisplay: widget.post.creator,
                                 ),
                               ),
                             );
@@ -164,7 +170,6 @@ class _PostWidget extends State<PostWidget> {
                                         MaterialPageRoute(
                                           builder: (context) => CommunityPage(
                                             communityName: widget.post.communityName,
-                                            token: widget.token,
                                           ),
                                         ),
                                       );
@@ -189,7 +194,7 @@ class _PostWidget extends State<PostWidget> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => ProfilePage(
-                                            username: widget.post.creator,
+                                            usernameToDisplay: widget.post.creator,
                                           ),
                                         ),
                                       );
@@ -206,7 +211,7 @@ class _PostWidget extends State<PostWidget> {
                         ],
                       ),
                     ),
-                    if (widget.post.creator == user!.username) ...[
+                    if (widget.post.creator == _currentUsername) ...[
                       PopupMenuButton(itemBuilder: (context) {
                         return [
                           const PopupMenuItem<int>(
@@ -241,7 +246,7 @@ class _PostWidget extends State<PostWidget> {
                         }
                       }),
                     ],
-                    if (widget.post.creator != user!.username) ...[
+                    if (widget.post.creator != _currentUsername) ...[
                       PopupMenuButton(
                         itemBuilder: (context) {
                           return [
@@ -253,7 +258,7 @@ class _PostWidget extends State<PostWidget> {
                         },
                         onSelected: (value) {
                           if(value == 1) {
-                            createReport({"postId": widget.post.postId}, widget.token);
+                            createReport(context, {"postId": widget.post.postId});
                             showDialog(
                               context: context,
                               builder: (BuildContext context) => AlertDialog(
@@ -357,7 +362,6 @@ class _PostWidget extends State<PostWidget> {
                                 MaterialPageRoute(
                                   builder: (context) => PostPage(
                                     postId: widget.post.postId,
-                                    token: widget.token,
                                     route: widget.route, 
                                   ),
                                 ),
@@ -368,7 +372,7 @@ class _PostWidget extends State<PostWidget> {
                               size: 34.0,
                             ),
                           ),
-                        if (widget.post.likes!.contains(user!.username)) ...[
+                        if (widget.post.likes!.contains(_currentUsername)) ...[
                           IconButton(
                             onPressed: () {
                               likeUnlikePost();

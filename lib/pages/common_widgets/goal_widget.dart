@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/goal.dart';
 import 'package:linear/pages/community_page/community_page.dart';
-import 'package:linear/pages/goal_page/goal_page.dart';
 import 'package:linear/util/date_formatter.dart';
-import 'package:linear/pages/common_widgets/user_icon.dart';
-import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/constants/themeSettings.dart';
 
 class GoalWidget extends StatelessWidget {
-  const GoalWidget({super.key, required this.goal, required this.token, required this.onDelete/*, required this.route*/});
+  const GoalWidget({super.key, required this.goal, required this.onDelete/*, required this.route*/});
   final Goal goal;
-  final String token;
   final VoidCallback onDelete;
-  //final Widget route;
-
-  doDeleteGoal() {
-    final Future<Map<String, dynamic>> responseMessage = deleteGoal(goal.goalId, token);
-    responseMessage.then((response) {
-      if (response['status'] == true) {
-       onDelete();
-      } else {}
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
+    
     final ScrollController scrollController = ScrollController();
+    
+    doDeleteGoal() {
+      final Future<Map<String, dynamic>> responseMessage = deleteGoal(context, goal.goalId);
+      responseMessage.then((response) {
+        if (response['status'] == true) {
+        onDelete();
+        } else {}
+      });
+    }
+
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.9,
       child: Card(
@@ -51,7 +47,7 @@ class GoalWidget extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => CommunityPage(
-                                    communityName: goal.communityName, token: token
+                                    communityName: goal.communityName,
                                   ),
                                 ),
                               );

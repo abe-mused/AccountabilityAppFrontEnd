@@ -22,10 +22,10 @@ class Goal {
       communityName: item['community'],
       goalId: item['goalId'],
       creator: item['creator'],
-      creationDate: item['creationDate'],
-      checkInGoal: item['checkInGoal'],
+      creationDate: item['creationDate'] is int? item['creationDate'] : int.parse(item['creationDate']),
+      checkInGoal: item['checkInGoal'] is int? item['checkInGoal'] : int.parse(item['checkInGoal']),
       goalBody: item['goalBody'], 
-      completedCheckIns: item['completedCheckIns'],
+      completedCheckIns: item['completedCheckIns'] is int? item['completedCheckIns'] : int.parse(item['completedCheckIns']),
     );
     return goal;
   }

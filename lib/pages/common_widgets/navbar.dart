@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:linear/util/cognito/user_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:linear/util/cognito/user_preferences.dart';
 
 class LinearNavBar extends StatefulWidget {
   const LinearNavBar({super.key});
@@ -13,6 +12,9 @@ class _LinearNavBarState extends State<LinearNavBar> {
   int selected_icon = 0;
 
   void iconSelector(int index) {
+    
+    UserPreferences().setActiveTab(index);
+
     if (index == 0) {
       Navigator.pushReplacementNamed(context, '/home');
     }
@@ -28,13 +30,21 @@ class _LinearNavBarState extends State<LinearNavBar> {
     setState(() {
       selected_icon = index;
     });
-    Provider.of<UserProvider>(context, listen: false).setSelectedTab(index);
   }
 
+@override
+  void initState() {
+    super.initState();
+    
+    UserPreferences().getActiveTab().then((value) {
+      setState(() {
+        selected_icon = value;
+      });
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
-    selected_icon = Provider.of<UserProvider>(context).selectedTab;
-
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       items: const <BottomNavigationBarItem>[
