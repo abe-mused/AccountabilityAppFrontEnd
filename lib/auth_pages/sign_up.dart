@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_in.dart';
 import 'package:linear/util/cognito/auth_util.dart' as authUtil;
@@ -21,7 +19,6 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
 
-  // check for sign up through cognito
   doSignUp() {
     final Future<Map<String, dynamic>> responseMessage =
         authUtil.signUp(email: email.text, password: password.text, username: username.text, fullName: name.text);
@@ -73,7 +70,8 @@ class _SignUpPageState extends State<SignUpPage> {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 40, left: 40),
-            child: Text("Create Your Account", style: TextStyle(fontSize: 50, color: Colors.white, fontWeight: FontWeight.w300)),
+            child: Text("Create Your Account", 
+            style: TextStyle(fontSize: 50, color: Colors.white, fontWeight: FontWeight.w300)),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
@@ -84,7 +82,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 color: MediaQuery.of(context).platformBrightness == Brightness.dark ? ThemeData.dark().primaryColor : Colors.white,
                 borderRadius: const BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
             child: SingleChildScrollView(
-              // removes bottom overflow pixel error
               physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +145,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             });
                           },
                           icon: hide ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
-                        )),
+                        ),
+                        ),
                   ),
                   const SizedBox(
                     height: 15,
@@ -197,10 +195,11 @@ class _SignUpPageState extends State<SignUpPage> {
           "Invalid username! Username has to be a minimum of 5 characters and must contain alphanumeric characters and optionally an underscore");
     } else if (!passwordValidation.hasMatch(password.text)) {
       showErrorDialog(context,
-          "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character");
+          "Password must contain at least one uppercase letter, one lowercase letter, one numeric value, and one special character");
     } else if (password.text != confirmPassword.text) {
       showErrorDialog(context, "Passwords do not match!");
-    } else {
+    } 
+    else {
       doSignUp();
     }
   }
@@ -210,7 +209,7 @@ class _SignUpPageState extends State<SignUpPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text("ERROR"),
+            title: const Text("Error!"),
             content: Text(errorMessage),
           );
         });

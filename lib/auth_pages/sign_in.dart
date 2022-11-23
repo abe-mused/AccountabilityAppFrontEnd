@@ -78,7 +78,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             child: SingleChildScrollView(
-              // removes bottom overflow pixel error
               physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

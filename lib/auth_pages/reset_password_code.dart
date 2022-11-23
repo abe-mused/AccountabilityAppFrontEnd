@@ -27,7 +27,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
               return AlertDialog(
                 title: const Text("Success!"),
                 content: const Text(
-                    "A password reset code has been sent succesfully. If you did not recieve a code check your spam folder or the email may not be registered."),
+                    "A password reset code has succesfully been sent. If you did not recieve a code, please check your spam folder or the email may not be registered."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -68,7 +68,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Success!"),
-                content: const Text("Your password has beem reset succesfully. You can now login with your new password."),
+                content: const Text("Your password has been reset succesfully. Please login with your new password."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -208,7 +208,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                                     return AlertDialog(
                                       title: const Text("Error!"),
                                       content: const Text(
-                                          "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
+                                          "Password must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
                                       actions: [
                                         TextButton(
                                             onPressed: () {
@@ -255,8 +255,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                             onPressed: () {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage()));
                             },
-                            child: const Text("Register")),
-                        const Text("instead?"),
+                            child: const Text("Login")),
                       ],
                     ),
                   ],

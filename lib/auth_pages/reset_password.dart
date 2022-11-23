@@ -97,7 +97,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text("ERROR"),
+                                    title: const Text("Error!"),
                                     content: const Text("Invalid email! please try again."),
                                     actions: [
                                       TextButton(
