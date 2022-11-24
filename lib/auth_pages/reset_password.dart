@@ -13,6 +13,7 @@ class ResetPasswordPage extends StatefulWidget {
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
   bool hide = true;
+  bool _updateResetPassword = false;
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
 
@@ -97,7 +98,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text("ERROR"),
+                                    title: const Text("Error!"),
                                     content: const Text("Invalid email! please try again."),
                                     actions: [
                                       TextButton(
@@ -109,10 +110,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                   );
                                 });
                           } else {
-                            doSendResetCode();
+                            setState(() {
+                              _updateResetPassword = true;
+                              doSendResetCode();
+                            }
+                            );
                           }
                         },
-                        child: const Text("Submit")),
+                        child: _updateResetPassword? const CircularProgressIndicator(
+                          color: Colors.white,
+                        ) : const Text("Submit")
+                        ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool hidePassword = true;
+  bool _isUpdatingSignIn = false;
 
   final emailOrUsername = TextEditingController();
   final password = TextEditingController();
@@ -78,7 +79,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             child: SingleChildScrollView(
-              // removes bottom overflow pixel error
               physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 15,
                   ),
                   const Text(
-                    "Sign In",
+                    "Login",
                     style: TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
                   ),
                   const SizedBox(
@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextField(
                     controller: emailOrUsername,
                     decoration: const InputDecoration(
-                      hintText: "E-mail or username",
+                      hintText: "Email or username",
                     ),
                   ),
                   const SizedBox(
@@ -130,8 +130,17 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60),
                         ),
-                        onPressed: doLogIn,
-                        child: const Text("Sign In")),
+                        onPressed: () async {
+                            setState(() {
+                              _isUpdatingSignIn = true;
+                              doLogIn();
+                            }
+                            );
+                        },
+                        child: _isUpdatingSignIn? const CircularProgressIndicator(
+                          color: Colors.white,
+                        ) : const Text("Login")
+                        ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -142,7 +151,8 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SignUpPage(),
+                              builder: (context) => 
+                              const SignUpPage(),
                             ),
                           );
                         },
@@ -153,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
