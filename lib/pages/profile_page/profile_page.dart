@@ -128,19 +128,38 @@ class ProfilePageState extends State<ProfilePage> {
           ],
         ],
       ),
-      body: Center(
-        child: _isLoadingUser?
-          const CircularProgressIndicator()
-          : _isErrorFetchingUser?
-            const Text(
-              "We ran into an error trying to obtain the profile. \nPlease try again later.",
-              textAlign: TextAlign.center,
-            )
-            : buildProfilePageContent(),
-      ),
+      body: buildGoalsPageScreen(),
       bottomNavigationBar: const LinearNavBar(),
     );
   }
+
+   buildGoalsPageScreen(){
+   if (_isLoadingUser) {
+     return buildLoadingPage();
+   } else if (_isErrorFetchingUser) {
+     return buildProfilePageErrorScreen();
+   } else {
+     return buildProfilePageContent();
+   }
+ }
+
+  Center buildLoadingPage() {
+    return 
+       Center(
+       child: const CircularProgressIndicator()
+     );
+  }
+
+  buildProfilePageErrorScreen(){
+   return const Scaffold(
+       body: Center(
+         child:  const Text(
+            "We ran into an error trying to obtain the profile. \nPlease try again later.",
+            textAlign: TextAlign.center,
+          )
+       ),
+     );
+ }
   
   buildOwnProfileAppBarActions() {
     return PopupMenuButton(

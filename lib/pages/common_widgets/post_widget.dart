@@ -152,10 +152,6 @@ class _PostWidget extends State<PostWidget> {
                                     child: Image.network(widget.post.creatorProfileImageUrl!, fit: BoxFit.cover),
                                   ),
                                 ),
-                          // UserIcon(
-                          //   username: widget.post.creator,
-                          //   radius: 45,
-                          // ),
                         )),
                     const SizedBox(
                       width: 20,

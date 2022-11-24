@@ -328,6 +328,17 @@ class CommunityPageState extends State<CommunityPage> {
                       _unfinishedGoal = null;
                   });
                   }, 
+                  onFinish: () {  
+                    setState(() {
+                      _unfinishedGoal = null;
+                  });
+                  }, 
+                  onExtend: () {  
+                    setState(() {
+                     
+                  });
+                    doGetCommunity();
+                  }, 
                 ),
               const SizedBox(height: 10),
               // ignore: prefer_is_empty

@@ -36,7 +36,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => CommunityPage(
-                          communityName: userInput.text,
+                          communityName: userInput.text.toLowerCase(),
                         ),
                       ),
                     );
@@ -64,7 +64,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => CommunityPage(
-                          communityName: userInput.text,
+                          communityName: userInput.text.toLowerCase(),
                         ),
                       ),
                     );
