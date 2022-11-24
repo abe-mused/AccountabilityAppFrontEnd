@@ -200,10 +200,15 @@ class PostPageState extends State<PostPage> {
                                             ),
                                           );
                                         },
-                                        child: UserIcon(
-                                          username: _comments[index]['creator'],
-                                          radius: 45,
-                                        ),
+                                        child: _comments[index]["creatorImageUrl"] == null?
+                                            UserIcon(radius: 45, username: _comments[index]["creator"])
+                                            : ClipRRect(
+                                                borderRadius: BorderRadius.circular(45),
+                                                child: SizedBox.fromSize(
+                                                  size: const Size.fromRadius(45),
+                                                  child: Image.network(_comments[index]["creatorImageUrl"], fit: BoxFit.cover),
+                                                ),
+                                              ),
                                       ),
                                     ),
                                     const SizedBox(

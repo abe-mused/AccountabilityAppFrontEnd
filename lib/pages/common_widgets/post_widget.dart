@@ -143,10 +143,19 @@ class _PostWidget extends State<PostWidget> {
                               ),
                             );
                           },
-                          child: UserIcon(
-                            username: widget.post.creator,
-                            radius: 45,
-                          ),
+                          child: widget.post.creatorProfileImageUrl == null?
+                              UserIcon(radius: 45, username:widget.post.creator)
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(45),
+                                  child: SizedBox.fromSize(
+                                    size: const Size.fromRadius(45),
+                                    child: Image.network(widget.post.creatorProfileImageUrl!, fit: BoxFit.cover),
+                                  ),
+                                ),
+                          // UserIcon(
+                          //   username: widget.post.creator,
+                          //   radius: 45,
+                          // ),
                         )),
                     const SizedBox(
                       width: 20,
