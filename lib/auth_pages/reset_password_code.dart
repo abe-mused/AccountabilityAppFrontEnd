@@ -263,7 +263,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                             onPressed: () {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage()));
                             },
-                            child: const Text("Log In")),
+                            child: const Text("Login")),
                       ],
                     ),
                   ],

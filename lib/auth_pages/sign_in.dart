@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 15,
                   ),
                   const Text(
-                    "Log In",
+                    "Login",
                     style: TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
                   ),
                   const SizedBox(
@@ -139,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: _isUpdatingSignIn? const CircularProgressIndicator(
                           color: Colors.white,
-                        ) : const Text("Log In")
+                        ) : const Text("Login")
                         ),
                   ),
                   Row(

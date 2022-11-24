@@ -307,7 +307,10 @@ class CommunityPageState extends State<CommunityPage> {
                           child: const SizedBox(
                             height: 10.0,
                             width: 10.0,
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
                           ),
                         ),
                     ],

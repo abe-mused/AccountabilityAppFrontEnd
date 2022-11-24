@@ -184,7 +184,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               MaterialPageRoute(builder: (context) => const LoginPage()),
                             );
                           },
-                          child: const Text("Log In"))
+                          child: const Text("Login"))
                     ],
                   )
                 ],
