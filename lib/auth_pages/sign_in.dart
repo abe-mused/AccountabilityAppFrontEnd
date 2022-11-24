@@ -133,15 +133,20 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () async {
                             setState(() {
                               _isUpdatingSignIn = true;
-                              doLogIn();
                             }
                             );
+                            Future.delayed(const Duration(seconds: 1), (){
+                              setState(() {
+                                _isUpdatingSignIn = false;
+                              });
+                            });
+                          doLogIn();
                         },
                         child: _isUpdatingSignIn? const CircularProgressIndicator(
                           color: Colors.white,
                         ) : const Text("Login")
                         ),
-                  ),
+                  ),  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -151,8 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => 
-                              const SignUpPage(),
+                              builder: (context) => const SignUpPage(),
                             ),
                           );
                         },

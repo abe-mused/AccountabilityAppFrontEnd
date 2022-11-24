@@ -63,11 +63,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isUpdatingSignUp) {
-      const Center(
-          child: CircularProgressIndicator(),
-        );
-    }
     return Scaffold(
       backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark
           ? AppThemes.darkTheme.primaryColor
@@ -161,12 +156,17 @@ class _SignUpPageState extends State<SignUpPage> {
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)
                           ),
-                         onPressed: () async {
+                          onPressed: () async {
                             setState(() {
                               _isUpdatingSignUp = true;
-                              handleSignUpPress(context);
                             }
                             );
+                            Future.delayed(const Duration(seconds: 1), (){
+                              setState(() {
+                                _isUpdatingSignUp = false;
+                              });
+                            });
+                          handleSignUpPress(context);
                         },
                          child: _isUpdatingSignUp? const CircularProgressIndicator(
                           color: Colors.white,
