@@ -1,13 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:linear/constants/themeSettings.dart';
 import 'dart:convert';
 import 'package:linear/util/cognito/auth_util.dart' as auth_utility;
+import 'package:linear/util/cognito/user_preferences.dart';
 
 getTokenOrRedirectToLogin(BuildContext context) async {
   dynamic token = await auth_utility.getAuthToken();
   if (token == null) {
-    // ignore: use_build_context_synchronously
-    Navigator.pushReplacementNamed(context, '/login');
+    showModalBottomSheet(
+      context: context,
+      isDismissible: false,
+      // ignore: use_build_context_synchronously
+      barrierColor: MediaQuery.of(context).platformBrightness == Brightness.dark ?
+              AppThemes.lightTheme.colorScheme.background
+              : AppThemes.darkTheme.colorScheme.background,
+      builder: (context) {
+        return SizedBox(
+          height: 400,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 100, 20, 50),
+              child: Column(
+                children: const [
+                  Text(
+                    'Oops, it looks like your session has expired. Redirecting to login page...',
+                    style: TextStyle(
+                      fontSize: 25,
+                      height: 1.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Icon(
+                    Icons.sync_lock_sharp,
+                    size: 100,
+                  )
+                ]
+              ),
+            ),
+          ),
+        );
+      }
+    );
+    UserPreferences().removeUser();
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacementNamed(context, '/login');
+    });
   }
   return token;
 }
