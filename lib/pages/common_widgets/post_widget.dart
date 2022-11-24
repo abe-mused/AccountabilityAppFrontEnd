@@ -365,50 +365,71 @@ class _PostWidget extends State<PostWidget> {
                       const SizedBox(height: 10),
                       Image.network(widget.post.imageUrl!, height: 200),
                     ],
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Divider(
+                      height: 10,
+                      thickness: 1,
+                      indent: 0,
+                      endIndent: 0,
+                    ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        if (!widget.isPostPage)
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PostPage(
-                                    postId: widget.post.postId,
-                                    route: widget.route, 
-                                  ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "${widget.post.commentCount} ",
+                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            const Text(
+                              "comments",
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                          ]
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            if (!widget.isPostPage)
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PostPage(
+                                        postId: widget.post.postId,
+                                        route: widget.route, 
+                                      ),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(
+                                  Icons.comment,
+                                  size: 34.0,
                                 ),
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.comment,
-                              size: 34.0,
-                            ),
-                          ),
-                        if (widget.post.likes!.contains(_currentUsername)) ...[
-                          IconButton(
-                            onPressed: () {
-                              likeUnlikePost();
-                            },
-                            icon: const Icon(
-                              Icons.favorite,
-                              color: Colors.pink,
-                              size: 34.0,
-                            ),
-                          )
-                        ] else ...[
-                          IconButton(
-                            onPressed: () {
-                              likeUnlikePost();
-                            },
-                            icon: const Icon(
-                              Icons.favorite_border,
-                              size: 34.0,
-                            ),
-                          )
-                        ]
-                      ],
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  likeUnlikePost();
+                                },
+                                icon: Icon(
+                                  Icons.favorite,
+                                  color: (widget.post.likes!.contains(_currentUsername))? Colors.pink : null,
+                                  size: 34.0,
+                                ),
+                              ),
+                              Text(
+                                widget.post.likes!.length.toString(),
+                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                          ],
+                        ),
+                      ]
                     ),
                   ],
                 ),

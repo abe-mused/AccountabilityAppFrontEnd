@@ -32,7 +32,7 @@ class PostPageState extends State<PostPage> {
       creationDate: 1,
       creator: '',
       likes: [],
-      comments: []);
+      commentCount: 0);
   List<dynamic> _comments = [];
 
   String? _currentUsername;

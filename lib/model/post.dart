@@ -4,10 +4,10 @@ class Post {
   String creator;
   String? creatorProfileImageUrl;
   int creationDate;
+  int commentCount;
   String title;
   String body;
   String? imageUrl;
-  List<dynamic>? comments;
   List<dynamic>? likes;
 
   Post({
@@ -17,7 +17,7 @@ class Post {
     required this.creationDate,
     required this.title,
     required this.body,
-    this.comments,
+    required this.commentCount,
     this.likes,
   });
 
@@ -29,10 +29,9 @@ class Post {
       creationDate: item['creationDate'] is int ? item['creationDate'] : int.parse(item['creationDate']),
       title: item['title'],
       body: item['body'],
+      commentCount: item['commentCount'] is int ? item['commentCount'] : int.parse(item['commentCount']),
     );
-    if (item['comments'] != null) {
-      post.comments = item['comments'];
-    }
+    
     if (item['likes'] != null) {
       post.likes = item['likes'];
     }
