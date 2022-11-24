@@ -385,9 +385,9 @@ class _PostWidget extends State<PostWidget> {
                               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                             ),
-                            const Text(
-                              "comments",
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                            Text(
+                              "comment${widget.post.commentCount > 1 ? "s" : ""}",
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                             ),
                           ]
@@ -395,7 +395,7 @@ class _PostWidget extends State<PostWidget> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            if (!widget.isPostPage)
+                            if (!widget.isPostPage) ...[
                               IconButton(
                                 onPressed: () {
                                   Navigator.push(
@@ -413,20 +413,35 @@ class _PostWidget extends State<PostWidget> {
                                   size: 34.0,
                                 ),
                               ),
-                              IconButton(
-                                onPressed: () {
-                                  likeUnlikePost();
-                                },
-                                icon: Icon(
-                                  Icons.favorite,
-                                  color: (widget.post.likes!.contains(_currentUsername))? Colors.pink : null,
-                                  size: 34.0,
+                            ],
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  //This is just so the like icon doesn't move when the user likes/unlikes the post
+                                  minWidth: widget.post.likes!.length < 9? 65 : 70,
                                 ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      likeUnlikePost();
+                                    },
+                                    icon: Icon(
+                                      Icons.favorite,
+                                      color: (widget.post.likes!.contains(_currentUsername))? Colors.pink : null,
+                                      size: 34.0,
+                                    ),
+                                  ),
+                                  Text(
+                                    widget.post.likes!.length.toString(),
+                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                  ),
+                                ]
                               ),
-                              Text(
-                                widget.post.likes!.length.toString(),
-                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
+                            ),
                           ],
                         ),
                       ]

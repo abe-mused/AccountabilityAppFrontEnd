@@ -62,8 +62,10 @@ class PostPageState extends State<PostPage> {
         deleteComment(context, widget.postId, _comments[passIndex]['commentId']);
     responseMessage.then((response) {
       if (response['status'] == true) {
+        _post.commentCount -= 1;
         setState(() {
           _comments.removeAt(passIndex);
+          _post = _post; 
         });
         showDialog(
             context: context,
@@ -163,8 +165,10 @@ class PostPageState extends State<PostPage> {
               CreateCommentWidget(
                 postId: widget.postId,
                 addComment: (comment) => {
+                  _post.commentCount += 1,
                   setState(() {
                     _comments.add(comment);
+                    _post = _post;
                   }),
                 },
               ),

@@ -4,6 +4,7 @@ import 'package:linear/constants/themeSettings.dart';
 import 'dart:convert';
 import 'package:linear/util/cognito/auth_util.dart' as auth_utility;
 import 'package:linear/util/cognito/user_preferences.dart';
+import 'dart:io';
 
 getTokenOrRedirectToLogin(BuildContext context) async {
   dynamic token = await auth_utility.getAuthToken();
@@ -24,7 +25,7 @@ getTokenOrRedirectToLogin(BuildContext context) async {
               child: Column(
                 children: const [
                   Text(
-                    'Oops, it looks like your session has expired. Redirecting to login page...',
+                    'Oops, it looks like your session has expired.\nRedirecting to login page...',
                     style: TextStyle(
                       fontSize: 25,
                       height: 1.5,
@@ -51,9 +52,65 @@ getTokenOrRedirectToLogin(BuildContext context) async {
   return token;
 }
 
+checkInternetConnection(BuildContext context) async {
+  bool isConnected = false;
+  try {
+    final result = await InternetAddress.lookup('google.com').timeout(const Duration(seconds: 1));
+    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      isConnected = true;
+    }
+  } on SocketException catch (_) {
+    print('Not connected to the internet!');
+  }
+
+  if (!isConnected) {
+    showModalBottomSheet(
+      context: context,
+      // ignore: use_build_context_synchronously
+      barrierColor: MediaQuery.of(context).platformBrightness == Brightness.dark ?
+              AppThemes.lightTheme.colorScheme.background
+              : AppThemes.darkTheme.colorScheme.background,
+      builder: (context) {
+        return SizedBox(
+          height: 400,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 100, 20, 50),
+              child: Column(
+                children: const [
+                  Text(
+                    'Oops! We lost you.\nPlease ensure that you are connected to the internet...',
+                    style: TextStyle(
+                      fontSize: 25,
+                      height: 1.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Icon(
+                    Icons.wifi_off,
+                    size: 100,
+                  )
+                ]
+              ),
+            ),
+          ),
+        );
+      }
+    );
+  }
+
+  return isConnected;
+}
+
 Future<Map<String, dynamic>> createCommunity(BuildContext context, String communityName) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }
+
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community';
-    String token = await getTokenOrRedirectToLogin(context);
+  String token = await getTokenOrRedirectToLogin(context);
   return await http.post(
     Uri.parse(url),
     body: jsonEncode({
@@ -77,6 +134,11 @@ Future<Map<String, dynamic>> createCommunity(BuildContext context, String commun
 }
 
 Future<Map<String, dynamic>> getSearchResults(BuildContext context, String searchTerm) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }
+
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/search?searchTerm=$searchTerm';
   String token = await getTokenOrRedirectToLogin(context);
   try {
@@ -100,6 +162,11 @@ Future<Map<String, dynamic>> getSearchResults(BuildContext context, String searc
 }
 
 Future<Map<String, dynamic>> getProfile(BuildContext context, String username) async {
+
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }
+
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/profile?username=$username';
   String token = await getTokenOrRedirectToLogin(context);
   try {
@@ -127,6 +194,11 @@ Future<Map<String, dynamic>> getProfile(BuildContext context, String username) a
 }
 
 Future<Map<String, dynamic>> createPost(BuildContext context, String postTitle, String postBody, String communityName, String? imageUrl) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }
+
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post';
   String token = await getTokenOrRedirectToLogin(context);
   var body = {
@@ -158,6 +230,11 @@ Future<Map<String, dynamic>> createPost(BuildContext context, String postTitle, 
 }
 
 Future<Map<String, dynamic>> deletePost(BuildContext context, String postId) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }
+
   const url ='https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post';
   String token = await getTokenOrRedirectToLogin(context);
   return await http.delete(
@@ -185,6 +262,11 @@ Future<Map<String, dynamic>> deletePost(BuildContext context, String postId) asy
 }
 
 Future<Map<String, dynamic>> likePost(BuildContext context, String postId) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }  
+
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/like?postId=$postId';
   String token = await getTokenOrRedirectToLogin(context);
   try {
@@ -212,6 +294,11 @@ Future<Map<String, dynamic>> likePost(BuildContext context, String postId) async
 }
 
 Future<Map<String, dynamic>> getPostsForCommunity(BuildContext context, String communityName) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }  
+
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/community?communityName=$communityName';
   String token = await getTokenOrRedirectToLogin(context);
   try {
@@ -241,6 +328,11 @@ Future<Map<String, dynamic>> getPostsForCommunity(BuildContext context, String c
 }
 
 Future<Map<String, dynamic>> getPostWithComments(BuildContext context, String postId) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }  
+  
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/post?postId=$postId';
   String token = await getTokenOrRedirectToLogin(context);
   try {
@@ -271,6 +363,11 @@ Future<Map<String, dynamic>> getPostWithComments(BuildContext context, String po
 }
 
 Future<Map<String, dynamic>> createComment(BuildContext context, String commentBody, String postId) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }  
+
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/comment';
   String token = await getTokenOrRedirectToLogin(context);
   return await http.post(
@@ -297,6 +394,11 @@ Future<Map<String, dynamic>> createComment(BuildContext context, String commentB
 }
 
 Future<Map<String, dynamic>> deleteComment(BuildContext context, String postId, String commentId) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }  
+  
   const url ='https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/comment';
   String token = await getTokenOrRedirectToLogin(context);
   return await http.delete(
@@ -325,6 +427,11 @@ Future<Map<String, dynamic>> deleteComment(BuildContext context, String postId, 
 }
 
 Future<Map<String, dynamic>> joinAndLeave(BuildContext context, String communityName) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }  
+  
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/join?communityName=$communityName';
   String token = await getTokenOrRedirectToLogin(context);
   return await http.patch(
@@ -348,6 +455,11 @@ Future<Map<String, dynamic>> joinAndLeave(BuildContext context, String community
 }
 
 Future<Map<String, dynamic>> followAndUnfollow(BuildContext context, String otherUser) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }  
+  
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/follow?otherUser=$otherUser';
   String token = await getTokenOrRedirectToLogin(context);
   return await http.patch(
@@ -371,6 +483,11 @@ Future<Map<String, dynamic>> followAndUnfollow(BuildContext context, String othe
 }
 
 Future<Map<String, dynamic>> createGoal(BuildContext context, int checkInGoal, String goalBody, String communityName) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }  
+  
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal';
   String token = await getTokenOrRedirectToLogin(context);
   return await http.post(
@@ -396,6 +513,11 @@ Future<Map<String, dynamic>> createGoal(BuildContext context, int checkInGoal, S
 }
 
 Future<Map<String, dynamic>> getGoalsForGoalPage(BuildContext context) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }  
+  
   var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal';
   String token = await getTokenOrRedirectToLogin(context);
   try {
@@ -425,6 +547,11 @@ Future<Map<String, dynamic>> getGoalsForGoalPage(BuildContext context) async {
 }
 
 Future<Map<String, dynamic>> deleteGoal(BuildContext context, String goalId) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }  
+  
   const url ='https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal';
   String token = await getTokenOrRedirectToLogin(context);
   return await http.delete(
@@ -453,6 +580,11 @@ Future<Map<String, dynamic>> deleteGoal(BuildContext context, String goalId) asy
 }
 
 Future<Map<String, dynamic>> getHomeFeed(BuildContext context, dynamic pageTokens) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }
+
   const url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/home';
   String token = await getTokenOrRedirectToLogin(context);
   return await http.post(
@@ -494,6 +626,11 @@ Future<void> createReport(BuildContext context, dynamic reportBody) async {
 }
 
 Future<Map<String, dynamic>> changeProfilePicture(BuildContext context, String imageUrl) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }
+
   String token = await getTokenOrRedirectToLogin(context);
   return http.post(
     Uri.parse('https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/profile'),
