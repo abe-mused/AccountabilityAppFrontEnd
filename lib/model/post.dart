@@ -2,6 +2,7 @@ class Post {
   String communityName;
   String postId;
   String creator;
+  String? creatorProfileImageUrl;
   int creationDate;
   String title;
   String body;
@@ -38,6 +39,10 @@ class Post {
     if (item['imageUrl'] != null && item['imageUrl'] != "NONE") {
       post.imageUrl = item['imageUrl'];
     }
+    if (item['creatorImageUrl'] != null && item['creatorImageUrl'] != "NONE") {
+      post.creatorProfileImageUrl = item['creatorImageUrl'];
+    }
+
     return post;
   }
 }
