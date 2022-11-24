@@ -244,7 +244,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                                     );
                                   });
                             } else {
-                            doSendResetCode();
+                            doChangePassword();
                           }
                           },
                          child: _updateResetPasswordCode? const CircularProgressIndicator(
