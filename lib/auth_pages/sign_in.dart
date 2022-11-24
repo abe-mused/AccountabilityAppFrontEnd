@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool hidePassword = true;
+  bool _isUpdatingSignIn = false;
 
   final emailOrUsername = TextEditingController();
   final password = TextEditingController();
@@ -129,8 +130,17 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60),
                         ),
-                        onPressed: doLogIn,
-                        child: const Text("Log In")),
+                        onPressed: () async {
+                            setState(() {
+                              _isUpdatingSignIn = true;
+                              doLogIn();
+                            }
+                            );
+                        },
+                        child: _isUpdatingSignIn? const CircularProgressIndicator(
+                          color: Colors.white,
+                        ) : const Text("Log In")
+                        ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -141,7 +151,8 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SignUpPage(),
+                              builder: (context) => 
+                              const SignUpPage(),
                             ),
                           );
                         },
@@ -152,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );

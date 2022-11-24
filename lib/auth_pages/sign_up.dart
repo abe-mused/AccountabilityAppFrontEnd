@@ -12,6 +12,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   bool hide = true;
+  bool _isUpdatingSignUp = false;
 
   TextEditingController email = TextEditingController();
   TextEditingController username = TextEditingController();
@@ -62,6 +63,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isUpdatingSignUp) {
+      const Center(
+          child: CircularProgressIndicator(),
+        );
+    }
     return Scaffold(
       backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark
           ? AppThemes.darkTheme.primaryColor
@@ -70,8 +76,7 @@ class _SignUpPageState extends State<SignUpPage> {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 40, left: 40),
-            child: Text("Create Your Account", 
-            style: TextStyle(fontSize: 50, color: Colors.white, fontWeight: FontWeight.w300)),
+            child: Text("Create Your Account", style: TextStyle(fontSize: 50, color: Colors.white, fontWeight: FontWeight.w300)),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
@@ -153,11 +158,20 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   Center(
                     child: ElevatedButton(
-                        style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
-                        onPressed: () {
-                          handleSignUpPress(context);
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)
+                          ),
+                         onPressed: () async {
+                            setState(() {
+                              _isUpdatingSignUp = true;
+                              handleSignUpPress(context);
+                            }
+                            );
                         },
-                        child: const Text("Sign Up")),
+                         child: _isUpdatingSignUp? const CircularProgressIndicator(
+                          color: Colors.white,
+                        ) : const Text("Sign up")
+                        ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -195,11 +209,10 @@ class _SignUpPageState extends State<SignUpPage> {
           "Invalid username! Username has to be a minimum of 5 characters and must contain alphanumeric characters and optionally an underscore");
     } else if (!passwordValidation.hasMatch(password.text)) {
       showErrorDialog(context,
-          "Password must contain at least one uppercase letter, one lowercase letter, one numeric value, and one special character");
+          "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character");
     } else if (password.text != confirmPassword.text) {
       showErrorDialog(context, "Passwords do not match!");
-    } 
-    else {
+    } else {
       doSignUp();
     }
   }

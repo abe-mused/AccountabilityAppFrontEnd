@@ -12,6 +12,7 @@ class ResetPasswordCodePage extends StatefulWidget {
 
 class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
   bool hide = true;
+  bool _updateResetPasswordCode = false;
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
   TextEditingController code = TextEditingController();
@@ -235,10 +236,17 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                                     );
                                   });
                             } else {
+                              setState(() {
+                              _updateResetPasswordCode = true;
                               doChangePassword();
                             }
+                            );
+                            }
                           },
-                          child: const Text("Submit")),
+                         child: _updateResetPasswordCode? const CircularProgressIndicator(
+                          color: Colors.white,
+                        ) : const Text("Submit")
+                        ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -255,7 +263,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                             onPressed: () {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage()));
                             },
-                            child: const Text("Login")),
+                            child: const Text("Log In")),
                       ],
                     ),
                   ],
