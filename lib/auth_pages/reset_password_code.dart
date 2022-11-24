@@ -184,7 +184,15 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                     Center(
                       child: ElevatedButton(
                           style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
-                          onPressed: () {
+                          onPressed: () async {
+                          setState(() {
+                              _updateResetPasswordCode = true;
+                            });
+                              Future.delayed(const Duration(seconds: 1), (){
+                              setState(() {
+                                _updateResetPasswordCode = false;
+                              });
+                            });
                             RegExp passwordValidation = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
                             if (password.text.isEmpty || confirmPassword.text.isEmpty || code.text.isEmpty) {
                               showDialog(
@@ -236,12 +244,8 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                                     );
                                   });
                             } else {
-                              setState(() {
-                              _updateResetPasswordCode = true;
-                              doChangePassword();
-                            }
-                            );
-                            }
+                            doSendResetCode();
+                          }
                           },
                          child: _updateResetPasswordCode? const CircularProgressIndicator(
                           color: Colors.white,
@@ -263,7 +267,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                             onPressed: () {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage()));
                             },
-                            child: const Text("Login")),
+                            child: const Text("Sign Up")),
                       ],
                     ),
                   ],

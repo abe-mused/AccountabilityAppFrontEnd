@@ -91,7 +91,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   Center(
                     child: ElevatedButton(
                         style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
-                        onPressed: () {
+                        onPressed: () async {
+                          setState(() {
+                              _updateResetPassword = true;
+                            });
+                              Future.delayed(const Duration(seconds: 1), (){
+                              setState(() {
+                                _updateResetPassword = false;
+                              });
+                            });
                           RegExp emailValidation = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
                           if (!emailValidation.hasMatch(email.text)) {
                             showDialog(
@@ -110,11 +118,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                   );
                                 });
                           } else {
-                            setState(() {
-                              _updateResetPassword = true;
-                              doSendResetCode();
-                            }
-                            );
+                            doSendResetCode();
                           }
                         },
                         child: _updateResetPassword? const CircularProgressIndicator(
