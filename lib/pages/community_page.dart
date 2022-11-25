@@ -14,6 +14,7 @@ import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 import 'package:intl/intl.dart';
 import 'package:flutter/rendering.dart';
+import 'package:linear/pages/common_widgets/sortPosts.dart';
 
 class CommunityPage extends StatefulWidget {
   CommunityPage({super.key, required this.communityName});
@@ -330,6 +331,11 @@ class CommunityPageState extends State<CommunityPage> {
                   }, 
                 ),
               const SizedBox(height: 10),
+              Padding(
+              padding: const EdgeInsets.only(left: 15, top: 10, bottom: 10),
+              child:   
+                SortPosts(posts: _posts, isCommunityPage: true, onSort: (posts) => setState(() {_posts = posts;}),), 
+            ),
               // ignore: prefer_is_empty
               if ((_posts.length) > 0) ...[
                 Padding(

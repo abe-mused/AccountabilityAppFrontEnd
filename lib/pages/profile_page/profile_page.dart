@@ -13,6 +13,7 @@ import 'package:linear/util/apis.dart' as api;
 import 'package:linear/util/cognito/user_preferences.dart';
 import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 import 'package:linear/util/date_formatter.dart';
+import 'package:linear/pages/common_widgets/sortPosts.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key, this.usernameToDisplay}) : super(key: key);
@@ -335,19 +336,10 @@ class ProfilePageState extends State<ProfilePage> {
               user: _userToDisplay!,
               communityLength: _userToDisplay!.communities?.length,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: const [
-                SizedBox(width: 15.0),
-                Text(
-                  "Posts",
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontSize: 23.0,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child:   
+                SortPosts(posts: _posts, onSort: (posts) => setState(() {_posts = posts;}),), 
             ),
             //Posts list builder
             Column(
