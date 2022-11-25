@@ -53,12 +53,16 @@ class _SignUpPageState extends State<SignUpPage> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: const Text("Ok"))
+                      child: const Text("Ok"),
+                      )
                 ],
               );
             });
       }
+      setState(() {
+        _isUpdatingSignUp = false;
     });
+   });
   }
 
   @override
@@ -159,12 +163,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           onPressed: () async {
                             setState(() {
                               _isUpdatingSignUp = true;
-                            }
-                            );
-                            Future.delayed(const Duration(seconds: 1), (){
-                              setState(() {
-                                _isUpdatingSignUp = false;
-                              });
                             });
                           handleSignUpPress(context);
                         },
@@ -184,7 +182,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               MaterialPageRoute(builder: (context) => const LoginPage()),
                             );
                           },
-                          child: const Text("Login"))
+                          child: const Text("Login"),
+                      )
                     ],
                   )
                 ],

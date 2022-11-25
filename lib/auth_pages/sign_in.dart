@@ -44,6 +44,9 @@ class _LoginPageState extends State<LoginPage> {
                 );
               });
         }
+        setState(() {
+          _isUpdatingSignIn = false;
+        });
       });
     }
 
@@ -133,12 +136,6 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () async {
                             setState(() {
                               _isUpdatingSignIn = true;
-                            }
-                            );
-                            Future.delayed(const Duration(seconds: 1), (){
-                              setState(() {
-                                _isUpdatingSignIn = false;
-                              });
                             });
                           doLogIn();
                         },
@@ -156,8 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SignUpPage(),
-                            ),
+                              builder: (context) => const SignUpPage()),
                           );
                         },
                         child: const Text("Sign Up"),

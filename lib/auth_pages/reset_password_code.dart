@@ -55,6 +55,9 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
               );
             });
       }
+      setState(() {
+        _updateResetPasswordCode = false;
+      });
     });
   }
 
@@ -187,11 +190,6 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                           onPressed: () async {
                           setState(() {
                               _updateResetPasswordCode = true;
-                            });
-                              Future.delayed(const Duration(seconds: 1), (){
-                              setState(() {
-                                _updateResetPasswordCode = false;
-                              });
                             });
                             RegExp passwordValidation = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
                             if (password.text.isEmpty || confirmPassword.text.isEmpty || code.text.isEmpty) {

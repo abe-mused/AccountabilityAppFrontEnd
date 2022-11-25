@@ -42,6 +42,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               );
             });
       }
+      setState(() {
+      _updateResetPassword = false;
+      });
     });
   }
 
@@ -94,11 +97,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         onPressed: () async {
                           setState(() {
                               _updateResetPassword = true;
-                            });
-                              Future.delayed(const Duration(seconds: 1), (){
-                              setState(() {
-                                _updateResetPassword = false;
-                              });
                             });
                           RegExp emailValidation = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
                           if (!emailValidation.hasMatch(email.text)) {
