@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
-import 'package:linear/pages/post_page/create_comment_widget.dart';
 import 'package:linear/pages/common_widgets/post_widget.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
@@ -11,13 +11,11 @@ import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 
 
 class PostPage extends StatefulWidget {
-  PostPage(
-      {super.key,
-      required this.postId,
-      required this.route});
+  PostPage({super.key, required this.postId, required this.route, required this.addComment});
 
   String postId;
   Widget route;
+  Function addComment;
 
   @override
   State<PostPage> createState() => PostPageState();
@@ -33,11 +31,14 @@ class PostPageState extends State<PostPage> {
       creator: '',
       likes: [],
       commentCount: 0);
+
   List<dynamic> _comments = [];
-
   String? _currentUsername;
-
   bool _isloading = true;
+
+  TextEditingController commentBodyInput = TextEditingController();
+  bool _isCreatingComment = false;
+  Map<String, dynamic> _newComment = {};
 
   @override
   void initState() {
@@ -55,6 +56,60 @@ class PostPageState extends State<PostPage> {
   deletePost(context) {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => widget.route));
+  }
+
+    doCreateComment() {
+    setState(() {
+      _isCreatingComment = true;
+    });
+
+    final Future<Map<String, dynamic>> successfulMessage =
+        createComment(context, commentBodyInput.text, widget.postId);
+    successfulMessage.then((response) {
+      if (response['status'] == true) {
+        setState(() {
+          _newComment = response['comment'];
+        });
+        // addComment
+        widget.addComment(_newComment);
+        commentBodyInput.clear();
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Success!"),
+                content: const Text("Comment succesfully Created."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Error!"),
+                content: const Text(
+                    "An error occured while attempting to create the Comment."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+      }
+      setState(() {
+        _isCreatingComment = false;
+      });
+    });
   }
 
   doDeleteComment(passIndex) {
@@ -138,6 +193,11 @@ class PostPageState extends State<PostPage> {
         bottomNavigationBar: const LinearNavBar(),
       );
     }
+    if (_isCreatingComment) {
+      return const Center(
+        child: CircularProgressIndicator()
+        );
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Post"),
@@ -158,20 +218,68 @@ class PostPageState extends State<PostPage> {
                   onDelete: () {
                     deletePost(context);
                   },
-                  route: widget.route,
+                  route: widget.route, 
+                  // addComment
+                  addComment: () { 
+                    setState(() {
+                      doCreateComment();
+                    });
+                   },
                 ),
               ),
               const SizedBox(height: 10),
-              CreateCommentWidget(
-                postId: widget.postId,
-                addComment: (comment) => {
-                  _post.commentCount += 1,
-                  setState(() {
-                    _comments.add(comment);
-                    _post = _post;
-                  }),
-                },
-              ),
+              Column(
+              children: [
+                const Text(
+                  "Add a Comment!",
+                  style: TextStyle(fontSize: 24),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    controller: commentBodyInput,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(256),
+                    ],
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      hintText: "Comment Body",
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (commentBodyInput.text != '') {
+                      doCreateComment();
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: const Text("Please fill out all fields."),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("Ok"))
+                              ],
+                            );
+                          });
+                    }
+                  },
+                  child: const Text("Add a Comment"),
+                ),
+              ],
+            ),
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,

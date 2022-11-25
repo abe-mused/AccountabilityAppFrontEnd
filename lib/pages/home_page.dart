@@ -152,7 +152,13 @@ class _HomePageState extends State<HomePage> {
                           _posts.removeAt(index);
                         });
                       },
-                      route: const HomePage(),
+                      route: const HomePage(), 
+                      // addComment
+                      addComment: () {
+                        setState(() {
+                          
+                        });
+                        },
                     );
                   },
                 ),

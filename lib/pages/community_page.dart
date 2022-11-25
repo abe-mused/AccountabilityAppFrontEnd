@@ -352,7 +352,13 @@ class CommunityPageState extends State<CommunityPage> {
                         },
                         route: CommunityPage(
                           communityName: _community.communityName,
-                        ),
+                        ), 
+                        // addComment
+                        addComment: () { 
+                          setState(() {
+                            
+                          });
+                         },
                       );
                     },
                   ),

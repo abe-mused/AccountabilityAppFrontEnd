@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/community_page.dart';
-import 'package:linear/pages/post_page/post_page.dart';
+import 'package:linear/pages/post_page.dart';
 import 'package:linear/util/date_formatter.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
@@ -16,11 +16,14 @@ class PostWidget extends StatefulWidget {
       {super.key,
       required this.post,
       required this.onLike,
+      required this.addComment,
       required this.onDelete,
       required this.route,
       this.isPostPage = false});
+
   final Post post;
   final Function onLike;
+  final VoidCallback addComment;
   final VoidCallback onDelete;
   final Widget route;
   bool isPostPage;
@@ -40,6 +43,7 @@ class _PostWidget extends State<PostWidget> {
       builder: (context) => PostPage(
         postId: widget.post.postId,
         route: widget.route, 
+        addComment: widget.addComment, 
       ),
     );
     if (route != null) {
@@ -151,15 +155,12 @@ class _PostWidget extends State<PostWidget> {
                                     size: const Size.fromRadius(45),
                                     child: Image.network(widget.post.creatorProfileImageUrl!, fit: BoxFit.cover),
                                   ),
-                                ),
-                          // UserIcon(
-                          //   username: widget.post.creator,
-                          //   radius: 45,
-                          // ),
-                        )),
-                    const SizedBox(
-                      width: 20,
-                    ),
+                                ),           
+                              ),
+                            ),
+                        const SizedBox(
+                        width: 20,
+                      ),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -404,6 +405,8 @@ class _PostWidget extends State<PostWidget> {
                                       builder: (context) => PostPage(
                                         postId: widget.post.postId,
                                         route: widget.route, 
+                                        // addComment 
+                                        addComment: widget.addComment, 
                                       ),
                                     ),
                                   );

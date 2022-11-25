@@ -5,7 +5,6 @@ import 'package:linear/model/user.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/common_widgets/post_widget.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
-import 'package:linear/pages/community_page.dart';
 import 'package:linear/pages/image_related_widgets/upload_image_widget.dart';
 import 'package:linear/pages/profile_page/community_list.dart';
 import 'package:linear/pages/profile_page/view_follows.dart';
@@ -373,6 +372,12 @@ class ProfilePageState extends State<ProfilePage> {
                             });
                           },
                           route: const ProfilePage(),
+                          // addComment 
+                          addComment: () {
+                            setState(() {
+                              
+                            });
+                            },
                         );
                       },
                     ),
