@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:linear/util/apis.dart';
+import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/community_page.dart';
+import 'package:linear/util/apis.dart';
 
-class CreateCommunityWidget extends StatefulWidget {
-  const CreateCommunityWidget({super.key});
+class CreateCommunityPage extends StatefulWidget {
+  const CreateCommunityPage({Key? key}) : super(key: key);
 
   @override
-  State<CreateCommunityWidget> createState() => _CreateCommunityWidgetState();
+  State<CreateCommunityPage> createState() => CreateCommunityPageState();
 }
 
-class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
+class CreateCommunityPageState extends State<CreateCommunityPage> {
+
   TextEditingController userInput = TextEditingController();
   bool _isLoading = false;
 
-  doCreateCommunity() {
+    doCreateCommunity() {
     final Future<Map<String, dynamic>> successfulMessage = createCommunity(context, userInput.text);
 
     successfulMessage.then((response) {
@@ -31,22 +33,21 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                 content: const Text("Community succesfully Created."),
                 actions: [
                   TextButton(
-                      onPressed: () {
-                       Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CommunityPage(
-                          communityName: userInput.text,
-                        ),
+                    onPressed: () {
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CommunityPage(
+                      communityName: userInput.text,
                       ),
-                    );
-                   
+                    ),
+                  );
                   },
-                      child: const Text("Ok"))
+                  child: const Text("Ok"))
                 ],
               );
             });
-      } else if (response['message'] == 'The community already exists!'){
+      } else if (response['message'] == 'The community already exists!') {
         showDialog(
             context: context,
             builder: (context) {
@@ -68,9 +69,9 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                         ),
                       ),
                     );
-                    
+
                   },
-                      child: const Text("Go to Community"))
+                  child: const Text("Go to Community"))
                 ],
               );
             });
@@ -85,7 +86,6 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                   TextButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        
                       },
                       child: const Text("Ok"))
                 ],
@@ -97,8 +97,13 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Container(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Create Community"),
+        elevation: 0.1,
+      ),
+      body: Column(children: [
+        Container(
         margin: const EdgeInsets.all(10),
         child: TextFormField(
           controller: userInput,
@@ -116,7 +121,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
           ),
         ),
       ),
-        if (!_isLoading)
+       if (!_isLoading)
           ElevatedButton(
             onPressed: () async {
               setState(() {
@@ -124,7 +129,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
               });
               await doCreateCommunity();
             },
-             child:  const Text("Submit"),
+             child: const Text("Submit"),
         ),
         if (_isLoading)
           ElevatedButton(
@@ -137,6 +142,9 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
               ),
              ),
           ),
-    ]);
+        ],
+      ),
+      bottomNavigationBar: const LinearNavBar(),
+    );
   }
 }
