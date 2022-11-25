@@ -654,3 +654,33 @@ Future<Map<String, dynamic>> changeProfilePicture(BuildContext context, String i
     },
   );
 }
+
+Future<Map<String, dynamic>> finishOrExtend(BuildContext context, String goalId, bool isFinished, int goalExtension) async {
+  
+  if(! (await checkInternetConnection(context))){
+    return {'success': false, 'message': 'No internet connection'};
+  }
+  
+  var url = 'https://qgzp9bo610.execute-api.us-east-1.amazonaws.com/prod/goal?goalId=$goalId&isFinished=$isFinished&goalExtension=$goalExtension';
+  String token = await getTokenOrRedirectToLogin(context);
+  return await http.patch(
+    Uri.parse(url),
+    body: jsonEncode({
+      "goalId": goalId,
+      "goalStatus": isFinished,
+      "goalExtension": goalExtension,
+    }),
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+    },
+  ).then(
+    (response) {
+      if (response.statusCode == 200) {
+        return {'status': true, 'message': 'User changed status'};
+      } else {
+        return {'status': false, 'message': 'An error occurred while cheanging goal status, please try again.'};
+      }
+    },
+  );
+}
