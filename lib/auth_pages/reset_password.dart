@@ -13,6 +13,7 @@ class ResetPasswordPage extends StatefulWidget {
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
   bool hide = true;
+  bool _updateResetPassword = false;
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
 
@@ -41,6 +42,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               );
             });
       }
+      setState(() {
+      _updateResetPassword = false;
+      });
     });
   }
 
@@ -90,14 +94,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   Center(
                     child: ElevatedButton(
                         style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
-                        onPressed: () {
+                        onPressed: () async {
+                          setState(() {
+                              _updateResetPassword = true;
+                            });
                           RegExp emailValidation = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
                           if (!emailValidation.hasMatch(email.text)) {
                             showDialog(
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text("ERROR"),
+                                    title: const Text("Error!"),
                                     content: const Text("Invalid email! please try again."),
                                     actions: [
                                       TextButton(
@@ -112,7 +119,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             doSendResetCode();
                           }
                         },
-                        child: const Text("Submit")),
+                        child: _updateResetPassword? const CircularProgressIndicator(
+                          color: Colors.white,
+                        ) : const Text("Submit")
+                        ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

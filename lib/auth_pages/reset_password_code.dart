@@ -12,6 +12,7 @@ class ResetPasswordCodePage extends StatefulWidget {
 
 class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
   bool hide = true;
+  bool _updateResetPasswordCode = false;
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
   TextEditingController code = TextEditingController();
@@ -54,6 +55,9 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
               );
             });
       }
+      setState(() {
+        _updateResetPasswordCode = false;
+      });
     });
   }
 
@@ -68,7 +72,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
             builder: (context) {
               return AlertDialog(
                 title: const Text("Success!"),
-                content: const Text("Your password has beem reset succesfully. You can now login with your new password."),
+                content: const Text("Your password has been reset succesfully. Please login with your new password."),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -183,7 +187,10 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                     Center(
                       child: ElevatedButton(
                           style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
-                          onPressed: () {
+                          onPressed: () async {
+                          setState(() {
+                              _updateResetPasswordCode = true;
+                            });
                             RegExp passwordValidation = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
                             if (password.text.isEmpty || confirmPassword.text.isEmpty || code.text.isEmpty) {
                               showDialog(
@@ -208,7 +215,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                                     return AlertDialog(
                                       title: const Text("Error!"),
                                       content: const Text(
-                                          "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
+                                          "Password must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
                                       actions: [
                                         TextButton(
                                             onPressed: () {
@@ -235,10 +242,13 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                                     );
                                   });
                             } else {
-                              doChangePassword();
-                            }
+                            doChangePassword();
+                          }
                           },
-                          child: const Text("Submit")),
+                         child: _updateResetPasswordCode? const CircularProgressIndicator(
+                          color: Colors.white,
+                        ) : const Text("Submit")
+                        ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -255,8 +265,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                             onPressed: () {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage()));
                             },
-                            child: const Text("Register")),
-                        const Text("instead?"),
+                            child: const Text("Sign Up")),
                       ],
                     ),
                   ],

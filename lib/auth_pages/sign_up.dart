@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/sign_in.dart';
 import 'package:linear/util/cognito/auth_util.dart' as authUtil;
@@ -14,6 +12,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   bool hide = true;
+  bool _isUpdatingSignUp = false;
 
   TextEditingController email = TextEditingController();
   TextEditingController username = TextEditingController();
@@ -21,7 +20,6 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
 
-  // check for sign up through cognito
   doSignUp() {
     final Future<Map<String, dynamic>> responseMessage =
         authUtil.signUp(email: email.text, password: password.text, username: username.text, fullName: name.text);
@@ -55,12 +53,16 @@ class _SignUpPageState extends State<SignUpPage> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: const Text("Ok"))
+                      child: const Text("Ok"),
+                      )
                 ],
               );
             });
       }
+      setState(() {
+        _isUpdatingSignUp = false;
     });
+   });
   }
 
   @override
@@ -84,8 +86,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 color: MediaQuery.of(context).platformBrightness == Brightness.dark ? ThemeData.dark().primaryColor : Colors.white,
                 borderRadius: const BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
             child: SingleChildScrollView(
-              // removes bottom overflow pixel error
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -95,7 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   TextField(
                     controller: email,
                     decoration: const InputDecoration(
-                      hintText: "E-mail",
+                      hintText: "Email",
                     ),
                   ),
                   const SizedBox(
@@ -104,7 +105,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   TextField(
                     controller: username,
                     decoration: const InputDecoration(
-                      hintText: "username",
+                      hintText: "Username",
                     ),
                   ),
                   const SizedBox(
@@ -113,7 +114,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   TextField(
                     controller: name,
                     decoration: const InputDecoration(
-                      hintText: "Full name",
+                      hintText: "Full Name",
                     ),
                   ),
                   const SizedBox(
@@ -148,18 +149,27 @@ class _SignUpPageState extends State<SignUpPage> {
                             });
                           },
                           icon: hide ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
-                        )),
+                        ),
+                        ),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
                   Center(
                     child: ElevatedButton(
-                        style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
-                        onPressed: () {
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)
+                          ),
+                          onPressed: () async {
+                            setState(() {
+                              _isUpdatingSignUp = true;
+                            });
                           handleSignUpPress(context);
                         },
-                        child: const Text("Sign Up")),
+                         child: _isUpdatingSignUp? const CircularProgressIndicator(
+                          color: Colors.white,
+                        ) : const Text("Sign up")
+                        ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -172,7 +182,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               MaterialPageRoute(builder: (context) => const LoginPage()),
                             );
                           },
-                          child: const Text("Sign In?"))
+                          child: const Text("Login"),
+                      )
                     ],
                   )
                 ],
@@ -210,7 +221,7 @@ class _SignUpPageState extends State<SignUpPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text("ERROR"),
+            title: const Text("Error!"),
             content: Text(errorMessage),
           );
         });
