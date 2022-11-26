@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:linear/constants/themeSettings.dart';
@@ -66,7 +68,6 @@ checkInternetConnection(BuildContext context) async {
   if (!isConnected) {
     showModalBottomSheet(
       context: context,
-      // ignore: use_build_context_synchronously
       barrierColor: MediaQuery.of(context).platformBrightness == Brightness.dark ?
               AppThemes.lightTheme.colorScheme.background
               : AppThemes.darkTheme.colorScheme.background,
@@ -98,9 +99,51 @@ checkInternetConnection(BuildContext context) async {
         );
       }
     );
+  } else {
+    checkUsageTime(context);
   }
 
   return isConnected;
+}
+
+checkUsageTime(BuildContext context) async {
+  bool shouldDisplayUsageNotification = await UserPreferences().shouldShowUsageNotification();
+
+  if (shouldDisplayUsageNotification) {
+    showModalBottomSheet(
+      context: context,
+      barrierColor: MediaQuery.of(context).platformBrightness == Brightness.dark ?
+              AppThemes.lightTheme.colorScheme.background
+              : AppThemes.darkTheme.colorScheme.background,
+      builder: (context) {
+        return SizedBox(
+          height: 600,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 50, 20, 50),
+              child: Column(
+                children: const [
+                  Text(
+                    "It looks like you've spent more than 30 mins on the app.\nTake a break!",
+                    style: TextStyle(
+                      fontSize: 25,
+                      height: 1.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Icon(
+                    Icons.free_breakfast,
+                    size: 100,
+                  )
+                ]
+              ),
+            ),
+          ),
+        );
+      }
+    );
+  }
 }
 
 Future<Map<String, dynamic>> createCommunity(BuildContext context, String communityName) async {

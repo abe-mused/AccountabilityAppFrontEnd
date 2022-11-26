@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:developer' as developer;
 
+const int usageNotificationTimeInMinutes = 30;
 class UserPreferences {
   Future<void> saveUser(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -64,5 +65,30 @@ class UserPreferences {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setInt("linearActiveTab", activeTab);
+  }
+
+  Future<bool> shouldShowUsageNotification() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    int? usageStartTime = prefs.getInt("linearAppUsageStartTime");
+
+    if(usageStartTime != null){
+      int currentTime = DateTime.now().millisecondsSinceEpoch;
+      int timeDifference = currentTime - usageStartTime;
+      int timeDifferenceInMinutes = timeDifference ~/ 60000; // 60000 milliseconds = 1 minute
+      if(timeDifferenceInMinutes >= usageNotificationTimeInMinutes){
+        resetAppUsageStartTime();
+        return true;
+      }
+      return false;
+    } 
+    resetAppUsageStartTime();
+    return false;
+  }
+
+  Future<void> resetAppUsageStartTime() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setInt("linearAppUsageStartTime", DateTime.now().millisecondsSinceEpoch);
   }
 }

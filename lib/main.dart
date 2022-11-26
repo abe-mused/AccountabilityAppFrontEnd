@@ -8,6 +8,7 @@ import 'package:linear/constants/themeSettings.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  UserPreferences().resetAppUsageStartTime();
   runApp(
     const LinearApp(),
   );
