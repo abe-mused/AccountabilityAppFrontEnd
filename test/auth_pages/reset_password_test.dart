@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:linear/auth_pages/reset_password.dart';
-import 'package:linear/auth_pages/sign_in.dart';
+import 'package:linear/auth_pages/verify_email.dart';
+import 'package:linear/auth_pages/login_page.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart';

@@ -10,7 +10,6 @@ import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart';
 import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 
-
 class PostWidget extends StatefulWidget {
   PostWidget(
       {super.key,
@@ -19,10 +18,10 @@ class PostWidget extends StatefulWidget {
       required this.onDelete,
       required this.route,
       this.isPostPage = false});
-  final Post post;
-  final Function onLike;
-  final VoidCallback onDelete;
-  final Widget route;
+      final Post post;
+      final Function onLike;
+      final VoidCallback onDelete;
+      final Widget route;
   bool isPostPage;
 
   @override
@@ -55,6 +54,7 @@ class _PostWidget extends State<PostWidget> {
     } else {
       widget.post.likes!.add(_currentUsername);
     }
+
     widget.onLike(widget.post.likes);
     final Future<Map<String, dynamic>> responseMessage = likePost(context, widget.post.postId);
     responseMessage.then((response) {
@@ -87,8 +87,7 @@ class _PostWidget extends State<PostWidget> {
   }
 
   doDeletePost() {
-    final Future<Map<String, dynamic>> responseMessage =
-        deletePost(context, widget.post.postId);
+    final Future<Map<String, dynamic>> responseMessage = deletePost(context, widget.post.postId);
     responseMessage.then((response) {
       if (response['status'] == true) {
         widget.onDelete();
@@ -208,9 +207,9 @@ class _PostWidget extends State<PostWidget> {
                                           ),
                                         ),
                                       );
-                                    }
+                                    },
                                 ),
-                              ]
+                              ],
                             ),
                           ),
                           Text(
@@ -285,9 +284,9 @@ class _PostWidget extends State<PostWidget> {
                               ),
                             );
                           }
-                        }
+                        },
                       ),
-                    ]
+                    ],
                   ],
                 ),
               ),

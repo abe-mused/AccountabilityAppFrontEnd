@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:linear/auth_pages/sign_up.dart';
+import 'package:linear/auth_pages/signup_page.dart';
 import 'package:linear/util/cognito/auth_util.dart' as authUtil;
 import 'package:linear/constants/themeSettings.dart';
 

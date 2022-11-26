@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:linear/auth_pages/sign_up.dart';
-import 'package:linear/auth_pages/reset_password.dart';
+import 'package:linear/auth_pages/signup_page.dart';
+import 'package:linear/auth_pages/verify_email.dart';
 import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 import 'package:linear/constants/themeSettings.dart';
 

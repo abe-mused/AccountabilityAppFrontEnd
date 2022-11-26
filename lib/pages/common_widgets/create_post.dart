@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/pages/image_related_widgets/upload_image_widget.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/model/post.dart';
 
 class CreatePostWidget extends StatefulWidget {
   CreatePostWidget(
