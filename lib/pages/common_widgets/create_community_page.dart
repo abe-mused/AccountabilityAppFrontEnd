@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:linear/util/apis.dart';
+import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/community_page.dart';
+import 'package:linear/util/apis.dart';
 
-class CreateCommunityWidget extends StatefulWidget {
-  const CreateCommunityWidget({super.key});
+class CreateCommunityPage extends StatefulWidget {
+  const CreateCommunityPage({Key? key}) : super(key: key);
 
   @override
-  State<CreateCommunityWidget> createState() => _CreateCommunityWidgetState();
+  State<CreateCommunityPage> createState() => CreateCommunityPageState();
 }
 
-class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
+class CreateCommunityPageState extends State<CreateCommunityPage> {
+
   TextEditingController userInput = TextEditingController();
   bool _isLoading = false;
 
-  doCreateCommunity() {
+ doCreateCommunity() {
     final Future<Map<String, dynamic>> successfulMessage = createCommunity(context, userInput.text);
 
     successfulMessage.then((response) {
@@ -40,7 +42,6 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                         ),
                       ),
                     );
-                   
                   },
                       child: const Text("Ok"))
                 ],
@@ -67,8 +68,7 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
                           communityName: userInput.text.toLowerCase(),
                         ),
                       ),
-                    );
-                    
+                    );  
                   },
                       child: const Text("Go to Community"))
                 ],
@@ -94,10 +94,15 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
       }
     });
   }
-
+  
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Create Community"),
+        elevation: 0.1,
+      ),
+      body: Column(children: [
       Container(
         margin: const EdgeInsets.all(10),
         child: TextFormField(
@@ -137,6 +142,9 @@ class _CreateCommunityWidgetState extends State<CreateCommunityWidget> {
               ),
              ),
           ),
-    ]);
+    ],
+    ),
+      bottomNavigationBar: const LinearNavBar(),
+    );
   }
 }
