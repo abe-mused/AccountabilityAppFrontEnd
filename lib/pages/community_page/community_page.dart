@@ -5,8 +5,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:linear/model/community.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
-import 'package:linear/pages/common_widgets/create_post.dart';
-import 'package:linear/pages/common_widgets/create_goal_widget.dart';
+import 'package:linear/pages/community_page/create_post_widget.dart';
+import 'package:linear/pages/community_page/create_goal_widget.dart';
 import 'package:linear/pages/common_widgets/post_widget.dart';
 import 'package:linear/pages/common_widgets/goal_widget.dart';
 import 'package:linear/model/goal.dart';
@@ -16,7 +16,7 @@ import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 import 'package:intl/intl.dart';
 import 'package:flutter/rendering.dart';
-import 'package:linear/pages/common_widgets/sortPosts.dart';
+import 'package:linear/pages/common_widgets/sort_posts_widget.dart';
 
 class CommunityPage extends StatefulWidget {
   CommunityPage({super.key, required this.communityName});

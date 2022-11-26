@@ -79,7 +79,7 @@ class SortPostsState extends State<SortPosts> {
       Row(
         children: [
           Text(
-            "Sorting By $sortType",
+            "Sorted By $sortType",
             style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
           ),
           if (widget.posts.isNotEmpty)
@@ -109,11 +109,11 @@ class SortPostsState extends State<SortPosts> {
                   if (!widget.isCommunityPage) ...[
                     const PopupMenuItem<int>(
                       value: 5,
-                      child: Text("Communities A to Z"),
+                      child: Text("Community A to Z"),
                     ),
                     const PopupMenuItem<int>(
                       value: 6,
-                      child: Text("Communities Z to A"),
+                      child: Text("Community Z to A"),
                     ),
                   ]
                 ];

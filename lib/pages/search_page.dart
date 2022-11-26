@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
-import 'package:linear/pages/community_page.dart';
+import 'package:linear/pages/community_page/community_page.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';
 import 'package:linear/util/apis.dart' as api;
 

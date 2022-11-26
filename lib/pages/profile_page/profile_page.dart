@@ -11,7 +11,7 @@ import 'package:linear/pages/profile_page/view_follows.dart';
 import 'package:linear/util/apis.dart' as api;
 import 'package:linear/util/cognito/user_preferences.dart';
 import 'package:linear/util/cognito/auth_util.dart' as auth_util;
-import 'package:linear/pages/common_widgets/sortPosts.dart';
+import 'package:linear/pages/common_widgets/sort_posts_widget.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key, this.usernameToDisplay}) : super(key: key);
@@ -351,7 +351,6 @@ class ProfilePageState extends State<ProfilePage> {
             ),
             CommunityListWidget(
               user: _userToDisplay!,
-              communityLength: _userToDisplay!.communities?.length,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 15),

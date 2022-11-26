@@ -1,93 +1,133 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/user.dart';
-import 'package:linear/pages/community_page.dart';
+import 'package:linear/pages/community_page/community_page.dart';
 import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/util/date_formatter.dart';
 
-class CommunityListWidget extends StatelessWidget {
-  CommunityListWidget(
+class CommunityListWidget extends StatefulWidget {
+  const CommunityListWidget(
       {super.key,
-      required this.user,
-      required this.communityLength});
+      required this.user});
 
   final User user;
-  final int? communityLength;
+
+  @override
+  State<CommunityListWidget> createState() => _CommunityListWidgetState();
+}
+
+class _CommunityListWidgetState extends State<CommunityListWidget> {
   final ScrollController _scrollController = ScrollController();
 
+  User? _userToDisplay;
+  String _sortType = "";
   final List _streak = [];
-
+  
   calculateStreak(index) {
-    _streak.add(computeStreak(user.communities![index]['firstStreakDate'],
-        user.communities![index]['lastStreakDate']));
+    _streak.add(computeStreak(_userToDisplay!.communities![index]['firstStreakDate'],
+        _userToDisplay!.communities![index]['lastStreakDate']));
     return _streak[index];
+  }
+
+  int computeStreak(firstStreakEpoch, lastStreakEpoch) {
+    firstStreakEpoch = firstStreakEpoch is int? firstStreakEpoch : int.parse(firstStreakEpoch);
+    lastStreakEpoch = lastStreakEpoch is int? lastStreakEpoch : int.parse(lastStreakEpoch);
+    
+    if (DateTime.now().isBefore(DateTime.fromMillisecondsSinceEpoch(lastStreakEpoch).add(const Duration(days: 1, hours: 12)))) {
+      return (lastStreakEpoch - firstStreakEpoch) ~/ dayInMilliseconds;
+    } else {
+      return 0;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      _userToDisplay = widget.user;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if(_userToDisplay == null){
+      return Container();
+    }
+
     return Column(
       children: [
-        if (user.communities!.isEmpty) ...[
+        if (_userToDisplay!.communities!.isEmpty) ...[
           Padding(
             padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-            child: Text('${user.username} is not part of a community. Yet...')
+            child: Text('${_userToDisplay!.username} is not part of a community. Yet...')
           ),
         ] else ...[
           Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: buildListOfCommunities(
-                user.communities!.length <= 3 ?
-                  user.communities!.length 
+                _userToDisplay!.communities!.length <= 3 ?
+                  _userToDisplay!.communities!.length 
                   : 3
               ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 5),
-                child: TextButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('All Communities'),
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(15.0),
-                        ),
-                        content: SizedBox(
-                          height: 400,
-                          width: 300,
-                          child: Scrollbar(
-                            thumbVisibility: false,
-                            controller: _scrollController,
-                            child: buildListOfCommunities(user.communities!.length),
-                          ),
-                        ),
-                        actions: [
-                          ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Okay'))
-                        ],
+          if(_userToDisplay!.communities!.length > 3) ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: TextButton(
+                    onPressed: () {
+                      showCompleteListDialog(context);
+                    },
+                    child: const Text(
+                      "see all communities",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w800,
                       ),
-                    );
-                  },
-                  child: const Text(
-                    "see all communities",
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ]
         ]
       ]
+    );
+  }
+
+  void showCompleteListDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('All Communities'),
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(15.0),
+        ),
+        content: SizedBox(
+          height: 400,
+          width: 300,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child:  Column(
+              children: [
+                buildSortComponent(context),
+                buildListOfCommunities(_userToDisplay!.communities!.length),
+              ]
+            ),
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Close'))
+        ],
+      ),
     );
   }
 
@@ -103,7 +143,7 @@ class CommunityListWidget extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => CommunityPage(
-                  communityName: user.communities![index]['communityName'],
+                  communityName: _userToDisplay!.communities![index]['communityName'],
                 ),
               ),
             );
@@ -118,7 +158,7 @@ class CommunityListWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "c/${user.communities![index]['communityName']}",
+                    "c/${_userToDisplay!.communities![index]['communityName']}",
                     style: const TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w800,
@@ -141,7 +181,7 @@ class CommunityListWidget extends StatelessWidget {
                           size: 30.0,
                         ),
                       ],
-                      if (user.username == user.communities![index]['creator']) ...[
+                      if (_userToDisplay!.username == _userToDisplay!.communities![index]['creator']) ...[
                         Icon(
                           Icons.admin_panel_settings,
                           color: AppThemes.iconColor(context),
@@ -156,6 +196,58 @@ class CommunityListWidget extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+  
+  buildSortComponent(BuildContext context) {
+    return ExpansionTile(
+      title: Text("Sort By: $_sortType"),
+      children: [
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _userToDisplay!.communities!.sort((a, b) => a['dateJoined'].compareTo(b['dateJoined']));
+              _sortType = "Date joined";
+            });
+            Navigator.pop(context);
+            showCompleteListDialog(context);
+          },
+          child: const Text('Date joined'),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _userToDisplay!.communities!.sort((a, b) => a['lastStreakDate'].compareTo(b['lastStreakDate']));
+              _sortType = "Last post date";
+            });
+            Navigator.pop(context);
+            showCompleteListDialog(context);
+          },
+          child: const Text('Last post date'),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _userToDisplay!.communities!.sort((a, b) => a['communityName'].compareTo(b['communityName']));
+              _sortType = "Alphabetical (A-Z)";
+            });
+            Navigator.pop(context);
+            showCompleteListDialog(context);
+          },
+          child: const Text('Alphabetical (A-Z)'),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _userToDisplay!.communities!.sort((a, b) => b['communityName'].compareTo(a['communityName']));
+              _sortType = "Alphabetical (Z-A)";
+            });
+            Navigator.pop(context);
+            showCompleteListDialog(context);
+          },
+          child: const Text('Alphabetical (Z-A)'),
+        ),
+      ]
     );
   }
 }

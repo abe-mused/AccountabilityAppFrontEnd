@@ -14,14 +14,3 @@ String getFormattedDate(int unixTimeMilliseconds) {
   }
   return "Created ${(currentDate.difference(inputDate).inDays).round()} days ago";
 }
-
-int computeStreak(firstStreakEpoch, lastStreakEpoch) {
-  firstStreakEpoch = firstStreakEpoch is int? firstStreakEpoch : int.parse(firstStreakEpoch);
-  lastStreakEpoch = lastStreakEpoch is int? lastStreakEpoch : int.parse(lastStreakEpoch);
-  
-  if (DateTime.now().isBefore(DateTime.fromMillisecondsSinceEpoch(lastStreakEpoch).add(const Duration(days: 1, hours: 12)))) {
-    return (lastStreakEpoch - firstStreakEpoch) ~/ dayInMilliseconds;
-  } else {
-    return 0;
-  }
-}
