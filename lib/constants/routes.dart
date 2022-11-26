@@ -12,7 +12,7 @@ Map<String, Widget Function(BuildContext context)> linearRoutes = {
   '/login': (context) => const LoginPage(),
   '/signup': (context) => const SignUpPage(),
   '/search': (context) => const SearchPage(),
-    '/goals': (context) => const GoalPage(),
+  '/goals': (context) => const GoalPage(),
   '/profile': (context) => const ProfilePage(),
   '/createCommunity': (context) => const CreateCommunityPage(),
 };
