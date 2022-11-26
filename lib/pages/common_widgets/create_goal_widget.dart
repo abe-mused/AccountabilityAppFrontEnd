@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/util/apis.dart';
-import 'package:linear/model/goal.dart';
 
 class CreateGoalWidget extends StatefulWidget {
   CreateGoalWidget({super.key, required this.communityName, required this.onSuccess});

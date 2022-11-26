@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:linear/auth_pages/sign_in.dart';
-import 'package:linear/auth_pages/sign_up.dart';
+import 'package:linear/auth_pages/login_page.dart';
+import 'package:linear/auth_pages/signup_page.dart';
 import 'package:linear/pages/common_widgets/create_community_page.dart';
 import 'package:linear/pages/home_page.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';

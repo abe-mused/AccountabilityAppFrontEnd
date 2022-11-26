@@ -18,8 +18,6 @@ class GoalWidget extends StatelessWidget {
     final ScrollController scrollController = ScrollController();
     final TextEditingController goalExtensionInput = TextEditingController();
 
-
-
     doDeleteGoal() {
       deleteGoal(context, goal.goalId).then((response){
         if (response['status'] == true) {
