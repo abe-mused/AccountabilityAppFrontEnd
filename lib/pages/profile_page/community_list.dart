@@ -14,7 +14,7 @@ class CommunityListWidget extends StatelessWidget {
   final int? communityLength;
   final ScrollController _scrollController = ScrollController();
 
-  List _streak = [];
+  final List _streak = [];
 
   calculateStreak(index) {
     _streak.add(computeStreak(user.communities![index]['firstStreakDate'],

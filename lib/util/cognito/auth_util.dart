@@ -85,9 +85,8 @@ Future<Map<String, dynamic>> signUp({
 
 Future<Map<String, dynamic>> passwordResetCode({required String email}) async {
   final cognitoUser = CognitoUser(email, userPool);
-  var data;
   try {
-    data = await cognitoUser.forgotPassword();
+    await cognitoUser.forgotPassword();
   } on CognitoClientException catch (e) {
     print("An error occurred while sending the password reset code:  $e");
     return {'status': false, 'message': 'An error occurred while sending the password reset code, please try again.'};
@@ -95,7 +94,6 @@ Future<Map<String, dynamic>> passwordResetCode({required String email}) async {
     print("An error occurred while sending the password reset code:  $e");
     return {'status': false, 'message': 'An error occurred while sending the password reset code, please try again.'};
   }
-  print('Code sent to $data');
   return {'status': true, 'message': 'A password reset code has been sent to your email.'};
 }
 

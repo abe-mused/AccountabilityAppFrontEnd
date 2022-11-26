@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:linear/util/cognito/auth_util.dart' as auth_utility;
 import 'package:linear/util/cognito/user_preferences.dart';
 import 'dart:io';
+import 'dart:developer' as developer;
 
 getTokenOrRedirectToLogin(BuildContext context) async {
   dynamic token = await auth_utility.getAuthToken();
@@ -14,7 +15,6 @@ getTokenOrRedirectToLogin(BuildContext context) async {
     showModalBottomSheet(
       context: context,
       isDismissible: false,
-      // ignore: use_build_context_synchronously
       barrierColor: MediaQuery.of(context).platformBrightness == Brightness.dark ?
               AppThemes.lightTheme.colorScheme.background
               : AppThemes.darkTheme.colorScheme.background,
@@ -62,7 +62,7 @@ checkInternetConnection(BuildContext context) async {
       isConnected = true;
     }
   } on SocketException catch (_) {
-    print('Not connected to the internet!');
+    developer.log('Not connected to the internet!');
   }
 
   if (!isConnected) {
@@ -199,7 +199,7 @@ Future<Map<String, dynamic>> getSearchResults(BuildContext context, String searc
       return {'status': false, 'message': 'results not found.'};
     });
   } catch (e) {
-    print(e);
+    developer.log(e.toString());
     return {'status': false, 'message': 'results not found.'};
   }
 }
@@ -231,7 +231,7 @@ Future<Map<String, dynamic>> getProfile(BuildContext context, String username) a
       return {'status': false, 'message': 'User not found.'};
     });
   } catch (e) {
-    print(e);
+    developer.log(e.toString());
     return {'status': false, 'message': 'User not found.'};
   }
 }
@@ -261,7 +261,6 @@ Future<Map<String, dynamic>> createPost(BuildContext context, String postTitle, 
     },
   ).then(
     (response) {
-      print(response.body.toString());
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         return {'status': true, 'message': 'Post Succesfully Created.', 'newPost': jsonResponse['newPost']};
@@ -331,7 +330,7 @@ Future<Map<String, dynamic>> likePost(BuildContext context, String postId) async
       return {'status': false, 'message': 'Post not found.'};
     });
   } catch (e) {
-    print(e);
+    developer.log(e.toString());
     return {'status': false, 'message': 'Post not found.'};
   }
 }
@@ -365,7 +364,7 @@ Future<Map<String, dynamic>> getPostsForCommunity(BuildContext context, String c
       return {'status': false, 'message': 'Community not found.'};
     });
   } catch (e) {
-    print(e);
+    developer.log(e.toString());
     return {'status': false, 'message': 'Community not found.'};
   }
 }
@@ -400,7 +399,7 @@ Future<Map<String, dynamic>> getPostWithComments(BuildContext context, String po
       return {'status': false, 'message': 'Post not found.'};
     });
   } catch (e) {
-    print(e);
+    developer.log(e.toString());
     return {'status': false, 'message': 'Community not found.'};
   }
 }
@@ -583,8 +582,7 @@ Future<Map<String, dynamic>> getGoalsForGoalPage(BuildContext context) async {
       return {'status': false, 'message': 'Goals not found.'};
     });
   } catch (e) {
-    print(e);
-    print('Goals[] is null');
+    developer.log(e.toString());
     return {'status': false, 'message': 'Goals not found.'};
   }
 }
@@ -609,7 +607,6 @@ Future<Map<String, dynamic>> deleteGoal(BuildContext context, String goalId) asy
   ).then(
     (response) {
       if (response.statusCode == 200) {
-        print("Success!");
         return {'status': true, 'message': 'Goal Succesfully Deleted.'};
       } else {
         return {
@@ -686,7 +683,6 @@ Future<Map<String, dynamic>> changeProfilePicture(BuildContext context, String i
     },
   ).then(
     (response) {
-      print("Response body: ${response.body} code: ${response.statusCode}");
       if (response.statusCode == 200) {
         return {
           'status': true,

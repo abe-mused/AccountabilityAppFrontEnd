@@ -7,7 +7,7 @@ import './single_image_picker.dart';
 
 class AddAttachmentModalSheet extends StatefulWidget {
   final Size screenSize;
-  Source source = Source.NONE;
+  Source source = Source.none;
 
   AddAttachmentModalSheet(this.screenSize, {super.key});
 
@@ -20,7 +20,7 @@ class _AddAttachmentModalSheetState extends State<AddAttachmentModalSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 300,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -29,7 +29,7 @@ class _AddAttachmentModalSheetState extends State<AddAttachmentModalSheet> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                const Text("Upload", style: const TextStyle(fontSize: 26, color: Colors.black)),
+                const Text("Upload", style: TextStyle(fontSize: 26, color: Colors.black)),
                 GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
@@ -53,14 +53,14 @@ class _AddAttachmentModalSheetState extends State<AddAttachmentModalSheet> {
     return GestureDetector(
       onTap: onItemClicked,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
           children: <Widget>[
             Icon(optionIcon),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(
               optionName,
-              style: TextStyle(color: Colors.black, fontSize: 18),
+              style: const TextStyle(color: Colors.black, fontSize: 18),
             )
           ],
         ),
@@ -73,7 +73,7 @@ class _AddAttachmentModalSheetState extends State<AddAttachmentModalSheet> {
     await getPermission.getPermission(context);
 
     if (getPermission.granted) {
-      widget.source = Source.GALLERY;
+      widget.source = Source.gallery;
       Navigator.pop(context);
     }
   }
@@ -83,7 +83,7 @@ class _AddAttachmentModalSheetState extends State<AddAttachmentModalSheet> {
     await getPermission.getPermission(context);
 
     if (getPermission.granted) {
-      widget.source = Source.CAMERA;
+      widget.source = Source.camera;
       Navigator.pop(context);
     }
   }

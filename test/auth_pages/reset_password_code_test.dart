@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:linear/auth_pages/reset_password_code.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:linear/auth_pages/signup_page.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}

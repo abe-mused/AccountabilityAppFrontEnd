@@ -3,12 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:linear/pages/image_related_widgets/single_image_picker.dart';
+import 'dart:developer' as developer;
 
-enum PhotoStatus { LOADING, ERROR, LOADED, NONE }
-enum PhotoSource { ASSET, NETWORK, NONE }
+enum PhotoStatus { loading, error, loaded, none }
+enum PhotoSource { asset, network, none }
 
 class UploadImageWidget extends StatefulWidget {
-  UploadImageWidget(
+  const UploadImageWidget(
       {super.key,
       required this.onSuccess,
       required this.onCancel,
@@ -23,8 +24,8 @@ class UploadImageWidget extends StatefulWidget {
 }
 
 class _UploadImageWidgetState extends State<UploadImageWidget> {
-  PhotoSource photoSource = PhotoSource.NONE;
-  PhotoStatus photoStatus = PhotoStatus.NONE;
+  PhotoSource photoSource = PhotoSource.none;
+  PhotoStatus photoStatus = PhotoStatus.none;
   String source = "";
   XFile? localImage;
 
@@ -32,33 +33,33 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
   Widget build(BuildContext context) {
     
     final SingleImagePicker picker = SingleImagePicker(
-      pickImageSource: PickImageSource.BOTH,
+      pickImageSource: PickImageSource.both,
       onImagePicked: (image) => {
         setState(() {
-          photoStatus = PhotoStatus.LOADED;
-          photoSource = PhotoSource.ASSET;
+          photoStatus = PhotoStatus.loaded;
+          photoSource = PhotoSource.asset;
           localImage = image;
         })
       },
       onImageRemoved: () => {
         setState(() {
           localImage = null;
-          photoStatus = PhotoStatus.NONE;
-          photoSource = PhotoSource.NONE;
+          photoStatus = PhotoStatus.none;
+          photoSource = PhotoSource.none;
         }),
       },
       onImageSuccessfullyUploaded: (downloadUrl) => {
-        print("Image uploaded successfully${downloadUrl}"),
+        developer.log("Image uploaded successfully$downloadUrl"),
       },
       onImageUploadFailed: (message) => {
-        print("Image upload failed: ${message}"),
+        developer.log("Image upload failed: $message"),
         setState(() {
-          photoStatus = PhotoStatus.ERROR;
+          photoStatus = PhotoStatus.error;
         }),
       },
     );
 
-    _buildAddPhotoButton() {
+    buildAddPhotoButton() {
       return TextButton(
           onPressed: () async {
             await picker.pickImage(context);            
@@ -73,7 +74,7 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
       );
     }
 
-    _buildRemovePhotoButton() {
+    buildRemovePhotoButton() {
       return TextButton(
           onPressed: () async {
             await picker.removeImage(); 
@@ -88,7 +89,7 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
       );
     }
 
-    _buildActionRow() {
+    buildActionRow() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -115,32 +116,32 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
     return Center(
       child: Column(
           children: [
-            Container(
+            SizedBox(
               height: 200,
               child: Stack(
                 children: [
                   Positioned.fill(
                     child: Container(
                       color: Colors.grey.shade200,
-                      child: photoSource == PhotoSource.NETWORK?
+                      child: photoSource == PhotoSource.network?
                                 Image.network(source, height: 200)
-                                : photoSource == PhotoSource.ASSET?
+                                : photoSource == PhotoSource.asset?
                                   Image.file(File(localImage!.path), height: 200)
                                   : Container(color: Colors.white, height: 200),
                     ),
                   ),
                   Align(
-                    alignment: photoStatus == PhotoStatus.LOADED?
+                    alignment: photoStatus == PhotoStatus.loaded?
                       Alignment.topRight
                       : Alignment.center,
-                    child: photoStatus == PhotoStatus.LOADING?
+                    child: photoStatus == PhotoStatus.loading?
                             const CircularProgressIndicator()
-                            : photoStatus == PhotoStatus.ERROR?
+                            : photoStatus == PhotoStatus.error?
                               const Icon(Icons.error, color: Colors.red, size: 40)
-                              : photoStatus == PhotoStatus.NONE?
-                                _buildAddPhotoButton()
-                                : photoStatus == PhotoStatus.LOADED?
-                                  _buildRemovePhotoButton()
+                              : photoStatus == PhotoStatus.none?
+                                buildAddPhotoButton()
+                                : photoStatus == PhotoStatus.loaded?
+                                  buildRemovePhotoButton()
                                   : Container(),
                   )
                 ],
@@ -148,7 +149,7 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: _buildActionRow(),
+              child: buildActionRow(),
             ),
           ],
         )

@@ -5,14 +5,12 @@ import 'package:linear/model/user.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/common_widgets/post_widget.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
-import 'package:linear/pages/community_page.dart';
 import 'package:linear/pages/image_related_widgets/upload_image_widget.dart';
 import 'package:linear/pages/profile_page/community_list.dart';
 import 'package:linear/pages/profile_page/view_follows.dart';
 import 'package:linear/util/apis.dart' as api;
 import 'package:linear/util/cognito/user_preferences.dart';
 import 'package:linear/util/cognito/auth_util.dart' as auth_util;
-import 'package:linear/util/date_formatter.dart';
 import 'package:linear/pages/common_widgets/sortPosts.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -146,15 +144,15 @@ class ProfilePageState extends State<ProfilePage> {
 
   Center buildLoadingPage() {
     return 
-       Center(
-       child: const CircularProgressIndicator()
+       const Center(
+       child: CircularProgressIndicator()
      );
   }
 
   buildProfilePageErrorScreen(){
    return const Scaffold(
        body: Center(
-         child:  const Text(
+         child:  Text(
             "We ran into an error trying to obtain the profile. \nPlease try again later.",
             textAlign: TextAlign.center,
           )
@@ -478,7 +476,7 @@ class ProfilePageState extends State<ProfilePage> {
           Text(
               label,
               textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
         ]
       ), 

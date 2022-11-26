@@ -9,7 +9,7 @@ import 'package:linear/util/date_formatter.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
 import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 
-
+// ignore: must_be_immutable
 class PostPage extends StatefulWidget {
   PostPage(
       {super.key,

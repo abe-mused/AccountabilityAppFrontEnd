@@ -9,7 +9,6 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
-import 'package:linear/auth_pages/reset_password_code.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 

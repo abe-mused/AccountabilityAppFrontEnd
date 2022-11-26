@@ -3,9 +3,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:linear/pages/image_related_widgets/add_image_modal.dart';
 import 'package:linear/util/image_utils/single_image_util.dart';
 import 'package:linear/util/image_utils/image_premissions_util.dart';
+import 'dart:developer' as developer;
 
-enum Source { GALLERY, CAMERA, NONE }
-enum PickImageSource { GALLERY, CAMERA, BOTH }
+
+enum Source { gallery, camera, none }
+enum PickImageSource { gallery, camera, both }
 
 class SingleImagePicker {
   final PickImageSource pickImageSource;
@@ -15,7 +17,7 @@ class SingleImagePicker {
   final Function(String message) onImageUploadFailed;
 
   SingleImagePicker({
-    this.pickImageSource = PickImageSource.BOTH,
+    this.pickImageSource = PickImageSource.both,
     required this.onImagePicked,
     required this.onImageRemoved,
     required this.onImageSuccessfullyUploaded,
@@ -30,7 +32,7 @@ class SingleImagePicker {
     try {
       ImageSource imageSource;
 
-      if (pickImageSource == PickImageSource.BOTH) {
+      if (pickImageSource == PickImageSource.both) {
         Size size = MediaQuery.of(context).size;
         var sheet = AddAttachmentModalSheet(size);
         await showModalBottomSheet(
@@ -39,14 +41,14 @@ class SingleImagePicker {
           isScrollControlled: true,
         );
 
-        if (sheet.source == Source.CAMERA) {
+        if (sheet.source == Source.camera) {
           imageSource = ImageSource.camera;
-        } else if (sheet.source == Source.GALLERY) {
+        } else if (sheet.source == Source.gallery) {
           imageSource = ImageSource.gallery;
         } else {
           return;
         }
-      } else if (pickImageSource == PickImageSource.CAMERA) {
+      } else if (pickImageSource == PickImageSource.camera) {
         imageSource = ImageSource.camera;
 
         GetImagePermission getPermission = GetImagePermission.camera();
@@ -56,7 +58,7 @@ class SingleImagePicker {
           //Permission is not granted
           return;
         }
-      } else if (pickImageSource == PickImageSource.GALLERY) {
+      } else if (pickImageSource == PickImageSource.gallery) {
         imageSource = ImageSource.gallery;
 
         GetImagePermission getPermission = GetImagePermission.gallery();
@@ -75,7 +77,7 @@ class SingleImagePicker {
       if (image != null) {
         onImagePicked.call(image!);
         isImagePicked = true;
-        print("Image picked!");
+        developer.log("Image picked!");
       }
     } catch (e) {
       onImageUploadFailed(e.toString());

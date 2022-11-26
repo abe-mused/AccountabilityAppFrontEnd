@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/reset_password_code.dart';
 import 'package:linear/auth_pages/login_page.dart';
-import 'package:linear/util/cognito/auth_util.dart' as authUtil;
+import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 import 'package:linear/constants/themeSettings.dart';
 
 class ResetPasswordPage extends StatefulWidget {
@@ -20,7 +20,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final email = TextEditingController();
 
   doSendResetCode() {
-    final Future<Map<String, dynamic>> successfulMessage = authUtil.passwordResetCode(email: email.text);
+    final Future<Map<String, dynamic>> successfulMessage = auth_util.passwordResetCode(email: email.text);
 
     successfulMessage.then((response) {
       if (response['status'] == true) {

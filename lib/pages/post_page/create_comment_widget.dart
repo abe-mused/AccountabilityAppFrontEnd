@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:linear/util/apis.dart';
 
+// ignore: must_be_immutable
 class CreateCommentWidget extends StatefulWidget {
   CreateCommentWidget({super.key, required this.postId, required this.addComment});
   String postId;

@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:linear/pages/image_related_widgets/upload_image_widget.dart';
 import 'package:linear/util/apis.dart';
@@ -32,7 +34,6 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
   }
 
   void onImageWidgetSubmit(String? url) {
-    print("onImageWidgetSubmit ${url}");
     if (postTitleInput.text != '' &&
         postBodyInput.text != '') {
       doCreatePost(url);

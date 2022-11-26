@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/community_page.dart';
 import 'package:linear/pages/profile_page/profile_page.dart';

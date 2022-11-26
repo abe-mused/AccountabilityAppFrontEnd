@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/login_page.dart';
-import 'package:linear/util/cognito/auth_util.dart' as authUtil;
+import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 import 'package:linear/constants/themeSettings.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -22,7 +22,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   doSignUp() {
     final Future<Map<String, dynamic>> responseMessage =
-        authUtil.signUp(email: email.text, password: password.text, username: username.text, fullName: name.text);
+        auth_util.signUp(email: email.text, password: password.text, username: username.text, fullName: name.text);
 
     responseMessage.then((response) {
       if (response['status'] == true) {

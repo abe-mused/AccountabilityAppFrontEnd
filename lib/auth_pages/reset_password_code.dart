@@ -1,6 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:linear/auth_pages/signup_page.dart';
-import 'package:linear/util/cognito/auth_util.dart' as authUtil;
+import 'package:linear/util/cognito/auth_util.dart' as auth_util;
 import 'package:linear/constants/themeSettings.dart';
 
 class ResetPasswordCodePage extends StatefulWidget {
@@ -18,7 +20,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
   TextEditingController code = TextEditingController();
 
   doSendResetCode() {
-    final Future<Map<String, dynamic>> successfulMessage = authUtil.passwordResetCode(email: widget.email);
+    final Future<Map<String, dynamic>> successfulMessage = auth_util.passwordResetCode(email: widget.email);
 
     successfulMessage.then((response) {
       if (response['status']) {
@@ -63,7 +65,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
 
   doChangePassword() {
     final Future<Map<String, dynamic>> successfulMessage =
-        authUtil.passwordReset(email: widget.email, code: code.text, password: password.text);
+        auth_util.passwordReset(email: widget.email, code: code.text, password: password.text);
 
     successfulMessage.then((response) async {
       if (response['status'] == true) {

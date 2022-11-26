@@ -9,7 +9,7 @@ class LinearNavBar extends StatefulWidget {
 }
 
 class _LinearNavBarState extends State<LinearNavBar> {
-  int selected_icon = 0;
+  int selectedIcon = 0;
 
   void iconSelector(int index) {
     
@@ -28,7 +28,7 @@ class _LinearNavBarState extends State<LinearNavBar> {
       Navigator.pushReplacementNamed(context, '/profile');
     }
     setState(() {
-      selected_icon = index;
+      selectedIcon = index;
     });
   }
 
@@ -38,7 +38,7 @@ class _LinearNavBarState extends State<LinearNavBar> {
     
     UserPreferences().getActiveTab().then((value) {
       setState(() {
-        selected_icon = value;
+        selectedIcon = value;
       });
     });
   }
@@ -65,7 +65,7 @@ class _LinearNavBarState extends State<LinearNavBar> {
           label: 'Profile',
         ),
       ],
-      currentIndex: selected_icon,
+      currentIndex: selectedIcon,
       onTap: iconSelector,
       showSelectedLabels: false,
       showUnselectedLabels: false,
