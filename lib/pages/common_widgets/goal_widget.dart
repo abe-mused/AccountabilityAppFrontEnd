@@ -1,33 +1,35 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/model/goal.dart';
 import 'package:linear/pages/community_page.dart';
 import 'package:linear/util/date_formatter.dart';
-import 'package:linear/util/apis.dart';
+import 'package:linear/util/apis.dart' as api;
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import "package:flutter/services.dart";
+
 
 class GoalWidget extends StatelessWidget {
   const GoalWidget({super.key, required this.goal, required this.onDelete, required this.onFinish, required this.onExtend});
   final Goal goal;
   final VoidCallback onDelete;
   final VoidCallback onFinish;
-  final VoidCallback onExtend;
+  final void Function(int) onExtend;
 
   @override
   Widget build(BuildContext context) {
-    
-    final ScrollController scrollController = ScrollController();
     final TextEditingController goalExtensionInput = TextEditingController();
 
-    doDeleteGoal() {
-      deleteGoal(context, goal.goalId).then((response){
+    deleteGoal() {
+      api.deleteGoal(context, goal.goalId).then((response){
         if (response['status'] == true) {
         onDelete();
         } else {}
       });
     }
 
-    doFinishGoal() {
-      finishOrExtend(context, goal.goalId, true, 0).then((response) {
+    finishGoal() {
+      api.finishOrExtend(context, goal.goalId, true, 0).then((response) {
         if (response['status'] == true) {
         onFinish();
         } else {
@@ -51,10 +53,11 @@ class GoalWidget extends StatelessWidget {
       });
     }
 
-     doExtendGoal() {
-      finishOrExtend(context, goal.goalId, false, (int.parse(goalExtensionInput.text.toString()))).then((response) {
+     extendGoal() {
+      int extension = int.parse(goalExtensionInput.text);
+      api.finishOrExtend(context, goal.goalId, false, (extension)).then((response) {
         if (response['status'] == true) {
-        onExtend();
+        onExtend(extension);
         } else {
           showDialog(
             context: context,
@@ -84,7 +87,7 @@ class GoalWidget extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: <Widget>[
-              buildGoalWidgetHeader(context, doDeleteGoal, doFinishGoal, doExtendGoal, goalExtensionInput),
+              buildGoalWidgetHeader(context, deleteGoal, finishGoal, extendGoal, goalExtensionInput),
               const Divider(
                 height: 10,
                 thickness: 0.6,
@@ -99,7 +102,7 @@ class GoalWidget extends StatelessWidget {
     );
   }
 
-  Container buildGoalWidgetHeader(BuildContext context, Null doDeleteGoal(), Null doFinishGoal(), Null doExtendGoal(), TextEditingController goalExtensionInput) {
+  Container buildGoalWidgetHeader(BuildContext context, void Function() deleteGoal, void Function() finishGoal, void Function() extendGoal, TextEditingController goalExtensionInput) {
     return Container(
               padding: const EdgeInsets.all(10),
               child: Row(
@@ -109,24 +112,32 @@ class GoalWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                         TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CommunityPage(
-                                  communityName: goal.communityName,
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                            TextSpan(
+                                text: 'c/${goal.communityName}',
+                                style: TextStyle(
+                                  color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                                    ? AppThemes.darkTheme.primaryColor
+                                    : AppThemes.lightTheme.primaryColor,
+                                  fontSize: 20,
                                 ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CommunityPage(
+                                          communityName: goal.communityName,
+                                        ),
+                                      ),
+                                    );
+                                  }
                               ),
-                            );
-                          },
-                        child: Text(
-                          "c/${goal.communityName}",
-                          style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                            ]
+                          ),
                         ),
-                      )),
                         Text(
                           getFormattedDate(goal.creationDate),
                           style: const TextStyle(fontSize: 12),
@@ -135,54 +146,19 @@ class GoalWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if((goal.completedCheckIns >= goal.checkInGoal) && !goal.isFinished)
-                  IconButton(
-                    icon: const Icon(Icons.notification_important),
-                    color: Colors.red,
-                    tooltip: 'Finish or Extend Goal!',
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: const Text('Finish or Extend'),
-                          content: const Text('Either finish or extend the goal!'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () =>
-                                Navigator.pop(context, 'Cancel'),
-                                child: const Text('Cancel'),
-                            ),
-                            TextButton( 
-                              onPressed: () {
-                                Navigator.pop(context);
-                                selectExtension(context, doExtendGoal, goalExtensionInput);
-                                
-                              },
-                              child: const Text('Extend'),
-                            ),
-                             TextButton( 
-                              onPressed: () {
-                                doFinishGoal();
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Finish'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                 ),
-                    PopupMenuButton(itemBuilder: (context) {
-                    return [
-                      const PopupMenuItem<int>(
-                        value: 0,
-                        child: Text("Delete"),
-                      ),
+                  buildGoalStatusBadge(context, finishGoal, extendGoal, goalExtensionInput),
+                  PopupMenuButton(itemBuilder: (context) {
+                  return [
+                    const PopupMenuItem<int>(
+                      value: 0,
+                      child: Text("Delete"),
+                    ),
+                    if(!goal.isFinished)
                       const PopupMenuItem<int>(
                         value: 1,
                         child: Text("Extend"),
                       ),
-                    ];
+                  ];
                   }, onSelected: (value) {
                     if (value == 0) {
                       showDialog(
@@ -199,7 +175,7 @@ class GoalWidget extends StatelessWidget {
                             
                             TextButton( 
                               onPressed: () {
-                                doDeleteGoal();
+                                deleteGoal();
                                 Navigator.pop(context);
                               },
                               child: const Text('Yes'),
@@ -209,7 +185,7 @@ class GoalWidget extends StatelessWidget {
                       );
                     }
                     if (value == 1) {
-                       selectExtension(context, doExtendGoal, goalExtensionInput);
+                       selectExtension(context, extendGoal, goalExtensionInput);
                     }
                   }),
                 ],
@@ -217,7 +193,7 @@ class GoalWidget extends StatelessWidget {
             );
   }
 
-  Future<dynamic> selectExtension(BuildContext context, Null doExtendGoal(), goalExtensionInput) {
+  selectExtension(BuildContext context, void Function() extendGoal, TextEditingController goalExtensionInput) {
     return showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -227,9 +203,9 @@ class GoalWidget extends StatelessWidget {
         TextField(
         controller: goalExtensionInput,
         keyboardType: TextInputType.number,
-        decoration: InputDecoration(hintText: "Ex: 5"),
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        decoration: const InputDecoration(hintText: "Ex: 5"),
         ),
-         
         actions: <Widget>[
         TextButton(
           onPressed: () =>
@@ -239,16 +215,15 @@ class GoalWidget extends StatelessWidget {
         TextButton( 
          onPressed: () {
           if ((goalExtensionInput.text != '') && (int.parse(goalExtensionInput.text.toString()) > 0)) {
-              doExtendGoal();
+              extendGoal();
               Navigator.pop(context);
           } else {
-          Navigator.pop(context);
            showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
               content:
-               const Text("Please redo and fill out with a number greater than zero."),
+               const Text("Please enter a number greater than zero."),
                actions: [
                  TextButton(
                   onPressed: () {
@@ -324,5 +299,54 @@ class GoalWidget extends StatelessWidget {
         ],
       )
     );
+  }
+  
+  buildGoalStatusBadge(BuildContext context, void Function() finishGoal, void Function() extendGoal, TextEditingController goalExtensionInput) {
+    if((goal.completedCheckIns >= goal.checkInGoal) && !goal.isFinished){
+      return IconButton(
+        icon: const Icon(Icons.notification_important),
+        color: Colors.red,
+        tooltip: 'Finish or Extend Goal!',
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Goal is overdue!'),
+              content: const Text('Would you like to finish or extend this goal?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () =>
+                    Navigator.pop(context, 'Cancel'),
+                    child: const Text('Cancel'),
+                ),
+                TextButton( 
+                  onPressed: () {
+                    Navigator.pop(context);
+                    selectExtension(context, extendGoal, goalExtensionInput);
+                  },
+                  child: const Text('Extend'),
+                ),
+                TextButton( 
+                  onPressed: () {
+                    finishGoal();
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Mark as finished'),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    } else if (goal.isFinished) {
+      return IconButton(
+        icon: const Icon(Icons.check_circle),
+        color: Colors.green,
+        tooltip: 'Goal is finished!',
+        onPressed: () {},
+      );
+    } else {
+      return const SizedBox();
+    }
   }
 }

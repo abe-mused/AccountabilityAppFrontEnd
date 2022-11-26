@@ -35,7 +35,7 @@ class GoalPageState extends State<GoalPage> {
     fetchGoals();
   }
  
- Future<void> fetchGoals({bool showSpinner = false}) async {
+ Future<void> fetchGoals({bool showSpinner = true}) async {
   searchInput.clear();
   if(showSpinner) {
     setState(() {
@@ -56,8 +56,7 @@ class GoalPageState extends State<GoalPage> {
       _isErrorFetchingGoals = false;
       _isLoading = false;
     });
-    applyFilter();
-    applySort();
+    applyFilterAndSort();
   } else {
     setState(() {
       _allGoals = [];
@@ -80,7 +79,7 @@ class GoalPageState extends State<GoalPage> {
     return true;
   }
 
-  applyFilter(){
+  applyFilterAndSort(){
     List<Goal> tempFilteredGoals = [];
     for(int i = 0; i < _searchResults.length; i++){
       if(filterExpression(_searchResults[i])){
@@ -90,6 +89,7 @@ class GoalPageState extends State<GoalPage> {
     setState(() {
       _displayedGoals = tempFilteredGoals;
     });
+    applySort();
   }
 
   void performSearch(String searchTerm){
@@ -118,8 +118,7 @@ class GoalPageState extends State<GoalPage> {
       });
     }
     _searchQuery = searchTerm;
-    applyFilter();
-    applySort();
+    applyFilterAndSort();
   }
 
   clearSearch(){
@@ -157,18 +156,18 @@ class GoalPageState extends State<GoalPage> {
 
   String getAppliedFilterAndSortDisplayStatement(){
     Map <FilterType, String> filterTypeToDisplayString = {
-      FilterType.open: "Open",
-      FilterType.overdue: "Overdue",
-      FilterType.finished: "Finished",
-      FilterType.all: "All"
+      FilterType.open: "open",
+      FilterType.overdue: "overdue",
+      FilterType.finished: "finished",
+      FilterType.all: "all"
     };
     Map <SortType, String> sortTypeToDisplayString = {
-      SortType.newest: "Newest",
-      SortType.oldest: "Oldest",
-      SortType.completionAscending: "Completion Ascending",
-      SortType.completionDescending: "Completion Descending",
-      SortType.communitiesAtoZ: "Communities A-Z",
-      SortType.communitiesZtoA: "Communities Z-A"
+      SortType.newest: "newest",
+      SortType.oldest: "oldest",
+      SortType.completionAscending: "completion (ascending)",
+      SortType.completionDescending: "completion (descending)",
+      SortType.communitiesAtoZ: "communities (A to Z)",
+      SortType.communitiesZtoA: "communities (Z to A)"
     };
     return "Showing ${filterTypeToDisplayString[_filterType]} goals sorted by ${sortTypeToDisplayString[_sortType]}";
   }
@@ -220,7 +219,7 @@ class GoalPageState extends State<GoalPage> {
         setState(() {
           _filterType = FilterType.open;
         });
-        applyFilter();
+        applyFilterAndSort();
         Navigator.pop(context);
       },
       child: const Text('Open'),
@@ -230,7 +229,7 @@ class GoalPageState extends State<GoalPage> {
         setState(() {
           _filterType = FilterType.overdue;
         });
-        applyFilter();
+        applyFilterAndSort();
         Navigator.pop(context);
       },
       child: const Text('Overdue'),
@@ -240,7 +239,7 @@ class GoalPageState extends State<GoalPage> {
         setState(() {
           _filterType = FilterType.finished;
         });
-        applyFilter();
+        applyFilterAndSort();
         Navigator.pop(context);
       },
       child: const Text('Finished'),
@@ -250,7 +249,7 @@ class GoalPageState extends State<GoalPage> {
         setState(() {
           _filterType = FilterType.all;
         });
-        applyFilter();
+        applyFilterAndSort();
         Navigator.pop(context);
       },
       child: const Text('All'),
@@ -354,8 +353,21 @@ class GoalPageState extends State<GoalPage> {
   return Column(
       children: [
         buildSearchBar(),
-        Text(
-          getAppliedFilterAndSortDisplayStatement(),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(0, 3, 0, 5),
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide( 
+                color: Colors.grey,
+                width: 0.5,
+              ),
+            ),
+          ),
+          child: Text(
+            getAppliedFilterAndSortDisplayStatement(),
+            textAlign: TextAlign.center,
+            ),
         ),
         buildGoalsList(),
       ],
@@ -363,7 +375,6 @@ class GoalPageState extends State<GoalPage> {
  }
  
   buildSearchBar(){
-    // print("searchInput" + searchInput.text);
     return Container(
       margin: const EdgeInsets.fromLTRB(10, 10 , 10, 3),
       child: TextFormField(
@@ -405,41 +416,53 @@ class GoalPageState extends State<GoalPage> {
          },
          child: SingleChildScrollView(
            physics: const BouncingScrollPhysics(),
-           child: Column(
-             children: [
-               ListView.builder(
-                 physics: const NeverScrollableScrollPhysics(),
-                 shrinkWrap: true,
-                 itemCount: _displayedGoals.length,
-                 itemBuilder: (context, index) {
-                   return GoalWidget(
-                     goal: _displayedGoals[index],
-                     onDelete: () { 
-                       setState(() {
-                       _displayedGoals.removeAt(index);
-                     });
-                     },
-                     onFinish: () {
-                       setState(() {
-                       _displayedGoals.removeAt(index);
-                       searchInput.clear();
-                     });
-                       fetchGoals();
-                     },
-                     onExtend: () {
-                       setState(() {
-                       _isLoading = true;
-                       searchInput.clear();
-                     });
-                       fetchGoals();
-                     }
-                   );
-                 },
-               ),
-            ],
-          ),
+           child: _displayedGoals.isEmpty?
+            buildNoGoalsFoundMessage()
+            : Column(
+                children: [
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _displayedGoals.length,
+                    itemBuilder: (context, index) {
+                      return GoalWidget(
+                        goal: _displayedGoals[index],
+                        onDelete: () { 
+                          setState(() {
+                            _displayedGoals.removeAt(index);
+                          });
+                        },
+                        onFinish: () {
+                          setState(() {
+                            _displayedGoals[index].isFinished = true;
+                            searchInput.clear();
+                          });
+                        },
+                        onExtend: (int extension) {
+                          setState(() {
+                            _displayedGoals[index].checkInGoal += extension;
+                            searchInput.clear();
+                          });
+                        }
+                      );
+                    },
+                  ),
+                ],
+              ),
         ),
       ),
+    );
+  }
+  
+  buildNoGoalsFoundMessage() {
+    return const SizedBox(
+      height: 200,
+      child: Center(
+        child: Text(
+          "No goals to display. Try adjusting you sort and filter settings.",
+          textAlign: TextAlign.center,
+          )
+      )
     );
   }
 }

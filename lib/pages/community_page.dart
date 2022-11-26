@@ -334,11 +334,10 @@ class CommunityPageState extends State<CommunityPage> {
                       _unfinishedGoal = null;
                   });
                   }, 
-                  onExtend: () {  
+                  onExtend: (int extension) {  
                     setState(() {
-                     
-                  });
-                    doGetCommunity();
+                      _unfinishedGoal["checkInGoal"] += extension;
+                    });
                   }, 
                 ),
               const SizedBox(height: 10),
@@ -348,7 +347,7 @@ class CommunityPageState extends State<CommunityPage> {
                 SortPosts(posts: _posts, isCommunityPage: true, onSort: (posts) => setState(() {_posts = posts;}),), 
             ),
               // ignore: prefer_is_empty
-              if ((_posts.length) > 0) ...[
+              if (_posts.isNotEmpty) ...[
                 Padding(
                   padding:
                       const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
