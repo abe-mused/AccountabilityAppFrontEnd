@@ -71,29 +71,34 @@ checkInternetConnection(BuildContext context) async {
       barrierColor: MediaQuery.of(context).platformBrightness == Brightness.dark ?
               AppThemes.lightTheme.colorScheme.background
               : AppThemes.darkTheme.colorScheme.background,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
       builder: (context) {
         return SizedBox(
-          height: 400,
+          height: 300,
           child: Center(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 100, 20, 50),
-              child: Column(
-                children: const [
-                  Text(
-                    'Oops! We lost you.\nPlease ensure that you are connected to the internet...',
-                    style: TextStyle(
-                      fontSize: 25,
-                      height: 1.5,
-                      fontWeight: FontWeight.bold,
-                    ),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 200,
+                  width: 200,
+                  child: Image.asset('assets/no_network.png'),
+                ),
+                const Text(
+                  'Oops! We lost you.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(10),
+                  child: const Text(
+                    'Please ensure that you are connected to the internet...',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                   ),
-                  SizedBox(height: 20),
-                  Icon(
-                    Icons.wifi_off,
-                    size: 100,
-                  )
-                ]
-              ),
+                )
+              ]
             ),
           ),
         );
@@ -115,29 +120,31 @@ checkUsageTime(BuildContext context) async {
       barrierColor: MediaQuery.of(context).platformBrightness == Brightness.dark ?
               AppThemes.lightTheme.colorScheme.background
               : AppThemes.darkTheme.colorScheme.background,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
       builder: (context) {
         return SizedBox(
-          height: 600,
+          height: 300,
           child: Center(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 50, 20, 50),
-              child: Column(
-                children: const [
-                  Text(
-                    "It looks like you've spent more than 30 mins on the app.\nTake a break!",
-                    style: TextStyle(
-                      fontSize: 25,
-                      height: 1.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Icon(
-                    Icons.free_breakfast,
-                    size: 100,
-                  )
-                ]
-              ),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 200,
+                  width: 200,
+                  child: Image.asset('assets/take_break.png'),
+                ),
+                const Text(
+                  "Time to take a break.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                ),
+                const Text(
+                  "You've beeing using the app for 30 mins!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+              ]
             ),
           ),
         );

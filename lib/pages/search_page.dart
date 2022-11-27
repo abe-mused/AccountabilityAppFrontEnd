@@ -33,34 +33,11 @@ class SearchPageState extends State<SearchPage> {
     apiResponse.then((response) {      
       searchInput.clear();
 
-      if (response['status'] == true) {
-          setState(() {
-            _searchResults = response["searchResults"];
-            _hasPerformedSearch = true;
-            _isLoading = false;
-          });
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text("Error!"),
-              content: const Text("An unexpected error occurred while performing the search. Try searching again."),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _isLoading = false;
-                        _hasPerformedSearch = false;
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Ok"))
-              ],
-            );
-          },
-        );
-      }
+      setState(() {
+        _searchResults = response['status'] == true? response["searchResults"] : [];
+        _hasPerformedSearch = true;
+        _isLoading = false;
+      });
     });
   }
 
@@ -92,7 +69,7 @@ class SearchPageState extends State<SearchPage> {
         onPressed: () {
           Navigator.pushNamed(context, '/createCommunity');
         },
-        child: const Text("Can't find a community? Create a community here!"),
+        child: const Text("Can't find a community? Create one here!"),
       );
   }
 
@@ -172,21 +149,33 @@ class SearchPageState extends State<SearchPage> {
             );
           },
         ),
-        if (_hasPerformedSearch && !_isLoading && _searchResults.isEmpty)
+        if (_hasPerformedSearch && !_isLoading && _searchResults.isEmpty)  ...[
           Container(
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.all(3.0),
-            child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: Container(
-                  padding: const EdgeInsets.all(10.0),
-                  alignment: Alignment.centerLeft,
-                  child: const Text(
-                    "No results found",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
-                  )),
+            margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+            child: Image.asset('assets/no_search_results.png'),
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(40, 0, 40, 30),
+            child: const Text(
+              "We looked everywhere, and found nothing.",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
           ),
+        ] else if(!_hasPerformedSearch) ...[
+          Container(
+            margin: const EdgeInsets.fromLTRB(50, 10, 50, 0),
+            child: Image.asset('assets/search_initial_screen.png'),
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(40, 20, 40, 20),
+            child: const Text(
+              "Search for people to follow or communities to join!",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ]
     ]);
   }
 }

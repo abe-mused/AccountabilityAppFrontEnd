@@ -67,77 +67,81 @@ class SortPostsState extends State<SortPosts> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      const Text(
-        "Posts",
-        style: TextStyle(
-          decoration: TextDecoration.underline,
-          fontSize: 23.0,
-          fontWeight: FontWeight.w900,
-        ),
-      ),
-      Row(
-        children: [
-          Text(
-            "Sorted By $sortType",
-            style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          "Posts",
+          style: TextStyle(
+            decoration: TextDecoration.underline,
+            fontSize: 23.0,
+            fontWeight: FontWeight.w900,
           ),
-          if (widget.posts.isNotEmpty)
-            PopupMenuButton(
-              itemBuilder: (context) {
-                return [
-                  const PopupMenuItem<int>(
-                    value: 0,
-                    child: Text("Newest"),
-                  ),
-                  const PopupMenuItem<int>(
-                    value: 1,
-                    child: Text("Oldest"),
-                  ),
-                  const PopupMenuItem<int>(
-                    value: 2,
-                    child: Text("Top Liked"),
-                  ),
-                  const PopupMenuItem<int>(
-                    value: 3,
-                    child: Text("Most Comments"),
-                  ),
-                  const PopupMenuItem<int>(
-                    value: 4,
-                    child: Text("Most Interactions"),
-                  ),
-                  if (!widget.isCommunityPage) ...[
+        ),
+        if(widget.posts.isNotEmpty) ...[
+          Row(
+            children: [
+              Text(
+                "Sorted By $sortType",
+                style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
+              ),
+              PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
                     const PopupMenuItem<int>(
-                      value: 5,
-                      child: Text("Community A to Z"),
+                      value: 0,
+                      child: Text("Newest"),
                     ),
                     const PopupMenuItem<int>(
-                      value: 6,
-                      child: Text("Community Z to A"),
+                      value: 1,
+                      child: Text("Oldest"),
                     ),
-                  ]
-                ];
-              },
-              onSelected: (value) {
-                if (value == 0) {
-                  latestDate();
-                } else if (value == 1) {
-                  oldestDate();
-                } else if (value == 2) {
-                  topLikes();
-                } else if (value == 3) {
-                  topComments();
-                } else if (value == 4) {
-                  topInteractions();
-                } else if (value == 5) {
-                  communityAZ();
-                } else if (value == 6) {
-                  communityZA();
-                }
-              },
-            )
+                    const PopupMenuItem<int>(
+                      value: 2,
+                      child: Text("Top Liked"),
+                    ),
+                    const PopupMenuItem<int>(
+                      value: 3,
+                      child: Text("Most Comments"),
+                    ),
+                    const PopupMenuItem<int>(
+                      value: 4,
+                      child: Text("Most Interactions"),
+                    ),
+                    if (!widget.isCommunityPage) ...[
+                      const PopupMenuItem<int>(
+                        value: 5,
+                        child: Text("Community A to Z"),
+                      ),
+                      const PopupMenuItem<int>(
+                        value: 6,
+                        child: Text("Community Z to A"),
+                      ),
+                    ]
+                  ];
+                },
+                onSelected: (value) {
+                  if (value == 0) {
+                    latestDate();
+                  } else if (value == 1) {
+                    oldestDate();
+                  } else if (value == 2) {
+                    topLikes();
+                  } else if (value == 3) {
+                    topComments();
+                  } else if (value == 4) {
+                    topInteractions();
+                  } else if (value == 5) {
+                    communityAZ();
+                  } else if (value == 6) {
+                    communityZA();
+                  }
+                },
+              )
+            ],
+          ),
         ],
-      ),
-    ]);
+      ],
+    );
   }
 }

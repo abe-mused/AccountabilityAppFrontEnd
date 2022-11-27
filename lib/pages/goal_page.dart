@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linear/model/goal.dart';
+import 'package:linear/pages/common_widgets/error_screen.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/common_widgets/goal_widget.dart';
 import 'package:linear/util/apis.dart' as api;
@@ -339,14 +340,9 @@ class GoalPageState extends State<GoalPage> {
  }
  
  buildGoalsPageErrorScreen(){
-   return const Scaffold(
-      body: Center(
-        child: Text(
-          "We ran into an error trying to obtain the goals. \nPlease try again later.",
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
+  return LinearErrorScreen(
+    errorMessage: "We ran into an unexpected error while fetching your goals. Please try again later.",
+  );
  }
  
  buildGoalsPageContent(){
@@ -455,14 +451,27 @@ class GoalPageState extends State<GoalPage> {
   }
   
   buildNoGoalsFoundMessage() {
-    return const SizedBox(
-      height: 200,
-      child: Center(
-        child: Text(
-          "No goals to display. Try adjusting you sort and filter settings.",
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+          child: Image.asset('assets/no_search_results.png'),
+        ),
+        const Text(
+          "We found no goals.",
           textAlign: TextAlign.center,
-          )
-      )
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+        ),
+        
+        Container(
+          margin: const EdgeInsets.fromLTRB(50, 10, 50, 0),
+          child: const Text(
+            "Try adjusting your sort and filter settings.",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ]
     );
   }
 }

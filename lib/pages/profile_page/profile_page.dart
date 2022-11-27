@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/model/user.dart';
+import 'package:linear/pages/common_widgets/error_screen.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/common_widgets/post_widget.dart';
 import 'package:linear/pages/common_widgets/user_icon.dart';
@@ -89,9 +90,9 @@ class ProfilePageState extends State<ProfilePage> {
         setState(() {
           _userToDisplay = user;
           _posts = response['posts'];
+          _isErrorFetchingUser = false;
           _isLoadingUser = false;
         });
-
       } else {
         setState(() {
           _isLoadingUser = false;
@@ -150,14 +151,9 @@ class ProfilePageState extends State<ProfilePage> {
   }
 
   buildProfilePageErrorScreen(){
-   return const Scaffold(
-       body: Center(
-         child:  Text(
-            "We ran into an error trying to obtain the profile. \nPlease try again later.",
-            textAlign: TextAlign.center,
-          )
-       ),
-     );
+  return LinearErrorScreen(
+      errorMessage: "We ran into an unexpected error while fetching this profile. Please try again later.",
+    );
  }
   
   buildOwnProfileAppBarActions() {
@@ -386,11 +382,24 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ] else ...[
-                  Padding(
-                      padding: const EdgeInsets.only(
-                          left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-                      child:
-                          Text('${_userToDisplay!.name} hasn\'t made a post!')),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                    child: Image.asset('assets/empty_mailbox.png'),
+                  ),
+                  const Text(
+                    "Nothing!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(10, 0, 10, 30),
+                    padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
+                    child: Text(
+                      "It seems that ${_userToDisplay!.name.split(" ").first} hasn't made any posts!",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                    ),
+                  ),
                 ],
               ],
             ),

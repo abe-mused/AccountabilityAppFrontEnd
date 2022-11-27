@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:linear/model/community.dart';
 import 'package:linear/model/post.dart';
+import 'package:linear/pages/common_widgets/error_screen.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/community_page/create_post_widget.dart';
 import 'package:linear/pages/community_page/create_goal_widget.dart';
@@ -111,9 +112,11 @@ class CommunityPageState extends State<CommunityPage> {
 
         setState(() {
           _isFetchingCommunity = false;
+          _isErrorFetchingCommunity = false;
         });
       } else {
         setState(() {
+          _isFetchingCommunity = false;
           _isErrorFetchingCommunity = true;
         });
       }
@@ -122,33 +125,18 @@ class CommunityPageState extends State<CommunityPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isFetchingCommunity) {
+    if (_isFetchingCommunity || _isErrorFetchingCommunity) {
       return Scaffold(
         appBar: AppBar(
           title: const Text("Community"),
         ),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ),
+        body: _isFetchingCommunity?
+          buildLoadingScreen()
+          : buildErrorScreen(),
         bottomNavigationBar: const LinearNavBar(),
       );
     }
-    if (_isErrorFetchingCommunity) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text("Community"),
-        ),
-        body: const Center(
-          child: Center(
-            child: Text(
-              "We ran into an error trying to obtain the community. \nPlease try again later.",
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        bottomNavigationBar: const LinearNavBar(),
-      );
-    }
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text("Community"),
@@ -248,7 +236,7 @@ class CommunityPageState extends State<CommunityPage> {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        "Created on ${getFormattedDate(_community.creationDate)}",
+                        getFormattedDate(_community.creationDate),
                         style: const TextStyle(fontSize: 16),
                         textAlign: TextAlign.center,
                       ),
@@ -348,7 +336,6 @@ class CommunityPageState extends State<CommunityPage> {
               child:   
                 SortPosts(posts: _posts, isCommunityPage: true, onSort: (posts) => setState(() {_posts = posts;}),), 
             ),
-              // ignore: prefer_is_empty
               if (_posts.isNotEmpty) ...[
                 Padding(
                   padding:
@@ -376,8 +363,23 @@ class CommunityPageState extends State<CommunityPage> {
                   ),
                 ),
               ] else ...[
-                const Center(
-                  child: Text("No posts yet"),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                  child: Image.asset('assets/empty_mailbox.png'),
+                ),
+                const Text(
+                  "Nothing!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                ),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 30),
+                  padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
+                  child: const Text(
+                    "Be the first to check into this community!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
                 ),
               ],
             ],
@@ -390,4 +392,18 @@ class CommunityPageState extends State<CommunityPage> {
       bottomNavigationBar: const LinearNavBar(),
     );
   }
+  
+  buildLoadingScreen() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+  
+  buildErrorScreen() {
+    return LinearErrorScreen(
+      errorMessage: "We ran into an unexpected error while fetching This community. Please try again later.",
+    );
+  }
+  
+  buildCommunityContentScreen() {}
 }

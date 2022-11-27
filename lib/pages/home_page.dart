@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linear/pages/common_widgets/error_screen.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/util/apis.dart' as api_util;
 import 'package:linear/model/post.dart';
@@ -120,13 +121,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   buildHomePageErrorScreen() {
-    return const Scaffold(
-        body: Center(
-          child: Text(
-            "We ran into an error trying to obtain the profile. \nPlease try again later.",
-            textAlign: TextAlign.center,
-          ),
-        ),
+    return LinearErrorScreen(
+        errorMessage: "We ran into an unexpected error while fetching your home feed. Please try again later.",
       );
   }
 
@@ -157,12 +153,20 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ] else ...[
-                const Padding(
-                  padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-                  child: Text('No posts yet!'),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                  child: Image.asset('assets/no_posts_home_page.png'),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(10),
+                  child: const Text(
+                    "So empty...\nJoin communities to see posts and make progress!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+                  ),
                 ),
               ],
-              if(!_nextPageContainsMorePosts) ...[
+              if(!_nextPageContainsMorePosts && _posts.isNotEmpty) ...[
                 const Padding(
                   padding: EdgeInsets.only(left: 35.0, right: 35.0, top: 15.0, bottom: 15.0),
                   child: Text(
@@ -170,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                       textAlign: TextAlign.center,
                     ),
                 ),
-              ] else ...[
+              ] else if(_nextPageContainsMorePosts) ...[
                 const Padding(
                   padding: EdgeInsets.only(left: 35.0, right: 35.0, top: 15.0, bottom: 15.0),
                   child: Text(

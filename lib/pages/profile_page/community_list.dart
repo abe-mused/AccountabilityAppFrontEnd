@@ -57,9 +57,27 @@ class _CommunityListWidgetState extends State<CommunityListWidget> {
     return Column(
       children: [
         if (_userToDisplay!.communities!.isEmpty) ...[
-          Padding(
-            padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0, bottom: 5.0),
-            child: Text('${_userToDisplay!.username} is not part of a community. Yet...')
+          Row(
+            children: [
+              const SizedBox(width: 30),
+              SizedBox(
+                height: 100,
+                width: 100,
+                child: Image.asset('assets/no_communities.png'),
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                child: Text(
+                  "It seems that ${_userToDisplay!.name.split(" ").first} isn't in any communities... yet.",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 15, 
+                      fontWeight: FontWeight.w500
+                    ),
+                ),
+              ),
+              const SizedBox(width: 20),
+            ],
           ),
         ] else ...[
           Padding(
