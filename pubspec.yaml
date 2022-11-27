@@ -51,12 +51,19 @@ dev_dependencies:
   flutter_driver:
     sdk: flutter
   flutter_launcher_icons: ^0.11.0
+  flutter_native_splash: ^2.2.15
 
 flutter_icons:
   android: true
   image_path: "assets/launcher/linear_logo.png"
   adaptive_icon_background: "assets/launcher/background.png"
   adaptive_icon_foreground: "assets/launcher/foreground.png"
+  
+flutter_native_splash:
+  # color: "#004E15"
+  color: "#FFFFFF"
+  image: "assets/splash/linear_splash.png"
+  android: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
