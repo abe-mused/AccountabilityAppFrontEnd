@@ -336,7 +336,14 @@ class ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 10.0),
+            const Divider(
+              height: 10,
+              thickness: 2,
+              indent: 0,
+              endIndent: 0,
+            ),
+            const SizedBox(height: 10.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: const [
@@ -344,8 +351,7 @@ class ProfilePageState extends State<ProfilePage> {
                 Text(
                   "Communities",
                   style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontSize: 23.0,
+                    fontSize: 20.0,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -353,6 +359,12 @@ class ProfilePageState extends State<ProfilePage> {
             ),
             CommunityListWidget(
               user: _userToDisplay!,
+            ),
+            const Divider(
+              height: 10,
+              thickness: 2,
+              indent: 0,
+              endIndent: 0,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 15),
@@ -364,28 +376,24 @@ class ProfilePageState extends State<ProfilePage> {
               children: [
                 // ignore: prefer_is_empty
                 if (_posts.isNotEmpty) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 15.0, right: 15.0, top: 5.0),
-                    child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: _posts.length,
-                      itemBuilder: (context, index) {
-                        return PostWidget(
-                          onLike: (likes) => setState(() {
-                            _posts[index]['likes'] = likes;
-                          }),
-                          post: Post.fromJson(_posts[index]),
-                          onDelete: () {
-                            setState(() {
-                              _posts.removeAt(index);
-                            });
-                          },
-                          route: const ProfilePage(),
-                        );
-                      },
-                    ),
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _posts.length,
+                    itemBuilder: (context, index) {
+                      return PostWidget(
+                        onLike: (likes) => setState(() {
+                          _posts[index]['likes'] = likes;
+                        }),
+                        post: Post.fromJson(_posts[index]),
+                        onDelete: () {
+                          setState(() {
+                            _posts.removeAt(index);
+                          });
+                        },
+                        route: const ProfilePage(),
+                      );
+                    },
                   ),
                 ] else ...[
                   Container(

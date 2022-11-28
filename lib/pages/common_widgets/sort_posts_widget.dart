@@ -73,8 +73,7 @@ class SortPostsState extends State<SortPosts> {
         const Text(
           "Posts",
           style: TextStyle(
-            decoration: TextDecoration.underline,
-            fontSize: 23.0,
+            fontSize: 20.0,
             fontWeight: FontWeight.w900,
           ),
         ),

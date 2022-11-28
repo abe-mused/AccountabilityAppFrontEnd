@@ -118,345 +118,345 @@ class _PostWidget extends State<PostWidget> {
   Widget build(BuildContext context) {
 
     final ScrollController scrollController = ScrollController();
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.9,
-      child: Card(
-        margin: const EdgeInsets.only(top: 20.0),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: RawMaterialButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProfilePage(
-                                  usernameToDisplay: widget.post.creator,
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
+          color: Colors.grey.withOpacity(0.2),
+        ),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+        child: Column(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.only(bottom: 5),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: RawMaterialButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfilePage(
+                                usernameToDisplay: widget.post.creator,
+                              ),
+                            ),
+                          );
+                        },
+                        child: widget.post.creatorProfileImageUrl == null?
+                            UserIcon(radius: 45, username:widget.post.creator)
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(45),
+                                child: SizedBox.fromSize(
+                                  size: const Size.fromRadius(45),
+                                  child: Image.network(widget.post.creatorProfileImageUrl!, fit: BoxFit.cover),
                                 ),
                               ),
-                            );
-                          },
-                          child: widget.post.creatorProfileImageUrl == null?
-                              UserIcon(radius: 45, username:widget.post.creator)
-                              : ClipRRect(
-                                  borderRadius: BorderRadius.circular(45),
-                                  child: SizedBox.fromSize(
-                                    size: const Size.fromRadius(45),
-                                    child: Image.network(widget.post.creatorProfileImageUrl!, fit: BoxFit.cover),
-                                  ),
+                      )),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                            TextSpan(
+                                text: 'c/${widget.post.communityName}',
+                                style: TextStyle(
+                                  color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                                    ? AppThemes.darkTheme.primaryColor
+                                    : AppThemes.lightTheme.primaryColor,
+                                  fontSize: 16,
                                 ),
-                        )),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                              TextSpan(
-                                  text: 'c/${widget.post.communityName}',
-                                  style: TextStyle(
-                                    color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                                      ? AppThemes.darkTheme.primaryColor
-                                      : AppThemes.lightTheme.primaryColor,
-                                    fontSize: 16,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => CommunityPage(
-                                            communityName: widget.post.communityName,
-                                          ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CommunityPage(
+                                          communityName: widget.post.communityName,
                                         ),
-                                      );
-                                    }
-                                ),
-                              ]
-                            ),
+                                      ),
+                                    );
+                                  }
+                              ),
+                            ]
                           ),
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                              TextSpan(
-                                  text: 'u/${widget.post.creator}',
-                                  style: TextStyle(
-                                    color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                                      ? AppThemes.darkTheme.primaryColor
-                                      : AppThemes.lightTheme.primaryColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ProfilePage(
-                                            usernameToDisplay: widget.post.creator,
-                                          ),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                            TextSpan(
+                                text: 'u/${widget.post.creator}',
+                                style: TextStyle(
+                                  color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                                    ? AppThemes.darkTheme.primaryColor
+                                    : AppThemes.lightTheme.primaryColor,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProfilePage(
+                                          usernameToDisplay: widget.post.creator,
                                         ),
-                                      );
-                                    },
-                                ),
-                              ],
-                            ),
+                                      ),
+                                    );
+                                  },
+                              ),
+                            ],
                           ),
-                          Text(
-                            getFormattedDate(widget.post.creationDate),
-                            style: const TextStyle(fontSize: 12),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                        ),
+                        Text(
+                          getFormattedDate(widget.post.creationDate),
+                          style: const TextStyle(fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                    if (widget.post.creator == _currentUsername) ...[
-                      PopupMenuButton(itemBuilder: (context) {
+                  ),
+                  if (widget.post.creator == _currentUsername) ...[
+                    PopupMenuButton(itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem<int>(
+                          value: 0,
+                          child: Text("Delete"),
+                        ),
+                      ];
+                    }, onSelected: (value) {
+                      if (value == 0) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Delete'),
+                            content: const Text(
+                                'Are you sure you want to delete this post?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  doDeletePost();
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Yes'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    }),
+                  ],
+                  if (widget.post.creator != _currentUsername) ...[
+                    PopupMenuButton(
+                      itemBuilder: (context) {
                         return [
                           const PopupMenuItem<int>(
-                            value: 0,
-                            child: Text("Delete"),
+                            value: 1,
+                            child: Text("Report"),
                           ),
                         ];
-                      }, onSelected: (value) {
-                        if (value == 0) {
+                      },
+                      onSelected: (value) {
+                        if(value == 1) {
+                          createReport(context, {"postId": widget.post.postId});
                           showDialog(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
-                              title: const Text('Delete'),
+                              title: const Text('Post reported!'),
                               content: const Text(
-                                  'Are you sure you want to delete this post?'),
+                                  'This post has been reported and will be reviewed by our moderators.'),
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: () =>
-                                      Navigator.pop(context, 'Cancel'),
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    doDeletePost();
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Yes'),
+                                      Navigator.pop(context, 'Ok'),
+                                  child: const Text('Ok'),
                                 ),
                               ],
                             ),
                           );
                         }
-                      }),
-                    ],
-                    if (widget.post.creator != _currentUsername) ...[
-                      PopupMenuButton(
-                        itemBuilder: (context) {
-                          return [
-                            const PopupMenuItem<int>(
-                              value: 1,
-                              child: Text("Report"),
-                            ),
-                          ];
-                        },
-                        onSelected: (value) {
-                          if(value == 1) {
-                            createReport(context, {"postId": widget.post.postId});
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                title: const Text('Post reported!'),
-                                content: const Text(
-                                    'This post has been reported and will be reviewed by our moderators.'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'Ok'),
-                                    child: const Text('Ok'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ],
+                      },
+                    ),
                   ],
-                ),
+                ],
               ),
-              const Divider(
-                height: 10,
-                thickness: 0.6,
-                indent: 0,
-                endIndent: 0,
-              ),
-              const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.post.title,
-                                  style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 5),
-                                if (widget.post.body.length > 300) ...[
-                                  SizedBox(
-                                    height: 200,
-                                    child: Scrollbar(
-                                      thumbVisibility: true,
-                                      controller: scrollController,
-                                      child: Material(
-                                        child: SingleChildScrollView(
-                                          controller: scrollController,
-                                          child: Text(
-                                            widget.post.body,
-                                            style:
-                                                const TextStyle(fontSize: 16),
-                                            textAlign: TextAlign.left,
-                                          ),
+            ),
+            const Divider(
+              height: 10,
+              thickness: 0.6,
+              indent: 0,
+              endIndent: 0,
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 5),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.post.title,
+                                style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 5),
+                              if (widget.post.body.length > 300) ...[
+                                SizedBox(
+                                  height: 200,
+                                  child: Scrollbar(
+                                    thumbVisibility: true,
+                                    controller: scrollController,
+                                    child: Material(
+                                      child: SingleChildScrollView(
+                                        controller: scrollController,
+                                        child: Text(
+                                          widget.post.body,
+                                          style:
+                                              const TextStyle(fontSize: 16),
+                                          textAlign: TextAlign.left,
                                         ),
                                       ),
                                     ),
-                                  )
-                                ] else ...[
-                                  Text(
-                                    widget.post.body,
-                                    style: const TextStyle(fontSize: 16),
-                                    textAlign: TextAlign.left,
                                   ),
-                                ],
+                                )
+                              ] else ...[
+                                Text(
+                                  widget.post.body,
+                                  style: const TextStyle(fontSize: 16),
+                                  textAlign: TextAlign.left,
+                                ),
                               ],
-                            ),
+                            ],
                           ),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      width: 1000,
-                    ),
-                    if (widget.post.imageUrl != null) ...[
-                      const SizedBox(height: 10),
-                      FullScreenWidget(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: Image.network(
-                            widget.post.imageUrl!,
-                            height: 300
-                            ),
-                        ),
-                      )
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
                     ],
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Divider(
-                      height: 10,
-                      thickness: 1,
-                      indent: 0,
-                      endIndent: 0,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "${widget.post.commentCount} ",
-                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            ),
-                            Text(
-                              "comment${widget.post.commentCount > 1 ? "s" : ""}",
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            ),
-                          ]
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            if (!widget.isPostPage) ...[
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PostPage(
-                                        postId: widget.post.postId,
-                                        route: widget.route, 
-                                      ),
-                                    ),
-                                  );
-                                },
-                                icon: const Icon(
-                                  Icons.comment,
-                                  size: 34.0,
-                                ),
-                              ),
-                            ],
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  //This is just so the like icon doesn't move when the user likes/unlikes the post
-                                  minWidth: widget.post.likes!.length < 9? 65 : 70,
-                                ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      likeUnlikePost();
-                                    },
-                                    icon: Icon(
-                                      Icons.favorite,
-                                      color: (widget.post.likes!.contains(_currentUsername))? Colors.pink : null,
-                                      size: 34.0,
+                  ),
+                  if (widget.post.imageUrl != null) ...[
+                    const SizedBox(height: 10),
+                    FullScreenWidget(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.network(
+                          widget.post.imageUrl!,
+                          height: 300
+                          ),
+                      ),
+                    )
+                  ],
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  const Divider(
+                    height: 10,
+                    thickness: 1,
+                    indent: 0,
+                    endIndent: 0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "${widget.post.commentCount} ",
+                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            "comment${widget.post.commentCount > 1 ? "s" : ""}",
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ]
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (!widget.isPostPage) ...[
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PostPage(
+                                      postId: widget.post.postId,
+                                      route: widget.route, 
                                     ),
                                   ),
-                                  Text(
-                                    widget.post.likes!.length.toString(),
-                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                                  ),
-                                ]
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.comment,
+                                size: 34.0,
                               ),
                             ),
                           ],
-                        ),
-                      ]
-                    ),
-                  ],
-                ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          ConstrainedBox(
+                              constraints: BoxConstraints(
+                                //This is just so the like icon doesn't move when the user likes/unlikes the post
+                                minWidth: widget.post.likes!.length < 9? 65 : 70,
+                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    likeUnlikePost();
+                                  },
+                                  icon: Icon(
+                                    Icons.favorite,
+                                    color: (widget.post.likes!.contains(_currentUsername))? Colors.pink : null,
+                                    size: 34.0,
+                                  ),
+                                ),
+                                Text(
+                                  widget.post.likes!.length.toString(),
+                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                ),
+                              ]
+                            ),
+                          ),
+                        ],
+                      ),
+                    ]
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

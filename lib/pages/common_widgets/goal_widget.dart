@@ -79,12 +79,17 @@ class GoalWidget extends StatelessWidget {
       });
     }
 
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.9,
-      child: Card(
-        margin: const EdgeInsets.only(top: 10.0),
+    return Card(
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.2),
+          ),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
+        ),
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
           child: Column(
             children: <Widget>[
               buildGoalWidgetHeader(context, deleteGoal, finishGoal, extendGoal, goalExtensionInput),
@@ -98,7 +103,6 @@ class GoalWidget extends StatelessWidget {
             ],
           ),
         ),
-      ),
     );
   }
 

@@ -6,6 +6,7 @@ import 'package:linear/model/community.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/common_widgets/error_screen.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
+import 'package:linear/pages/common_widgets/user_icon.dart';
 import 'package:linear/pages/community_page/create_post_widget.dart';
 import 'package:linear/pages/community_page/create_goal_widget.dart';
 import 'package:linear/pages/common_widgets/post_widget.dart';
@@ -176,7 +177,6 @@ class CommunityPageState extends State<CommunityPage> {
                     }
                   );
                 },
-                onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
               ),
               SpeedDialChild(
                 child: const Icon(Icons.moving_rounded),
@@ -222,96 +222,28 @@ class CommunityPageState extends State<CommunityPage> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.3,
-                width: MediaQuery.of(context).size.width,
-                child: Card(
-                  margin: const EdgeInsets.only(top: 20.0),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        "c/${_community.communityName}",
-                        style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        getFormattedDate(_community.creationDate),
-                        style: const TextStyle(fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        // ignore: unrelated_type_equality_checks
-                        "${_community.members.length} members",
-                        style: const TextStyle(fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 10),
-                      if (doesCurrentDateExistInCheckins()) ...[
-                        Text(
-                          // ignore: unrelated_type_equality_checks
-                          "${_community.checkIns[0]['usersCheckedIn'].length} check-ins today",
-                          style: const TextStyle(fontSize: 16),
-                          textAlign: TextAlign.center,
-                        ),
-                      ] else ...[
-                        const Text(
-                          "0 check-ins today",
-                          style: TextStyle(fontSize: 16),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                      const SizedBox(height: 10),
-                      if (!_isUpdatingMembership)
-                        ElevatedButton(
-                          onPressed: () async {
-                            setState(() {
-                              _isUpdatingMembership = true;
-                            });
-                            await joinAndLeave(context, widget.communityName);
-
-                            setState(() {
-                              if (isMember()) {
-                                _community.members.remove(_currentUsername);
-                                _community = _community;
-                              } else {
-                                _community.members.add(_currentUsername);
-                                _community = _community;
-                              }
-                              _isUpdatingMembership = false;
-                            });
-                          },
-                          style: isMember()
-                              ? AppThemes.secondaryTextButtonStyle(context)
-                              : null,
-                          child: Text(
-                              isMember() ? "Leave community" : "Join community"),
-                        ),
-                      if (_isUpdatingMembership)
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                          ),
-                          child: const SizedBox(
-                            height: 10.0,
-                            width: 10.0,
-                            child: CircularProgressIndicator(
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
+              buildCommunityPageHeader(),
+              const Divider(
+                height: 10,
+                thickness: 2,
+                indent: 0,
+                endIndent: 0,
               ),
-              const SizedBox(height: 10),
-              if(_unfinishedGoal != null)
+              if(_unfinishedGoal != null) ...[
+                Row(
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.only(top: 15, left: 10),
+                      child: Text(
+                        "Unfinished Goal",
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      )
+                    ),
+                  ],
+                ),
                 GoalWidget(
                   goal: Goal.fromJson( _unfinishedGoal),
                   onDelete: () {  
@@ -330,37 +262,45 @@ class CommunityPageState extends State<CommunityPage> {
                     });
                   }, 
                 ),
-              const SizedBox(height: 10),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Divider(
+                  height: 10,
+                  thickness: 1,
+                  indent: 0,
+                  endIndent: 0,
+                ),
+              ],
               Padding(
-              padding: const EdgeInsets.only(left: 15, top: 10, bottom: 10),
-              child:   
-                SortPosts(posts: _posts, isCommunityPage: true, onSort: (posts) => setState(() {_posts = posts;}),), 
-            ),
+                padding: const EdgeInsets.only(left: 15, right: 15,),
+                child: SortPosts(
+                  posts: _posts,
+                  isCommunityPage: true,
+                  onSort: (posts) => setState(() {_posts = posts;}),
+                ), 
+              ),
               if (_posts.isNotEmpty) ...[
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-                  child: ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: _posts.length,
-                    itemBuilder: (context, index) {
-                      return PostWidget(
-                        onLike: (likes) => setState(() {
-                          _posts[index]['likes'] = likes;
-                        }),
-                        post: Post.fromJson(_posts[index]),
-                        onDelete: () {
-                          setState(() {
-                            _posts.removeAt(index);
-                          });
-                        },
-                        route: CommunityPage(
-                          communityName: _community.communityName,
-                        ),
-                      );
-                    },
-                  ),
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: _posts.length,
+                  itemBuilder: (context, index) {
+                    return PostWidget(
+                      onLike: (likes) => setState(() {
+                        _posts[index]['likes'] = likes;
+                      }),
+                      post: Post.fromJson(_posts[index]),
+                      onDelete: () {
+                        setState(() {
+                          _posts.removeAt(index);
+                        });
+                      },
+                      route: CommunityPage(
+                        communityName: _community.communityName,
+                      ),
+                    );
+                  },
                 ),
               ] else ...[
                 Container(
@@ -405,5 +345,131 @@ class CommunityPageState extends State<CommunityPage> {
     );
   }
   
-  buildCommunityContentScreen() {}
+  buildCommunityPageHeader() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: [
+              UserIcon(radius: 40, username: _community.communityName),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const SizedBox(width: 20),
+                      Text(
+                        "c/${_community.communityName}",
+                        style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold
+                          ),
+                      ),
+                    ]
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const SizedBox(width: 20),
+                      Text(
+                        getFormattedDate(_community.creationDate),
+                        style: const TextStyle(fontSize: 12),
+                        textAlign: TextAlign.center,
+                      ),
+                    ]
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                doesCurrentDateExistInCheckins()? 
+                  "${_community.checkIns[0]['usersCheckedIn'].length} check-in${_community.checkIns[0]['usersCheckedIn'].length == 1? "" : "s"} today"
+                    : "0 check-ins today",
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500
+                  ),
+                textAlign: TextAlign.center,
+              ),
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "${_community.members.length}",
+                        style: const TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(width: 5),
+                      const Icon(
+                        Icons.people,
+                        size: 34.0
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 10),
+                  buildJoinAndLeaveButton(),
+                ]
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  buildJoinAndLeaveButton(){
+    if (!_isUpdatingMembership) {
+      return ElevatedButton(
+        onPressed: () async {
+          setState(() {
+            _isUpdatingMembership = true;
+          });
+          await joinAndLeave(context, widget.communityName);
+
+          setState(() {
+            if (isMember()) {
+              _community.members.remove(_currentUsername);
+              _community = _community;
+            } else {
+              _community.members.add(_currentUsername);
+              _community = _community;
+            }
+            _isUpdatingMembership = false;
+          });
+        },
+        style: isMember()
+            ? AppThemes.secondaryTextButtonStyle(context)
+            : null,
+        child: Text(
+            isMember() ? "Leave" : "Join"),
+      );
+    }
+
+    return ElevatedButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        shape: const RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.all(Radius.circular(10)),
+        ),
+      ),
+      child: const SizedBox(
+        height: 10.0,
+        width: 10.0,
+        child: CircularProgressIndicator(
+          valueColor:
+              AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      ),
+    );
+  }
 }
