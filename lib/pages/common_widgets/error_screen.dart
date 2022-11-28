@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:linear/inroduction_page/intro_banner.dart';
 
 class LinearErrorScreen extends StatelessWidget {
   LinearErrorScreen({
@@ -14,6 +15,7 @@ class LinearErrorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children:[
+        const LinearIntroBanner(),
         Container(
           margin: const EdgeInsets.fromLTRB(50, 50, 50, 10),
           child: Image.asset('assets/unknown_error.png'),

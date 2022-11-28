@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linear/inroduction_page/intro_banner.dart';
 import 'package:linear/pages/common_widgets/error_screen.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/util/apis.dart' as api_util;
@@ -132,6 +133,7 @@ class _HomePageState extends State<HomePage> {
           controller: scrollController,
           child: Column(
             children: [
+              const LinearIntroBanner(),
               if (_posts.isNotEmpty) ...[
                 ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
