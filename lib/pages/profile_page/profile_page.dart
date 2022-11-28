@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:full_screen_image_null_safe/full_screen_image_null_safe.dart';
 import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/model/user.dart';
@@ -272,7 +273,12 @@ class ProfilePageState extends State<ProfilePage> {
                       borderRadius: BorderRadius.circular(50),
                       child: SizedBox.fromSize(
                         size: const Size.fromRadius(50),
-                        child: Image.network(_userToDisplay!.imageUrl!, fit: BoxFit.cover),
+                        child: FullScreenWidget(
+                          child: Image.network(
+                            _userToDisplay!.imageUrl!,
+                            fit: BoxFit.cover,
+                            ),
+                        )
                       ),
                     )
                   ],

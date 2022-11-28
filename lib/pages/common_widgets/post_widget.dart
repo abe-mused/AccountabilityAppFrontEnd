@@ -2,6 +2,7 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:full_screen_image_null_safe/full_screen_image_null_safe.dart';
 import 'package:linear/constants/themeSettings.dart';
 import 'package:linear/model/post.dart';
 import 'package:linear/pages/community_page/community_page.dart';
@@ -360,7 +361,15 @@ class _PostWidget extends State<PostWidget> {
                     ),
                     if (widget.post.imageUrl != null) ...[
                       const SizedBox(height: 10),
-                      Image.network(widget.post.imageUrl!, height: 200),
+                      FullScreenWidget(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: Image.network(
+                            widget.post.imageUrl!,
+                            height: 300
+                            ),
+                        ),
+                      )
                     ],
                     const SizedBox(
                       height: 10,
