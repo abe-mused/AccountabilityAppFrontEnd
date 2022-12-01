@@ -94,6 +94,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: 15,
                   ),
                   TextField(
+                    key: const Key('emailKey'),
                     controller: email,
                     decoration: const InputDecoration(
                       hintText: "Email",
@@ -103,6 +104,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: 15,
                   ),
                   TextField(
+                    key: const Key('usernameKey'),
                     controller: username,
                     decoration: const InputDecoration(
                       hintText: "Username",
@@ -112,6 +114,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: 15,
                   ),
                   TextField(
+                    key: const Key('fullNameKey'),
                     controller: name,
                     decoration: const InputDecoration(
                       hintText: "Full Name",
@@ -121,6 +124,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: 15,
                   ),
                   TextField(
+                    key: const Key('passwordKey'),
                     controller: password,
                     obscureText: hide,
                     decoration: InputDecoration(
@@ -138,6 +142,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: 15,
                   ),
                   TextField(
+                    key: const Key('confirmPasswordKey'),
                     controller: confirmPassword,
                     obscureText: hide,
                     decoration: InputDecoration(
