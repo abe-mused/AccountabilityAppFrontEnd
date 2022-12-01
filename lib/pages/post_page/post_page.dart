@@ -321,10 +321,12 @@ class PostPageState extends State<PostPage> {
                             ),
                             Row(
                               children: [
-                                Text(
-                                  _comments[index]['body'],
-                                  style: const TextStyle(fontSize: 18),
-                                  textAlign: TextAlign.left,
+                                Expanded(
+                                  child: Text(
+                                    _comments[index]['body'],
+                                    style: const TextStyle(fontSize: 18),
+                                    textAlign: TextAlign.left,
+                                  ),
                                 ),
                               ],
                             ),
