@@ -165,7 +165,7 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                     style: const TextStyle(
                       fontSize: 20,
                     ),
-                    maxLength: 300,
+                    maxLength: 1000,
                     onChanged: (value) {
                       setState(() {});
                     },
