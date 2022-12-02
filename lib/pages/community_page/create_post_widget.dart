@@ -120,6 +120,8 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
     }
     return Container(
       margin: const EdgeInsets.all(20),
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.height * 0.5,
       child: Card(
         margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
         child: Padding(
@@ -157,21 +159,23 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
               ),
               Container(
                 margin: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: postBodyInput,
-                  style: const TextStyle(
-                    fontSize: 20,
-                  ),
-                  onChanged: (value) {
-                    setState(() {});
-                  },
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
+                child: Expanded(
+                  child: TextFormField(
+                    controller: postBodyInput,
+                    style: const TextStyle(
+                      fontSize: 20,
                     ),
-                    hintText: "body...",
+                    maxLength: 1000,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      hintText: "body...",
+                    ),
                   ),
                 ),
               ),

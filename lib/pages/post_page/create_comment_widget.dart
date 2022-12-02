@@ -92,22 +92,25 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
               ),
               Container(
                 margin: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: commentBodyInput,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(256),
-                  ],
-                  style: const TextStyle(
-                    fontSize: 20,
-                  ),
-                  onChanged: (value) {
-                    setState(() {});
-                  },
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
+                child: Expanded(
+                  child: TextFormField(
+                    controller: commentBodyInput,
+                    maxLength: 256,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(256),
+                    ],
+                    style: const TextStyle(
+                      fontSize: 20,
                     ),
-                    hintText: "comment body",
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      hintText: "comment body",
+                    ),
                   ),
                 ),
               ),

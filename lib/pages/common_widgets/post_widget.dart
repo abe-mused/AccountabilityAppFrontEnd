@@ -322,7 +322,7 @@ class _PostWidget extends State<PostWidget> {
                                 style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.left,
                               ),
                               const SizedBox(height: 5),
                               if (widget.post.body.length > 300) ...[

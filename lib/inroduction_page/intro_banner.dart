@@ -33,17 +33,20 @@ class _LinearIntroBannerState extends State<LinearIntroBanner> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            TextButton(
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const LinearIntro()),);
-              },
-              child: const Text(
-                "Click here to get to know the linear App!",
-                style: TextStyle(
-                  fontSize: 14, 
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
-                )
+            Expanded(
+              child: TextButton(
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const LinearIntro()),);
+                },
+                child: const Text(
+                  "Click here to get to know the linear App!",
+                  style: TextStyle(
+                    fontSize: 13, 
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                  maxLines: 1
+                ),
               ),
             ),
             IconButton(
