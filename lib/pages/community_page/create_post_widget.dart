@@ -160,24 +160,21 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
               Container(
                 margin: const EdgeInsets.all(10),
                 child: Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: TextFormField(
-                      controller: postBodyInput,
-                      style: const TextStyle(
-                        fontSize: 20,
+                  child: TextFormField(
+                    controller: postBodyInput,
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
+                    maxLength: 300,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
                       ),
-                      maxLength: 300,
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                      keyboardType: TextInputType.multiline,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        hintText: "body...",
-                      ),
+                      hintText: "body...",
                     ),
                   ),
                 ),
