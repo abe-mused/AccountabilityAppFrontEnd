@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:linear/pages/common_widgets/navbar.dart';
 import 'package:linear/pages/community_page/community_page.dart';
 import 'package:linear/util/apis.dart';
@@ -102,7 +103,8 @@ class CreateCommunityPageState extends State<CreateCommunityPage> {
         title: const Text("Create Community"),
         elevation: 0.1,
       ),
-      body: Column(children: [
+      body: Column(
+      children: [
       Container(
         margin: const EdgeInsets.all(10),
         child: TextFormField(
@@ -110,6 +112,9 @@ class CreateCommunityPageState extends State<CreateCommunityPage> {
           style: const TextStyle(
             fontSize: 20,
           ),
+          inputFormatters: [
+          LengthLimitingTextInputFormatter(50),
+          ],
           onChanged: (value) {
             setState(() {});
           },
