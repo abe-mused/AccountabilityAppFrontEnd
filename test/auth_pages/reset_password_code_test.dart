@@ -109,9 +109,7 @@ void main() {
     await tester.pumpWidget(const MaterialApp(
       home: ResetPasswordCodePage(
       email: 'gx0340@wayne.edu',
-    ),
-    ),
-    );
+    )));
     //Enter all info and invalid password
     await tester.pump();
     await tester.enterText(find.byKey(const Key('codeKey')), ' ');
@@ -352,9 +350,7 @@ void main() {
     await tester.pumpWidget(const MaterialApp(
       home: ResetPasswordCodePage(
       email: 'gx0340@wayne.edu',
-    ),
-    ),
-    );
+    )));
     //Enter all info and invalid password
     await tester.pump();
     await tester.enterText(find.byKey(const Key('codeKey')), '');
@@ -364,6 +360,7 @@ void main() {
     await tester.enterText(
         find.byKey(const Key('confirmPasswordKey')), 'Password2022!');
     await tester.pump();
+    // Click Reset Password
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
     //Expect to find error message
@@ -379,10 +376,8 @@ void main() {
     await tester.pumpWidget(const MaterialApp(
       home: ResetPasswordCodePage(
       email: 'gx0340@wayne.edu',
-    ),
-    ),
-    );
-    //Enter all info and invalid password
+    )));
+    //Enter all info and invalid password code
     await tester.pump();
     await tester.enterText(find.byKey(const Key('codeKey')), '');
     await tester.pump();
@@ -390,6 +385,7 @@ void main() {
     await tester.pump();
     await tester.enterText(find.byKey(const Key('confirmPasswordKey')), 'Password2022!');
     await tester.pump();
+    // Click button
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
     //Expect to find error message
@@ -406,18 +402,18 @@ void main() {
     await tester.pumpWidget(const MaterialApp(
       home: ResetPasswordCodePage(
       email: 'gx0340@wayne.edu',
-    ),
-    ),
-    );
+    )));
+    // Enter all info and blank password
    await tester.enterText(find.byKey(const Key('codeKey')), '123456');
     await tester.pump();
+    // Leave password fields blank
     await tester.enterText(find.byKey(const Key('passwordKey')), '');
     await tester.pump();
     await tester.enterText(find.byKey(const Key('confirmPasswordKey')), '');
     await tester.pump();
     // Rebuild the widget with the new item.
     await tester.pumpAndSettle();
-    // Reset password
+    // Reset password clicked
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
     // Expect to find error message
@@ -430,9 +426,8 @@ void main() {
     await tester.pumpWidget(const MaterialApp(
       home: ResetPasswordCodePage(
       email: 'gx0340@wayne.edu',
-    ),
-    ),
-    );
+    )));
+    // Check alert button
    await tester.enterText(find.byKey(const Key('codeKey')), '123456');
     await tester.pump();
     await tester.enterText(find.byKey(const Key('passwordKey')), '');
@@ -441,7 +436,7 @@ void main() {
     await tester.pump();
     // Rebuild the widget with the new item.
     await tester.pumpAndSettle();
-    // Reset password
+    // Reset password clicked
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
     // Expect to find error message
@@ -449,6 +444,7 @@ void main() {
     //Tap alert button
     await tester.tap(find.text("Ok"));
     await tester.pump();
+    // Display message on alert dialog
     expect(find.text("Please fill out all fields!"), findsNothing);
   });
 
@@ -458,9 +454,8 @@ void main() {
     await tester.pumpWidget(const MaterialApp(
       home: ResetPasswordCodePage(
       email: 'gx0340@wayne.edu',
-    ),
-    ),
-    );
+    )));
+    // Enter password and blank password reset code
    await tester.enterText(find.byKey(const Key('codeKey')), '');
     await tester.pump();
     await tester.enterText(find.byKey(const Key('passwordKey')), 'Password2022!');
@@ -469,7 +464,7 @@ void main() {
     await tester.pump();
     // Rebuild the widget with the new item.
     await tester.pumpAndSettle();
-    // Reset password
+    // Reset password clicked
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
     // Expect to find error message
@@ -482,9 +477,8 @@ void main() {
     await tester.pumpWidget(const MaterialApp(
       home: ResetPasswordCodePage(
       email: 'gx0340@wayne.edu',
-    ),
-    ),
-    );
+    )));
+    // Check alert dialog message with blank password reset code
    await tester.enterText(find.byKey(const Key('codeKey')), '');
     await tester.pump();
     await tester.enterText(find.byKey(const Key('passwordKey')), 'Password2022!');
@@ -493,7 +487,7 @@ void main() {
     await tester.pump();
     // Rebuild the widget with the new item.
     await tester.pumpAndSettle();
-    // Reset password
+    // Reset password clicked
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
     // Expect to find error message
@@ -510,9 +504,8 @@ void main() {
     await tester.pumpWidget(const MaterialApp(
       home: ResetPasswordCodePage(
       email: 'gx0340@wayne.edu',
-    ),
-    ),
-    );
+    )));
+    // Ignore confirm password key 
     await tester.enterText(find.byKey(const Key('codeKey')), '123456');
     await tester.pump();
     await tester.enterText(find.byKey(const Key('passwordKey')), 'Password2022!');
@@ -521,7 +514,7 @@ void main() {
     await tester.pump();
     // Rebuild the widget with the new item.
     await tester.pumpAndSettle();
-    // Reset password
+    // Reset password clicked
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
     // Expect to find error message
@@ -534,9 +527,8 @@ void main() {
     await tester.pumpWidget(const MaterialApp(
       home: ResetPasswordCodePage(
       email: 'gx0340@wayne.edu',
-    ),
-    ),
-    );
+    )));
+    // Check Alert Dialog
     await tester.enterText(find.byKey(const Key('codeKey')), '123456');
     await tester.pump();
     await tester.enterText(find.byKey(const Key('passwordKey')), 'Password2022!');
@@ -562,9 +554,7 @@ void main() {
     await tester.pumpWidget(const MaterialApp(
       home: ResetPasswordCodePage(
       email: 'gx0340@wayne.edu',
-    ),
-    ),
-    );
+    )));
     // Enter all info and password that do not match
     await tester.pump();
     await tester.enterText(find.byKey(const Key('codeKey')), '123456');
@@ -573,6 +563,7 @@ void main() {
     await tester.pump();
     await tester.enterText(find.byKey(const Key('confirmPasswordKey')), 'p@ssw0rd2o22?');
     await tester.pump();
+    // Click button
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
     // Expect to find error message 
@@ -586,9 +577,7 @@ void main() {
     await tester.pumpWidget(const MaterialApp(
       home: ResetPasswordCodePage(
       email: 'gx0340@wayne.edu',
-    ),
-    ),
-    );
+    )));
     // Enter all info and password that do not match
     await tester.pump();
     await tester.enterText(find.byKey(const Key('codeKey')), '123456');
@@ -602,7 +591,7 @@ void main() {
     // Expect to find error message 
     expect(find.text(
       "Passwords do not match each other, please try again."),findsOneWidget);
-        //Tap alert button
+    //Tap alert button
     await tester.tap(find.text("Ok"));
     await tester.pump();
     expect(find.text(
@@ -626,6 +615,7 @@ testWidgets('Failed Password Reset - Blank confirm password', (tester) async {
     await tester.pump();
     await tester.enterText(find.byKey(const Key('confirmPasswordKey')), '');
     await tester.pump();
+    // Click button
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
     // Expect to find error message 
@@ -649,11 +639,12 @@ testWidgets('Failed Password Reset - Blank confirm password', (tester) async {
     await tester.pump();
     await tester.enterText(find.byKey(const Key('confirmPasswordKey')), '');
     await tester.pump();
+    // Click button
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
     // Expect to find error message 
     expect(find.text("Please fill out all fields!"),findsOneWidget);
-        //Tap alert button
+    // Tap alert button
     await tester.tap(find.text("Ok"));
     await tester.pump();
     expect(find.text("Please fill out all fields!"), findsNothing);
