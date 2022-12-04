@@ -174,6 +174,29 @@ void main() {
     expect(find.text("Please fill out all fields!"), findsOneWidget);
   });
 
+    testWidgets('FAILED SIGN UP - Sign up without confirming password', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage()));
+    // Enter all info and do not confirm password
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('emailKey')), 'gx0340@wayne.edu'); // Enter email
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('usernameKey')), 'mohammedali'); // Enter invalid username
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('fullNameKey')), 'Mohammed Ali'); // Enter full name
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('passwordKey')), 'Password2022!'); // Enter valid password
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('confirmPasswordKey')), ''); // Enter blank confirm password
+    await tester.pump();
+    // Rebuild the widget with the new item.
+    await tester.pumpAndSettle();
+    // Sign Up
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+    // Expect to find error message 
+    expect(find.text("Please fill out all fields!"),findsOneWidget);
+  });
+
   testWidgets('FAILED SIGN UP - Please fill out all fields!', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: SignUpPage()));
     // No information entered in text field
