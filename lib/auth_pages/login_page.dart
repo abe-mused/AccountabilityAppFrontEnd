@@ -97,6 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 15,
                   ),
                   TextField(
+                    key: const Key('emailOrUsernameKey'),
                     controller: emailOrUsername,
                     decoration: const InputDecoration(
                       hintText: "Email or username",
@@ -106,6 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 15,
                   ),
                   TextField(
+                    key: const Key('passwordKey'),
                     obscureText: hidePassword,
                     controller: password,
                     decoration: InputDecoration(
@@ -117,7 +119,8 @@ class _LoginPageState extends State<LoginPage> {
                             });
                           },
                           icon: hidePassword ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
-                        )),
+                        ),
+                        ),
                   ),
                   Align(
                     alignment: Alignment.centerRight,
