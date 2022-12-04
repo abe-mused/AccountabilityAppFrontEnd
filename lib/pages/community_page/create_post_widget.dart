@@ -118,7 +118,8 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
     if (_isCreatingPost) {
       return const Center(child: CircularProgressIndicator());
     }
-    return Container(
+    return 
+    Container(
       margin: const EdgeInsets.all(20),
       width: MediaQuery.of(context).size.width * 0.9,
       height: MediaQuery.of(context).size.height * 0.5,
@@ -157,9 +158,9 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                   ),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.all(10),
-                child: Expanded(
+              Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
                   child: TextFormField(
                     controller: postBodyInput,
                     style: const TextStyle(
@@ -177,8 +178,8 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                       hintText: "body...",
                     ),
                   ),
+                  ),
                 ),
-              ),
               UploadImageWidget(
                 onLoading: shouldUploadImage,
                 onSuccess: onImageWidgetSubmit,
