@@ -181,5 +181,95 @@ testWidgets('Failed login - Fill out all fields', (tester) async {
     expect(find.text("Failed Login"),findsOneWidget);
   });
 
+  testWidgets('ALERT DIALOG: Failed login - Fill out all fields', (tester) async {
+     await tester.pumpWidget(const MaterialApp(home: LoginPage()));
+     // No information entered in text field
+    await tester.pump();
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+    await tester.pumpAndSettle();
+    //Expect to find error message
+    expect(find.text("Failed Login"),findsOneWidget);
+    //Tap alert button
+    await tester.tap(find.text("Ok"));
+    await tester.pump();
+    expect(find.text("Failed Login"),findsOneWidget);
+  });
+
+  testWidgets('ALERT DIALOG: Failed login with invalid email and good password', (tester) async {
+     await tester.pumpWidget(const MaterialApp(home: LoginPage()));
+     // No information entered in text field
+    await tester.pump();
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+    await tester.pumpAndSettle();
+    //Expect to find error message
+    expect(find.text("Failed Login"),findsOneWidget);
+    //Tap alert button
+    await tester.tap(find.text("Ok"));
+    await tester.pump();
+    expect(find.text("Failed Login"),findsOneWidget);
+  });
+
+  testWidgets('ALERT DIALOG: Failed login - Fill out all fields', (tester) async {
+     await tester.pumpWidget(const MaterialApp(home: LoginPage()));
+     // No information entered in text field
+    await tester.pump();
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+    await tester.pumpAndSettle();
+    //Expect to find error message
+    expect(find.text("Failed Login"),findsOneWidget);
+    //Tap alert button
+    await tester.tap(find.text("Ok"));
+    await tester.pump();
+    expect(find.text("Failed Login"),findsOneWidget);
+  });
+
+  testWidgets('ALERT DIALOG: Failed login with invalid username and good password', (tester) async {
+     await tester.pumpWidget(const MaterialApp(home: LoginPage()));
+     // No information entered in text field
+    await tester.pump();
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+    await tester.pumpAndSettle();
+    //Expect to find error message
+    expect(find.text("Failed Login"),findsOneWidget);
+    //Tap alert button
+    await tester.tap(find.text("Ok"));
+    await tester.pump();
+    expect(find.text("Failed Login"),findsOneWidget);
+  });
+
+    testWidgets('ALERT DIALOG: Failed login with invalid password and good email', (tester) async {
+     await tester.pumpWidget(const MaterialApp(home: LoginPage()));
+     // No information entered in text field
+    await tester.pump();
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+    await tester.pumpAndSettle();
+    //Expect to find error message
+    expect(find.text("Failed Login"),findsOneWidget);
+    //Tap alert button
+    await tester.tap(find.text("Ok"));
+    await tester.pump();
+    expect(find.text("Failed Login"),findsOneWidget);
+  });
+
+  testWidgets('ALERT DIALOG: Failed login with invalid password and good username', (tester) async {
+     await tester.pumpWidget(const MaterialApp(home: LoginPage()));
+     // No information entered in text field
+    await tester.pump();
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+    await tester.pumpAndSettle();
+    //Expect to find error message
+    expect(find.text("Failed Login"),findsOneWidget);
+    //Tap alert button
+    await tester.tap(find.text("Ok"));
+    await tester.pump();
+    expect(find.text("Failed Login"),findsOneWidget);
+  });
+
 }
 
