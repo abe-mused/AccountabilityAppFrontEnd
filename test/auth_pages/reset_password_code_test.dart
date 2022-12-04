@@ -99,7 +99,7 @@ void main() {
     //Expect to find error message
     expect(
         find.text(
-            "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
+            "Password must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
         findsOneWidget);
   });
 
@@ -125,14 +125,14 @@ void main() {
     //Expect to find error message
     expect(
         find.text(
-            "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
+            "Password must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
         findsOneWidget);
     //Tap alert button
     await tester.tap(find.text("Ok"));
     await tester.pump();
     expect(
         find.text(
-            "Passwords must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
+            "Password must contain at least one uppercase letter, one lowercase letter, one numeric character, and one special character ( ! @ # \$ & * ~ ) !"),
         findsNothing);
   });
 
@@ -245,7 +245,7 @@ void main() {
         findsNothing);
   });
 
-  testWidgets('Go to register page', (WidgetTester tester) async {
+  testWidgets('Go to Sign Up page', (WidgetTester tester) async {
     //setup
     //Build widget
     final mockObserver = MockNavigatorObserver();
@@ -257,7 +257,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     //Register Screen button
-    await tester.tap(find.text("Register"));
+    await tester.tap(find.text("Sign Up"));
     // Rebuild the widget with the new item.
     await tester.pumpAndSettle();
     /// Verify that a push event happened
