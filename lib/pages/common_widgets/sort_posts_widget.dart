@@ -67,7 +67,8 @@ class SortPostsState extends State<SortPosts> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Material(
+        child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
@@ -77,14 +78,16 @@ class SortPostsState extends State<SortPosts> {
             fontWeight: FontWeight.w900,
           ),
         ),
-        if(widget.posts.isNotEmpty) ...[
+        if (widget.posts.isNotEmpty) ...[
           Row(
             children: [
               Text(
                 "Sorted By $sortType",
-                style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
+                style:
+                    const TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
               ),
               PopupMenuButton(
+                key: const Key('popupMenuKey'),
                 itemBuilder: (context) {
                   return [
                     const PopupMenuItem<int>(
@@ -141,6 +144,6 @@ class SortPostsState extends State<SortPosts> {
           ),
         ],
       ],
-    );
+    ));
   }
 }
