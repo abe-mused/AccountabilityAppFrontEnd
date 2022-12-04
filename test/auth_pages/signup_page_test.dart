@@ -86,7 +86,95 @@ void main() {
     expect(client, isA<MockClient>());
   });
 
-  testWidgets('REGEX TEST - Please fill out all fields!', (tester) async {
+    testWidgets('FAILED SIGN UP - Enter email only', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage()));
+    // Enter text field with sign up information
+    await tester.enterText(find.byKey(const Key('emailKey')), 'gx0340@wayne.edu'); // Enter email
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('usernameKey')), ''); // Enter username
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('fullNameKey')), ''); // Enter full name
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('passwordKey')), ''); // Enter password
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('confirmPasswordKey')), ''); // Enter confirm password
+    await tester.pump();
+    // Rebuild the widget with the new item.
+    await tester.pumpAndSettle();
+    // Sign Up
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+    // Expect to find error message
+    expect(find.text("Please fill out all fields!"), findsOneWidget);
+  });
+
+  testWidgets('FAILED SIGN UP - Enter username only', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage()));
+    // Enter text field with sign up information
+    await tester.enterText(find.byKey(const Key('emailKey')), ''); // Enter email
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('usernameKey')), 'mohammedali'); // Enter username
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('fullNameKey')), ''); // Enter full name
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('passwordKey')), ''); // Enter password
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('confirmPasswordKey')), ''); // Enter confirm password
+    await tester.pump();
+    // Rebuild the widget with the new item.
+    await tester.pumpAndSettle();
+    // Sign Up
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+    // Expect to find error message
+    expect(find.text("Please fill out all fields!"), findsOneWidget);
+  });
+
+  testWidgets('FAILED SIGN UP - Enter name only', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage()));
+    // Enter text field with sign up information
+    await tester.enterText(find.byKey(const Key('emailKey')), ''); // Enter email
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('usernameKey')), ''); // Enter username
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('fullNameKey')), 'Mohammed Ali'); // Enter full name
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('passwordKey')), ''); // Enter password
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('confirmPasswordKey')), ''); // Enter confirm password
+    await tester.pump();
+    // Rebuild the widget with the new item.
+    await tester.pumpAndSettle();
+    // Sign Up
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+    // Expect to find error message
+    expect(find.text("Please fill out all fields!"), findsOneWidget);
+  });
+
+  testWidgets('FAILED SIGN UP - Enter password only', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage()));
+    // Enter text field with sign up information
+    await tester.enterText(find.byKey(const Key('emailKey')), ''); // Enter email
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('usernameKey')), ''); // Enter username
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('fullNameKey')), ''); // Enter full name
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('passwordKey')), 'Password2022!'); // Enter password
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('confirmPasswordKey')), 'Password2022!'); // Enter confirm password
+    await tester.pump();
+    // Rebuild the widget with the new item.
+    await tester.pumpAndSettle();
+    // Sign Up
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+    // Expect to find error message
+    expect(find.text("Please fill out all fields!"), findsOneWidget);
+  });
+
+  testWidgets('FAILED SIGN UP - Please fill out all fields!', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: SignUpPage()));
     // No information entered in text field
     await tester.pump();
@@ -235,22 +323,5 @@ void main() {
     // Expect to find error message 
     expect(find.text("Passwords do not match!"),findsOneWidget);
   });
-
-testWidgets('Go to Login Page', (WidgetTester tester) async {
-    final mockObserver = MockNavigatorObserver();
-    await tester.pumpWidget(
-      MaterialApp(
-        home: const LoginPage(),
-        navigatorObservers: [mockObserver],
-      ),
-    );
-    await tester.tap(find.byType(TextButton));
-    await tester.pumpAndSettle();
-    expect(find.text('loginKey'), findsOneWidget);
-  });
-
-  // testWidgets('Account already exists', (tester) async {
-  // await tester.pumpWidget(const MaterialApp(home: SignUpPage()));
-  // });
 
 }
