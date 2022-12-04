@@ -222,6 +222,7 @@ class _CommunityListWidgetState extends State<CommunityListWidget> {
       title: Text("Sort By: $_sortType"),
       children: [
         TextButton(
+          key: const Key('Date Joined'),
           onPressed: () {
             setState(() {
               _userToDisplay!.communities!.sort((a, b) => a['dateJoined'].compareTo(b['dateJoined']));
@@ -233,9 +234,10 @@ class _CommunityListWidgetState extends State<CommunityListWidget> {
           child: const Text('Date joined'),
         ),
         TextButton(
+          key: const Key('Last post date'),
           onPressed: () {
             setState(() {
-              _userToDisplay!.communities!.sort((a, b) => a['lastStreakDate'].compareTo(b['lastStreakDate']));
+              _userToDisplay!.communities!.sort((a, b) => b['lastStreakDate'].compareTo(a['lastStreakDate']));
               _sortType = "Last post date";
             });
             Navigator.pop(context);
@@ -244,6 +246,7 @@ class _CommunityListWidgetState extends State<CommunityListWidget> {
           child: const Text('Last post date'),
         ),
         TextButton(
+          key: const Key('Alphabetical (A-Z)'),
           onPressed: () {
             setState(() {
               _userToDisplay!.communities!.sort((a, b) => a['communityName'].compareTo(b['communityName']));
@@ -255,6 +258,7 @@ class _CommunityListWidgetState extends State<CommunityListWidget> {
           child: const Text('Alphabetical (A-Z)'),
         ),
         TextButton(
+          key: const Key('Alphabetical (Z-A)'),
           onPressed: () {
             setState(() {
               _userToDisplay!.communities!.sort((a, b) => b['communityName'].compareTo(a['communityName']));
