@@ -13,29 +13,6 @@ class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 @GenerateMocks([http.Client])
 void main() {
-  testWidgets('smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(home: LoginPage()));
-    expect(find.byType(LoginPage), findsOneWidget);
-  });
-
-  test('Email Field Changes', () {
-    final emailOrUsername = TextEditingController();
-    emailOrUsername.text = 'gx0340@wayne.edu';
-    expect(emailOrUsername.text, 'gx0340@wayne.edu');
-  });
-
-  test('Username Field Changes', () {
-  final emailOrUsername = TextEditingController();
-  emailOrUsername.text = 'mohammedali';
-  expect(emailOrUsername.text, 'mohammedali');
-});
-
-  test('Password Field Changes', () {
-  final password = TextEditingController();
-  password.text = 'Password2022!';
-  expect(password.text, 'Password2022!');
-});
-
   testWidgets('Successful login with username and password', (tester) async {
     final mockObserver = MockNavigatorObserver(); 
     final client = MockClient((request) async {
