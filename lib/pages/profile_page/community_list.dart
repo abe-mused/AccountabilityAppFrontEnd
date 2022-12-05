@@ -176,7 +176,9 @@ class _CommunityListWidgetState extends State<CommunityListWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "c/${_userToDisplay!.communities![index]['communityName']}",
+                    "c/${_userToDisplay!.communities![index]['communityName']}".length < 20? 
+                      "c/${_userToDisplay!.communities![index]['communityName']}"
+                      : "c/${_userToDisplay!.communities![index]['communityName'].substring(0, 20)}...",
                     style: const TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w800,

@@ -119,7 +119,11 @@ class ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("u/${getUsernameToDisplay()}"),
+        title: Text(
+          "u/${getUsernameToDisplay()}".length < 30? 
+                      "u/${getUsernameToDisplay()}"
+                      : "u/${getUsernameToDisplay().substring(0, 30)}...",
+          ),
         automaticallyImplyLeading: !isViewingOwnProfile(),
         actions: <Widget>[
           if(isViewingOwnProfile()) ...[
@@ -312,7 +316,9 @@ class ProfilePageState extends State<ProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    _userToDisplay!.name,
+                    _userToDisplay!.name.length < 25? 
+                      _userToDisplay!.name 
+                      : "${_userToDisplay!.name.substring(0, 25)}...",
                     style: const TextStyle(
                       fontSize: 22.0,
                       fontWeight: FontWeight.w900,
@@ -327,7 +333,9 @@ class ProfilePageState extends State<ProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "u/${_userToDisplay!.username}",
+                    "u/${_userToDisplay!.username}".length < 30? 
+                      "u/${_userToDisplay!.username}"
+                      : "u/${_userToDisplay!.username.substring(0, 30)}...",
                     style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.w900,

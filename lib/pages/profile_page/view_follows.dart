@@ -91,7 +91,9 @@ class _ViewFollowsPageState extends State<ViewFollowsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "u/${listOfUsers[index]}",
+                    "u/${listOfUsers[index]}".length < 30? 
+                      "u/${listOfUsers[index]}"
+                      : "u/${listOfUsers[index].substring(0, 30)}...",
                     style: const TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w800,

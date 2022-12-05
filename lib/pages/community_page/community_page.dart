@@ -361,7 +361,9 @@ class CommunityPageState extends State<CommunityPage> {
                     children: [
                       const SizedBox(width: 20),
                       Text(
-                        "c/${_community.communityName}",
+                        "u/${_community.communityName}".length < 13? 
+                          "u/${_community.communityName}"
+                          : "u/${_community.communityName.substring(0, 13)}...",
                         style: const TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold

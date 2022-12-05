@@ -27,7 +27,7 @@ class _LinearIntroState extends State<LinearIntro> {
           size: const Size.square(10.0),
           activeSize: const Size(20.0, 10.0),
           activeColor: Theme.of(context).colorScheme.secondary,
-          color: Colors.black26,
+          color: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.white : Colors.black,
           spacing: const EdgeInsets.symmetric(horizontal: 3.0),
           activeShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(25.0)
