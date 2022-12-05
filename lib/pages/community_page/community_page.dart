@@ -46,7 +46,7 @@ class CommunityPageState extends State<CommunityPage> {
   bool _isUpdatingMembership = false;
   bool _isFetchingCommunity = false;
   bool _isErrorFetchingCommunity = false;
-  final String _currentDate = DateFormat("MM/dd/yyyy").format(DateTime.now());
+  final String _currentDate = DateFormat("M/d/yyyy").format(DateTime.now());
 
   bool _showFab = true;
 

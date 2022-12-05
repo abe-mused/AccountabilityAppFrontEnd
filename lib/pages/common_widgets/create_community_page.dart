@@ -27,7 +27,6 @@ class CreateCommunityPageState extends State<CreateCommunityPage> {
       });
       
       if (response['status'] == true) {
-        joinAndLeave(context, userInput.text);
         showDialog(
             context: context,
             builder: (context) {
