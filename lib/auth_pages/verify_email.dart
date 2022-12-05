@@ -20,9 +20,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final email = TextEditingController();
 
   doSendResetCode() {
-    final Future<Map<String, dynamic>> successfulMessage = auth_util.passwordResetCode(email: email.text);
-
-    successfulMessage.then((response) {
+    setState(() {
+      _updateResetPassword = true;
+    });
+    auth_util.passwordResetCode(email: email.text).then((response) {
       if (response['status'] == true) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPasswordCodePage(email: email.text)));
       } else {
@@ -95,9 +96,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     child: ElevatedButton(
                         style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
                         onPressed: () async {
-                          setState(() {
-                              _updateResetPassword = true;
-                            });
                           RegExp emailValidation = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
                           if (!emailValidation.hasMatch(email.text)) {
                             showDialog(

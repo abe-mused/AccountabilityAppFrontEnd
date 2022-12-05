@@ -21,10 +21,10 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController confirmPassword = TextEditingController();
 
   doSignUp() {
-    final Future<Map<String, dynamic>> responseMessage =
-        auth_util.signUp(email: email.text, password: password.text, username: username.text, fullName: name.text);
-
-    responseMessage.then((response) {
+    setState(() {
+      _isUpdatingSignUp = true;
+    });
+    auth_util.signUp(email: email.text, password: password.text, username: username.text, fullName: name.text).then((response) {
       if (response['status'] == true) {
         showDialog(
             context: context,
@@ -166,10 +166,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)
                           ),
                           onPressed: () async {
-                            setState(() {
-                              _isUpdatingSignUp = true;
-                            });
-                          handleSignUpPress(context);
+                            handleSignUpPress(context);
                         },
                          child: _isUpdatingSignUp? const CircularProgressIndicator(
                           color: Colors.white,

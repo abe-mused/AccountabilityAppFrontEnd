@@ -20,9 +20,10 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
   TextEditingController code = TextEditingController();
 
   doSendResetCode() {
-    final Future<Map<String, dynamic>> successfulMessage = auth_util.passwordResetCode(email: widget.email);
-
-    successfulMessage.then((response) {
+    setState(() {
+      _updateResetPasswordCode = true;
+    });
+    auth_util.passwordResetCode(email: widget.email).then((response) {
       if (response['status']) {
         showDialog(
             context: context,
@@ -138,7 +139,7 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                   children: [
                     const Text(
                       "Enter Code and New Password",
-                      style: TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
+                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.w400),
                     ),
                     const SizedBox(
                       height: 15,
@@ -190,9 +191,6 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                       child: ElevatedButton(
                           style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60)),
                           onPressed: () async {
-                          setState(() {
-                              _updateResetPasswordCode = true;
-                            });
                             RegExp passwordValidation = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
                             if (password.text.isEmpty || confirmPassword.text.isEmpty || code.text.isEmpty) {
                               showDialog(

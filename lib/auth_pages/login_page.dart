@@ -21,9 +21,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     doLogIn() {
-      final Future<Map<String, dynamic>> responseMessage = auth_util.login(emailOrUsername.text, password.text);
-
-      responseMessage.then((response) {
+      setState(() {
+        _isUpdatingSignIn = true;
+      });
+      auth_util.login(emailOrUsername.text, password.text).then((response) {
         if (response['status'] == true) {
           Navigator.pushReplacementNamed(context, '/home');
         } else {
@@ -137,9 +138,6 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 60),
                         ),
                         onPressed: () async {
-                            setState(() {
-                              _isUpdatingSignIn = true;
-                            });
                           doLogIn();
                         },
                         child: _isUpdatingSignIn? const CircularProgressIndicator(
