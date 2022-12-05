@@ -14,6 +14,8 @@ class CreateCommunityPage extends StatefulWidget {
 class CreateCommunityPageState extends State<CreateCommunityPage> {
 
   TextEditingController userInput = TextEditingController();
+  RegExp communityNameRegexValidation = RegExp(r"^(\w{3,30})$");
+
   bool _isLoading = false;
 
  doCreateCommunity() {
@@ -34,17 +36,24 @@ class CreateCommunityPageState extends State<CreateCommunityPage> {
                 content: const Text("Community succesfully Created."),
                 actions: [
                   TextButton(
-                      onPressed: () {
-                       Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CommunityPage(
-                          communityName: userInput.text.toLowerCase(),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Close")
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CommunityPage(
+                            communityName: userInput.text.toLowerCase(),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                      child: const Text("Ok"))
+                      );
+                    },
+                    child: const Text("Go to Community")
+                  )
                 ],
               );
             });
@@ -109,6 +118,7 @@ class CreateCommunityPageState extends State<CreateCommunityPage> {
         margin: const EdgeInsets.all(10),
         child: TextFormField(
           controller: userInput,
+          maxLength: 30,
           style: const TextStyle(
             fontSize: 20,
           ),
@@ -129,10 +139,29 @@ class CreateCommunityPageState extends State<CreateCommunityPage> {
         if (!_isLoading)
           ElevatedButton(
             onPressed: () async {
-              setState(() {
-                _isLoading = true;
-              });
-              await doCreateCommunity();
+              if(!communityNameRegexValidation.hasMatch(userInput.text)){
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Invalid input!"),
+                          content: const Text(
+                              "community name must be between 3-30 alphanumeric characters long."),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Ok"))
+                          ],
+                        );
+                      });
+                  } else {
+                setState(() {
+                  _isLoading = true;
+                });
+                await doCreateCommunity();
+              }
             },
              child:  const Text("Submit"),
         ),

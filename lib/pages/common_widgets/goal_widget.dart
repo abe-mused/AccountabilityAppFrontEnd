@@ -207,7 +207,7 @@ class GoalWidget extends StatelessWidget {
         TextField(
         controller: goalExtensionInput,
         keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        inputFormatters: [FilteringTextInputFormatter(allow: true, RegExp(r'[0-9]'))],
         decoration: const InputDecoration(hintText: "Ex: 5"),
         ),
         actions: <Widget>[
@@ -218,7 +218,24 @@ class GoalWidget extends StatelessWidget {
         ),
         TextButton( 
          onPressed: () {
-          if ((goalExtensionInput.text != '') && (int.parse(goalExtensionInput.text.toString()) > 0)) {
+          if (goal.checkInGoal >= 1000) {
+            showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+              content:
+               const Text("Looks like the check-in target for this goal is already over 1000 check-ins. You can't extend this goal anymore."),
+               actions: [
+                 TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                   },
+                  child: const Text("Ok"))
+               ],
+               );
+             });
+          } else if ((goalExtensionInput.text != '') && (int.parse(goalExtensionInput.text.toString()) > 0) && (int.parse(goalExtensionInput.text.toString()) < 1000)) {
               extendGoal();
               Navigator.pop(context);
           } else {
@@ -227,7 +244,7 @@ class GoalWidget extends StatelessWidget {
             builder: (context) {
               return AlertDialog(
               content:
-               const Text("Please enter a number greater than zero."),
+               const Text("Please enter a number between 1-999."),
                actions: [
                  TextButton(
                   onPressed: () {

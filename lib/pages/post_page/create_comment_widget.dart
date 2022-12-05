@@ -14,6 +14,7 @@ class CreateCommentWidget extends StatefulWidget {
 
 class _CreateCommentWidgetState extends State<CreateCommentWidget> {
   TextEditingController commentBodyInput = TextEditingController();
+  RegExp commentBodyRegexValidation = RegExp(r"\w{5}\w{0,251}");
 
   bool _isCreatingComment = false;
   Map<String, dynamic> _newComment = {};
@@ -23,9 +24,11 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
       _isCreatingComment = true;
     });
 
-    final Future<Map<String, dynamic>> successfulMessage =
-        createComment(context, commentBodyInput.text, widget.postId);
-    successfulMessage.then((response) {
+    createComment(
+      context,
+      commentBodyInput.text.trim().replaceAll(RegExp(r' \s+'), ' '),
+      widget.postId)
+    .then((response) {
       if (response['status'] == true) {
         setState(() {
           _newComment = response['comment'];
@@ -116,23 +119,25 @@ class _CreateCommentWidgetState extends State<CreateCommentWidget> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  if (commentBodyInput.text != '') {
-                    doCreateComment();
-                  } else {
+                  if(!commentBodyRegexValidation.hasMatch(commentBodyInput.text.trim().replaceAll(RegExp(r'\s+'), ''))){
                     showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            content: const Text("Please fill out all fields."),
-                            actions: [
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("Ok"))
-                            ],
-                          );
-                        });
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Invalid input!"),
+                          content: const Text(
+                              "Comment body must be at least 5 alphanumeric characters long and no more than 256 characters long."),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Ok"))
+                          ],
+                        );
+                      });
+                  } else {
+                    doCreateComment();
                   }
                 },
                 child: const Text("Add a Comment"),

@@ -20,11 +20,14 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
   TextEditingController postBodyInput = TextEditingController();
   TextEditingController postTitleInput = TextEditingController();
 
+  RegExp postBodyRegexValidation = RegExp(r"\w{5}\w{0,995}");
+  RegExp postTitleRegexValidation = RegExp(r"\w{5}\w{0,251}");
+
   bool _isCreatingPost = false;
 
   bool shouldUploadImage() {
-  if (postTitleInput.text != '' &&
-      postBodyInput.text != '') {
+  if (postTitleRegexValidation.hasMatch(postTitleInput.text.trim().replaceAll(RegExp(r'\s+'), '')) &&
+      postBodyRegexValidation.hasMatch(postBodyInput.text.trim().replaceAll(RegExp(r'\s+'), ''))) {
       setState(() {
         _isCreatingPost = true;
       });
@@ -34,16 +37,13 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
   }
 
   void onImageWidgetSubmit(String? url) {
-    if (postTitleInput.text != '' &&
-        postBodyInput.text != '') {
-      doCreatePost(url);
-    } else {
+    if (!postTitleRegexValidation.hasMatch(postTitleInput.text.trim().replaceAll(RegExp(r'\s+'), ''))) {
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               content:
-                  const Text("Please fill out all fields."),
+                const Text("Post title must be a minimum of 5 alphanumeric characters and a maximum of 256 characters."),
               actions: [
                 TextButton(
                     onPressed: () {
@@ -53,7 +53,25 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
               ],
             );
           });
-    } 
+    } else if (!postBodyRegexValidation.hasMatch(postBodyInput.text.trim().replaceAll(RegExp(r'\s+'), ''))) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content:
+              const Text("Post body must be a minimum of 5 alphanumeric characters and a maximum of 1000 characters."),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Ok"))
+            ],
+          );
+        });
+    } else {
+      doCreatePost(url);
+    }
   }
 
   doCreatePost(String? url) {
@@ -63,8 +81,8 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
 
     final Future<Map<String, dynamic>> responseMessage = createPost(
         context,
-        postTitleInput.text,
-        postBodyInput.text,
+        postTitleInput.text.trim().replaceAll(RegExp(r' \s+'), ' '),
+        postBodyInput.text.trim().replaceAll(RegExp(r' \s+'), ' '),
         widget.communityName,
         url);
 
@@ -144,6 +162,7 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
                 margin: const EdgeInsets.all(10),
                 child: TextFormField(
                   controller: postTitleInput,
+                  maxLength: 256,
                   style: const TextStyle(
                     fontSize: 20,
                   ),

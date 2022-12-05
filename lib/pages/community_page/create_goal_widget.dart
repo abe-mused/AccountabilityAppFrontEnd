@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:linear/util/apis.dart';
 
 class CreateGoalWidget extends StatefulWidget {
@@ -16,6 +17,8 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
   TextEditingController goalBodyInput = TextEditingController();
   TextEditingController checkInGoalInput = TextEditingController();
 
+  RegExp goalBodyRegexValidation = RegExp(r"\w{5}\w{0,95}");
+
   bool _isCreatingGoal = false;
 
   doCreateGoal() {
@@ -26,7 +29,7 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
     final Future<Map<String, dynamic>> responseMessage = createGoal(
         context,
         int.parse(checkInGoalInput.text.toString()),
-        goalBodyInput.text,
+        goalBodyInput.text.trim().replaceAll(RegExp(r' \s+'), ' '),
         widget.communityName,
         );
 
@@ -125,6 +128,7 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
                 child: TextFormField(
                   controller: checkInGoalInput,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter(allow: true, RegExp(r'[0-9]'))],
                   style: const TextStyle(
                     fontSize: 20,
                   ),
@@ -151,25 +155,60 @@ class _CreateGoalWidgetState extends State<CreateGoalWidget> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      if (goalBodyInput.text != '' &&
-                          checkInGoalInput.text != '') {
-                        doCreateGoal();
-                      } else {
+                      if (goalBodyInput.text == '' ||
+                          checkInGoalInput.text == '') {
                         showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                content:
-                                    const Text("Please fill out all fields."),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text("Ok"))
-                                ],
-                              );
-                            });
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content:
+                                  const Text("Please fill out all fields."),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("Ok"))
+                              ],
+                            );
+                          }
+                        );
+                      } else if(!goalBodyRegexValidation.hasMatch(goalBodyInput.text.trim().replaceAll(RegExp(r'\s+'), ''))) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content:
+                                  const Text("Goal description must be alphanumeric and between the length of 5-100 characters.\n\nThink of something meaningful!"),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("Ok"))
+                              ],
+                            );
+                          }
+                        );
+                      } else if(int.parse(checkInGoalInput.text) >= 1000 || int.parse(checkInGoalInput.text) < 1) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content:
+                                  const Text("Target number of days must be between 1-999"),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("Ok"))
+                              ],
+                            );
+                          }
+                        );
+                      } else {
+                        doCreateGoal();
                       }
                     },
                     child: const Text("create goal"),
